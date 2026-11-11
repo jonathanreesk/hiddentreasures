@@ -1,0 +1,43 @@
+---
+// One form component for every form on the site. Submissions go to /api/submit,
+// which emails them via SendGrid (see SETUP.md).
+interface Field { name: string; label: string; type?: 'text' | 'email' | 'tel' | 'textarea' | 'date' | 'select' | 'checkboxes'; help?: string; required?: boolean; full?: boolean; options?: string[]; autocomplete?: string }
+interface Props { form: string; fields: Field[]; submit?: string; thanks?: string }
+const { form, fields, submit = 'Send', thanks = 'Thank you! We will be in touch soon.' } = Astro.props;
+const id = (n: string) => `${form}-${n}`;
+---
+<div style="position:relative">
+  <form class="form" method="post" action="/api/submit" data-form>
+    <input type="hidden" name="form" value={form} />
+    <div class="hp" aria-hidden="true"><label for={id('cw')}>Leave this empty</label><input id={id('cw')} name="company_website" tabindex="-1" autocomplete="off" /></div>
+    {fields.map((f) => f.type === 'checkboxes' ? (
+      <fieldset class="field full" style="border:0;padding:0;margin:0">
+        <legend style="font-weight:700;font-size:14px;margin-bottom:8px">{f.label}{f.required ? '' : ' (optional)'}</legend>
+        <div class="pills">
+          {f.options?.map((o) => <label class="pill-item" style="display:inline-flex;gap:8px;align-items:center;cursor:pointer;min-height:44px"><input type="checkbox" name={f.name} value={o} style="width:18px;height:18px;accent-color:var(--red)" />{o}</label>)}
+        </div>
+      </fieldset>
+    ) : (
+      <div class={`field ${f.full || f.type === 'textarea' ? 'full' : ''}`}>
+        <label for={id(f.name)}>{f.label}{f.required ? '' : ' (optional)'}</label>
+        {f.help && <span class="muted" style="font-size:13px;margin-top:-2px">{f.help}</span>}
+        {f.type === 'textarea' ? (
+          <textarea id={id(f.name)} name={f.name} required={f.required}></textarea>
+        ) : f.type === 'select' ? (
+          <select id={id(f.name)} name={f.name} required={f.required}>
+            {f.options?.map((o) => <option>{o}</option>)}
+          </select>
+        ) : (
+          <input id={id(f.name)} name={f.name} type={f.type ?? 'text'} required={f.required} autocomplete={f.autocomplete} />
+        )}
+      </div>
+    ))}
+    <button type="submit" class="btn btn-red" data-label={submit} style="width:100%">{submit}</button>
+  </form>
+  <div class="form-msg pop" data-ok hidden role="status">
+    <img src="/images/brand/tag-red.png" alt="" width="120" style="width:120px;margin:0 auto 14px" />
+    <p class="serif" style="margin:0 0 8px;font-size:30px">Thank you!</p>
+    <p class="muted" style="margin:0">{thanks}</p>
+  </div>
+  <p data-err hidden role="alert" style="margin:14px 0 0;color:var(--red);font-weight:600">Sorry, that did not go through. Please try again, or call the store.</p>
+</div>

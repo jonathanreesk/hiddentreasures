@@ -1,0 +1,50 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import PageHero from '../../components/PageHero.astro';
+import Newsletter from '../../components/Newsletter.astro';
+import { getPosts, dateRange, typeLabel } from '../../lib/content';
+const posts = await getPosts();
+---
+<Layout title="News and events" description="Sales, events and news from Hidden Treasures Thrift Store.">
+  <PageHero eyebrow="News and events" title="What is happening at the store." lead="Seasonal markets, sales, and updates from our team." />
+  <section class="section">
+    <div class="wrap">
+      <div class="chips" role="group" aria-label="Filter posts" style="margin-bottom:36px" data-filters>
+        <button type="button" class="chip" aria-pressed="true" data-filter="all">All</button>
+        <button type="button" class="chip" aria-pressed="false" data-filter="event">Events</button>
+        <button type="button" class="chip" aria-pressed="false" data-filter="sale">Sales</button>
+        <button type="button" class="chip" aria-pressed="false" data-filter="news">News</button>
+      </div>
+      <div class="post-grid">
+        {posts.map((p) => (
+          <a class="card post-card lift outline" href={`/news/${p.slug}`} data-type={p.type} data-end={p.endDate || p.startDate}>
+            <div class="thumb">{p.image ? <img src={p.image} alt="" loading="lazy" /> : <div style="height:100%;display:flex;align-items:center;justify-content:center;background:var(--red)"><img src="/images/brand/tag-blue.png" alt="" width="120" /></div>}</div>
+            <div class="body">
+              <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+                <span class="badge">{p.badge || typeLabel[p.type]}</span>
+                <span class="badge" data-past hidden style="background:var(--sand)">Past</span>
+              </div>
+              <h2 class="serif" style="font-size:26px;line-height:1.2;margin:6px 0 0">{p.title}</h2>
+              <p class="muted" style="margin:0;font-size:15px;font-weight:600">{dateRange(p.startDate!, p.endDate)}{p.timeText ? ` · ${p.timeText}` : ''}</p>
+              {p.summary && <p class="muted" style="margin:0;font-size:15px">{p.summary}</p>}
+            </div>
+          </a>
+        ))}
+      </div>
+      {posts.length === 0 && <p class="lead">Nothing posted yet. Check back soon.</p>}
+    </div>
+  </section>
+  <Newsletter />
+</Layout>
+
+<script>
+  const today = new Date().toLocaleDateString('en-CA', { timeZone: 'America/Chicago' });
+  const cards = [...document.querySelectorAll<HTMLElement>('[data-type]')];
+  cards.forEach((c) => { if (c.dataset.type !== 'news' && (c.dataset.end || '') < today) c.querySelector<HTMLElement>('[data-past]')!.hidden = false; });
+  const btns = [...document.querySelectorAll<HTMLButtonElement>('[data-filter]')];
+  btns.forEach((b) => b.addEventListener('click', () => {
+    const f = b.dataset.filter;
+    btns.forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
+    cards.forEach((c) => { c.hidden = !(f === 'all' || c.dataset.type === f); if (!c.hidden) c.classList.add('pop'); });
+  }));
+</script>

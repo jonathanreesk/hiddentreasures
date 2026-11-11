@@ -1,0 +1,33 @@
+---
+import Icon from './Icon.astro';
+import { getStories } from '../lib/content';
+interface Props { homeOnly?: boolean }
+const { homeOnly = false } = Astro.props;
+const stories = (await getStories()).filter((s) => !homeOnly || s.showOnHome).slice(0, homeOnly ? 3 : 99);
+const tones = ['var(--red)', 'var(--blue)', 'var(--orange)'];
+---
+{stories.length > 0 && (
+  <section class="section">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <div style="max-width:640px">
+          <p class="eyebrow">In their own words</p>
+          <h2 class="h2">Stories from our team.</h2>
+        </div>
+        <a class="btn btn-outline" href="/our-story#share">Share your story</a>
+      </div>
+      <div class="grid3">
+        {stories.map((s, i) => (
+          <figure class={`card pad lift story reveal ${i % 3 === 1 ? 'dark' : 'outline'}`} style={`transition-delay:${i * 80}ms`}>
+            <span style={`color:${tones[i % 3]}`}><Icon name="quote" size={40} /></span>
+            <blockquote>{s.quote}</blockquote>
+            <figcaption>
+              {s.photo ? <img class="avatar" src={s.photo} alt="" width="52" height="52" /> : <span class="avatar"></span>}
+              <span style="display:flex;flex-direction:column"><strong>{s.name}</strong><span class="muted" style="font-size:14px">{s.role}</span></span>
+            </figcaption>
+          </figure>
+        ))}
+      </div>
+    </div>
+  </section>
+)}

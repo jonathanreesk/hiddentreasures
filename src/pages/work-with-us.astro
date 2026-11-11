@@ -1,0 +1,154 @@
+---
+import Layout from '../layouts/Layout.astro';
+import PageHero from '../components/PageHero.astro';
+import Form from '../components/Form.astro';
+import Stories from '../components/Stories.astro';
+import { reader } from '../lib/content';
+const w = await reader.singletons.work.read();
+---
+<Layout title="Work with us" description="Real, paid jobs for men and women with barriers to employment. Apply, refer someone, or volunteer at Hidden Treasures.">
+  <PageHero eyebrow="Work with us" title={w?.headline || "You're welcome here."} lead={w?.intro} image="/images/uploads/staff-welcome.jpg">
+    <div class="btn-row" style="margin-top:32px">
+      <a class="btn btn-red" href={w?.applyFormUrl || '#apply'} target={w?.applyFormUrl ? '_blank' : undefined} rel="noopener">Express interest</a>
+      <a class="btn btn-ghost" href="#refer">Refer someone</a>
+    </div>
+  </PageHero>
+
+  <section class="section">
+    <div class="wrap split" style="align-items:center">
+      <div class="reveal">
+        <p class="eyebrow">What to expect</p>
+        <h2 class="h2" style="margin-bottom:28px">Work that matters, with people who care.</h2>
+        <ul class="checks">{w?.whatToExpect.map((x) => <li>{x}</li>)}</ul>
+      </div>
+      <div class="card pad reveal" style="background:var(--blue)">
+        <p class="label" style="margin:0 0 10px">Who can apply</p>
+        <p class="serif" style="font-size:26px;line-height:1.35;margin:0">You do not need to be in recovery to work here. A majority of our paid hours are reserved for friends in addiction recovery and re-entry.</p>
+        <p style="margin:18px 0 0">Not sure if you qualify? Apply anyway, or call us and ask.</p>
+      </div>
+    </div>
+  </section>
+
+  {w?.roles && w.roles.length > 0 && (
+    <section class="section-tight">
+      <div class="wrap">
+        <div class="section-head reveal" style="margin-bottom:28px">
+          <div><p class="eyebrow">Kinds of work</p><h2 class="h2">Where you might fit.</h2></div>
+        </div>
+        <div class="grid3">
+          {w.roles.map((r, i) => (
+            <div class="card pad outline lift reveal" style={`transition-delay:${i * 80}ms`}>
+              <p class="label" style="margin:0 0 10px;color:var(--red)">{String(i + 1).padStart(2, '0')}</p>
+              <h3 class="serif" style="font-size:26px;margin-bottom:8px">{r.title}</h3>
+              <p class="muted" style="margin:0">{r.text}</p>
+            </div>
+          ))}
+        </div>
+        {w.faithText && (
+          <div class="card pad reveal" style="margin-top:24px;background:var(--ink);color:var(--cream);display:flex;gap:28px;flex-wrap:wrap;align-items:center">
+            <p class="label" style="margin:0;color:var(--blue);flex:0 0 auto">Faith at work</p>
+            <p style="margin:0;flex:1 1 420px;color:var(--muted-on-dark)">{w.faithText}</p>
+          </div>
+        )}
+      </div>
+    </section>
+  )}
+
+  <section class="section" style="background:var(--paper)">
+    <div class="wrap split">
+      <div class="reveal" id="apply">
+        <p class="eyebrow">Apply for a job</p>
+        <h2 class="h2" style="margin-bottom:14px">{w?.applyHeading || 'Interested in joining our team?'}</h2>
+        <p class="muted" style="margin:0 0 24px">{w?.hiring ? w?.applyText : 'We are not hiring right now, but you can still reach out and we will keep your information.'}</p>
+        {w?.applyFormUrl ? (
+          <a class="btn btn-red" href={w.applyFormUrl} target="_blank" rel="noopener">{w.applyButton || 'Fill out the expression of interest form'} <span aria-hidden="true">↗</span></a>
+        ) : (
+        <Form
+          form="apply"
+          submit="Send my information"
+          thanks="Thank you for reaching out. We will be in touch about next steps."
+          fields={[
+            { name: 'name', label: 'Full name', required: true, autocomplete: 'name' },
+            { name: 'phone', label: 'Phone', type: 'tel', required: true, autocomplete: 'tel' },
+            { name: 'email', label: 'Email', type: 'email', full: true, autocomplete: 'email' },
+            { name: 'about', label: 'Tell us a little about yourself and what you are looking for', type: 'textarea', required: true },
+            { name: 'referred_by', label: 'Did someone refer you? Who?', full: true },
+          ]}
+        />
+        )}
+        {w?.questionsEmail && <p class="muted" style="margin:24px 0 0">Questions about working with us? Email <a href={`mailto:${w.questionsEmail}`} style="font-weight:700">{w.questionsEmail}</a></p>}
+        {w?.nextSteps && w.nextSteps.length > 0 && (
+          <div style="margin-top:40px">
+            <p class="label" style="margin:0 0 16px">What happens after you apply</p>
+            <ol class="timeline">
+              {w.nextSteps.map((st, i) => (
+                <li><span class="num-s" style={`background:${['var(--red)', 'var(--orange)', 'var(--blue)'][i % 3]};color:${i % 3 === 2 ? 'var(--ink)' : '#fff'}`}>{String(i + 1).padStart(2, '0')}</span><div><strong>{st.title}</strong><p class="muted" style="margin:4px 0 0">{st.text}</p></div></li>
+              ))}
+            </ol>
+            {w.nextStepsNote && <p class="muted" style="margin:18px 0 0;font-style:italic">{w.nextStepsNote}</p>}
+          </div>
+        )}
+      </div>
+      <div class="reveal" id="refer">
+        <p class="eyebrow">Refer someone</p>
+        <h2 class="h2" style="margin-bottom:14px">For pastors, case workers and families.</h2>
+        <p class="muted" style="margin:0 0 24px">{w?.referText}</p>
+        <Form
+          form="refer"
+          submit="Send referral"
+          thanks="Thank you for the referral. We will follow up soon."
+          fields={[
+            { name: 'your_name', label: 'Your name', required: true, autocomplete: 'name' },
+            { name: 'your_role', label: 'Your role or organization', required: true },
+            { name: 'email', label: 'Your email', type: 'email', required: true, autocomplete: 'email' },
+            { name: 'your_phone', label: 'Your phone', type: 'tel' },
+            { name: 'candidate_name', label: "Person's name", required: true },
+            { name: 'candidate_contact', label: 'Best way to reach them' },
+            { name: 'notes', label: 'Anything we should know?', type: 'textarea' },
+          ]}
+        />
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="volunteer">
+    <div class="wrap split">
+      <div class="reveal">
+        <p class="eyebrow">Volunteer</p>
+        <h2 class="h2" style="margin-bottom:14px">Lend a hand.</h2>
+        <p class="lead" style="margin:0">{w?.volunteerText}</p>
+        {w?.volunteerTasks && w.volunteerTasks.length > 0 && (
+          <div class="pills" style="margin-top:24px">{w.volunteerTasks.map((t) => <span class="pill-item">{t}</span>)}</div>
+        )}
+        {w?.volunteerNote && <p style="margin:24px 0 0;font-size:17px;line-height:1.65">{w.volunteerNote}</p>}
+        {w?.volunteerAge && <p class="label" style="margin:18px 0 0;color:var(--red)">{w.volunteerAge}</p>}
+      </div>
+      <div class="reveal">
+        {w?.serviceHoursText && (
+          <div class="note" style="margin-bottom:24px">
+            <p class="label" style="margin:0 0 8px">Court-ordered service hours</p>
+            <p style="margin:0;color:var(--ink-2)">{w.serviceHoursText}</p>
+          </div>
+        )}
+        {w?.volunteerFormUrl ? (
+          <a class="btn btn-red" href={w.volunteerFormUrl} target="_blank" rel="noopener">Fill out the volunteer application <span aria-hidden="true">↗</span></a>
+        ) : (
+        <Form
+          form="volunteer"
+          submit="Sign me up"
+          thanks="Thank you! We will reach out about volunteer times."
+          fields={[
+            { name: 'name', label: 'Name', required: true, autocomplete: 'name' },
+            { name: 'email', label: 'Email', type: 'email', required: true, autocomplete: 'email' },
+            { name: 'phone', label: 'Phone', type: 'tel', autocomplete: 'tel' },
+            { name: 'group', label: 'Coming as a group, or need service hours?', type: 'select', options: ['Just me', 'Family', 'Church or small group', 'Business team', 'Court-ordered service hours'] },
+            { name: 'availability', label: 'When are you available?', type: 'textarea' },
+          ]}
+        />
+        )}
+      </div>
+    </div>
+  </section>
+
+  <Stories />
+</Layout>

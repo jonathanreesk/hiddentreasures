@@ -1,0 +1,53 @@
+intro: Donated goods are the heart of everything we do. Each bag you bring becomes meaningful work for someone rebuilding their life, and a treasure for a neighbor.
+acceptedIntro: We take a bit of most things, in good condition...
+accepted:
+- Clothing (ladies, men, kids)
+- Shoes and boots
+- Accessories
+- Knick-knacks
+- Tools
+- Toys
+- Kitchen items, dishes, cutlery
+- Pet items
+- Decor, pictures, art
+- Holiday items
+- Books and media
+- Furniture
+- '...and much more!'
+cannotTakeIntro: Hidden Treasures takes most things, and there are exceptions even to the items listed below. We are so grateful to our amazing donors, but there are some things we just cannot seem to sell, and some items we cannot legally take. Please be patient with our team. They have been trained on what we can and cannot take!
+notAccepted:
+- Live plants, car seats, cribs and bassinets
+- Headboards, bed frames, mattresses and air mattresses
+- Light fixtures (unless brand new), filing cabinets and clothing hangers
+- Bulky kids toys, and toys that are worn or well used
+- Kitchen appliances with food inside, and stained food containers
+- Used scratching posts and pet beds
+- Open or used cosmetics and sanitation items
+- Fluorescent and long tube light bulbs
+- Worn golf clubs, drawstring blinds, food, and personalized or promotional items
+dropoff: Bring donations to the back of the store at 2915 Pentagon Dr, Monday to Saturday between 10am and 4pm. Follow our signs. Our team will help you unload and give you a receipt.
+doorTips:
+- Pack clothing in bags, separately. Keep shoes and linens separate from clothing.
+- Pack hard items in sturdy boxes you do not need returned.
+- Be patient. We sometimes have a line.
+- Drive to the back of the store and follow our signs.
+pickupsPaused: true
+pausedMessage: We are taking a break from large donation pickups for now. If you have furniture or other large items, Habitat for Humanity ReStore continues to accept these donations locally. Thank you for your generosity and patience.
+pausedLinkText: Donate to Habitat ReStore
+pausedLinkUrl: https://restore.tchabitat.org/donate
+pickup: '[Pickup details for when pickups resume: area served, how far ahead to book, and any fee.] Fill out the form below and our team will follow up to set a time.'
+bulk: Moving, clearing an estate, or donating from a business? Please reach out before you load up so we can plan for a large drop-off.
+whyDonate: The reasons people donate are as diverse as the people themselves. Aside from giving their treasures a shot at a new life, most of our donors love that when their donations travel through the store, they turn into meaningful work, fuel a loving community, and let us encourage one another daily with the hope of Jesus.
+taxNote: As a 501(c)(3) nonprofit, all of your donations are tax-deductible.
+roundUp: Want to support us but do not have items to share? Consider giving at our registers. Even just rounding up helps!
+faqs:
+- q: Will I get a receipt for my donation?
+  a: Yes. When you drop off at the back of the store during donation hours, our team will help you unload and give you a receipt. As a 501(c)(3) nonprofit, your donations are tax-deductible.
+- q: Do you take exercise equipment?
+  a: Sometimes. Space is limited, so we take one or two pieces at a time and prefer lighter items like stationary bikes, treadmills and rowing machines. Sporting goods sell best in spring and summer.
+- q: Do you take books?
+  a: Yes, as long as they are in decent used condition without heavy dust or mold.
+- q: Can you pick up furniture?
+  a: Large item pickups are paused for now. Habitat for Humanity ReStore continues to accept furniture and large items locally.
+- q: Is anything on the "check first" list ever accepted?
+  a: Exceptions are possible. Give us a call before you bring it in.

@@ -1,0 +1,34 @@
+---
+// "This week's tag sale" banner. Shows the week that matches today's date (Minneapolis time); hidden otherwise.
+import { reader, dateLong } from '../lib/content';
+const t = await reader.singletons.tagSale.read();
+const hex: Record<string, [string, string]> = {
+  blue: ['#3e5f9e', '#fff'], green: ['#3f8f4f', '#fff'], red: ['#a33749', '#fff'], yellow: ['#f2c94c', '#231f1b'],
+  orange: ['#c45d3b', '#fff'], purple: ['#6b4c9a', '#fff'], pink: ['#e58fb2', '#231f1b'], white: ['#ffffff', '#231f1b'],
+};
+const weeks = t?.enabled ? t.weeks : [];
+---
+{weeks.length > 0 && (
+  <div class="tagsale" data-tagsale hidden>
+    {weeks.map((w) => {
+      const [bg, fg] = hex[w.color] ?? hex.blue;
+      return (
+        <div class="tagsale-week" data-start={w.start} data-end={w.end} hidden>
+          <span class="tagsale-tag" style={`background:${bg};color:${fg}`} aria-hidden="true"><span class="hole"></span></span>
+          <div>
+            <p class="label" style="margin:0;color:var(--red)">This week's tag sale</p>
+            <p class="serif tagsale-line"><span style="text-transform:capitalize">{w.color}</span> tags are {w.discount}</p>
+            <p class="muted" style="margin:0;font-size:14px">Through {dateLong(w.end!)}. Check the colored tag on each item.</p>
+          </div>
+        </div>
+      );
+    })}
+  </div>
+)}
+<script>
+  document.querySelectorAll<HTMLElement>('[data-tagsale]').forEach((box) => {
+    const today = new Date().toLocaleDateString('en-CA', { timeZone: 'America/Chicago' });
+    const wk = [...box.querySelectorAll<HTMLElement>('[data-start]')].find((w) => (w.dataset.start || '') <= today && today <= (w.dataset.end || ''));
+    if (wk) { wk.hidden = false; box.hidden = false; }
+  });
+</script>

@@ -1,0 +1,26 @@
+---
+// A partner's logo on a tile, or a brand-colored initials badge until a logo is uploaded.
+import { img } from '../lib/content';
+interface Props { name: string; logo?: string | null; dark?: boolean; size?: number; index?: number; tile?: boolean; eager?: boolean }
+const { name, logo, dark = false, size = 72, index = 0, tile = false, eager = false } = Astro.props;
+const words = name.split(/\s+/).filter((w) => !/^(the|of|and)$/i.test(w));
+let initials = words.slice(0, 2).map((w) => w[0]).join('');
+if (words.length === 1) {
+  const caps = words[0].match(/[A-Z]/g) || [];
+  initials = caps.length >= 2 ? caps.slice(0, 2).join('') : words[0][0];
+}
+const palettes = [['var(--red)', '#fff'], ['var(--blue)', 'var(--ink)'], ['var(--toffee)', 'var(--ink)'], ['var(--ink-2)', 'var(--blue)'], ['var(--orange)', '#fff']];
+const [bg, fg] = palettes[index % palettes.length];
+const badge = `width:${size}px;height:${size}px;background:${bg};color:${fg};font-size:${Math.round(size * 0.36)}px`;
+---
+{tile ? (
+  <span class={`ptile ${dark ? 'dark' : ''}`} style={`--h:${size}px`}>
+    {logo ? <img src={img(logo)} alt={`${name} logo`} loading={eager ? "eager" : "lazy"} /> : (
+      <span class="ptile-fallback"><span class="pmark" aria-hidden="true" style={badge.replace(`${size}px;height:${size}px`, `${Math.round(size * .62)}px;height:${Math.round(size * .62)}px`).replace(/font-size:\d+px/, `font-size:${Math.round(size * .22)}px`)}>{initials}</span><span class="serif">{name}</span></span>
+    )}
+  </span>
+) : logo ? (
+  <span class={`ptile ${dark ? 'dark' : ''}`} style={`--h:${size}px`}><img src={img(logo)} alt={`${name} logo`} loading={eager ? "eager" : "lazy"} /></span>
+) : (
+  <span class="pmark" aria-hidden="true" style={badge}>{initials}</span>
+)}

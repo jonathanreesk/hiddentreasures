@@ -1,0 +1,84 @@
+---
+import Layout from '../layouts/Layout.astro';
+import PageHero from '../components/PageHero.astro';
+import PartnerMark from '../components/PartnerMark.astro';
+import { reader } from '../lib/content';
+const p = await reader.singletons.partners.read();
+const items = p?.items ?? [];
+const focusLabel: Record<string, string> = { recovery: 'Recovery and housing', youth: 'Youth and education', global: 'Global mission', prayer: 'Prayer' };
+const focuses = Object.keys(focusLabel).filter((k) => items.some((i) => i.focus === k));
+---
+<Layout title="Partners" description="Ministries Hidden Treasures walks alongside in vision, mission and values: recovery, youth and education, global mission and prayer.">
+  <PageHero eyebrow="Partner ministries" title="Partners in the mission." lead={p?.intro}>
+    <div class="logo-wall pop" style="animation-delay:.24s">
+      {items.map((it, i) => <PartnerMark tile name={it.name} logo={it.logo} dark={it.logoOnDark} size={56} index={i} />)}
+    </div>
+  </PageHero>
+
+  <!-- What we share -->
+  <section class="section-tight" style="background:var(--paper)">
+    <div class="wrap">
+      <p class="eyebrow reveal">What we share</p>
+      <div class="grid3" style="margin-top:20px">
+        <div class="card pad outline reveal" style="background:var(--cream)"><span class="num-s" style="background:var(--red);color:#fff;margin-bottom:16px">01</span><h2 class="serif" style="font-size:26px;margin-bottom:8px">A shared vision</h2><p class="muted" style="margin:0">Every person has value, and recovery and redemption are possible.</p></div>
+        <div class="card pad outline reveal" style="background:var(--cream);transition-delay:80ms"><span class="num-s" style="background:var(--orange);color:#fff;margin-bottom:16px">02</span><h2 class="serif" style="font-size:26px;margin-bottom:8px">A shared mission</h2><p class="muted" style="margin:0">Bringing hope through recovery, education, mentoring, prayer and care for creation.</p></div>
+        <div class="card pad outline reveal" style="background:var(--cream);transition-delay:160ms"><span class="num-s" style="background:var(--blue);color:var(--ink);margin-bottom:16px">03</span><h2 class="serif" style="font-size:26px;margin-bottom:8px">Shared values</h2><p class="muted" style="margin:0">Faith in Jesus Christ, and a commitment to dignity, excellence and service.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <div>
+          <p class="eyebrow">Who we walk alongside</p>
+          <h2 class="h2">{items.length} ministries, one shared hope.</h2>
+        </div>
+        <div class="chips" role="group" aria-label="Filter partners by focus" data-pfilters>
+          <button type="button" class="chip" aria-pressed="true" data-pf="all">All</button>
+          {focuses.map((f) => <button type="button" class="chip" aria-pressed="false" data-pf={f}>{focusLabel[f]}</button>)}
+        </div>
+      </div>
+      <div class="grid3">
+        {items.map((it, i) => (
+          <article class="card pad outline lift partner reveal" data-focus={it.focus} style={`transition-delay:${(i % 3) * 80}ms`}>
+            <div class="partner-plate">
+              <PartnerMark tile name={it.name} logo={it.logo} dark={it.logoOnDark} size={104} index={i} />
+            </div>
+            <span class="badge" style="background:var(--sand);align-self:flex-start">{focusLabel[it.focus]}</span>
+            <h3 class="serif" style="font-size:27px;line-height:1.15">{it.name}</h3>
+            {it.description && <p class="muted" style="margin:0">{it.description}</p>}
+            {it.url && <a class="partner-link" href={it.url} target="_blank" rel="noopener">Visit {it.name.replace(/^The /, '')} <span aria-hidden="true">↗</span></a>}
+          </article>
+        ))}
+      </div>
+      {p?.note && <p class="muted reveal" style="margin:48px auto 0;text-align:center;font-style:italic;max-width:640px">{p.note}</p>}
+    </div>
+  </section>
+
+  <section class="engine section-tight">
+    <div class="wrap split" style="align-items:center">
+      <div class="reveal">
+        <p class="eyebrow">Be part of it</p>
+        <h2 class="h2">Be part of the story.</h2>
+      </div>
+      <div class="btn-row reveal" style="justify-content:flex-end">
+        <a class="btn btn-red" href="/donate">Donate your goods</a>
+        <a class="btn btn-ghost" href="/visit">Shop the store</a>
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<script>
+  const btns = [...document.querySelectorAll<HTMLButtonElement>('[data-pf]')];
+  const cards = [...document.querySelectorAll<HTMLElement>('[data-focus]')];
+  btns.forEach((b) => b.addEventListener('click', () => {
+    btns.forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
+    cards.forEach((c) => {
+      const show = b.dataset.pf === 'all' || c.dataset.focus === b.dataset.pf;
+      c.hidden = !show;
+      if (show) { c.classList.remove('pop'); void c.offsetWidth; c.classList.add('pop'); }
+    });
+  }));
+</script>

@@ -1,0 +1,41 @@
+headline: You're welcome here.
+intro: At Hidden Treasures we are passionate about holding the employment door open for our brothers and sisters in recovery from substance use disorder. You do not need to be in recovery to work here, but a majority of our paid hours are reserved for our friends in addiction recovery and re-entry. That's our mission!
+whatToExpect:
+- A real, paid job, not a simulation
+- Fair wages, job training and a supportive team
+- A place of belonging, structure and growth
+- Coworkers in recovery and not, committed to dignity, excellence and service
+hiring: true
+applyHeading: Interested in joining our team?
+applyText: Fill out our expression of interest form. Hidden Treasures is not always hiring, and not always hiring for all positions. If something opens up (and you seem like a good fit!), someone from management will reach out.
+applyButton: Fill out the expression of interest form
+applyFormUrl: https://docs.google.com/forms/d/e/1FAIpQLSd37RWhZi4Yk1YGQRrzWWAAPQ77Dtji8OTSJcZTgL6gXkY05g/viewform?usp=sharing&ouid=115577003530998612772
+questionsEmail: hello@htmn.org
+referText: Pastors, case workers, treatment programs and family members can refer someone directly. Share their details and the best way to reach them, and we will follow up.
+volunteerText: Looking for volunteer work and community? Schedules are flexible, and tasks range from taking fabrics home to measure to deep cleaning the sales floor. Have a unique talent? Email us and tell us about it.
+serviceHoursText: Have court-mandated community service hours you need to complete? Hidden Treasures may have an opening. Fill out our application, or email our volunteer coordinator at hello@htmn.org. Let us know how many hours you need to complete, and by when. Positions are not guaranteed. We are a community of folks in progress, looking to Christ to better our lives and to grow together.
+volunteerFormUrl: https://docs.google.com/forms/d/e/1FAIpQLSc8IQqWdysDf5Cvz0mGsd9OiAQXZM7v4keV46QTZxk2lYoRsA/viewform?usp=header
+roles:
+- title: Retail (Host Team)
+  text: Interacting with customers, restocking, and keeping the store looking great.
+- title: Production (Softgoods)
+  text: Sorting, hanging, and pricing clothing and textiles.
+- title: Production (Hardgoods)
+  text: Receiving, sorting, cleaning, and pricing household items.
+faithText: You do not need to be a Christian to work here, but faith is central to our culture. We hold regular team meetings that include Bible readings and prayer. Team members are asked to participate respectfully in discussions, though belief is never required.
+nextSteps:
+- title: Fill out the form
+  text: Tell us about yourself, the kind of work you are looking for, and your availability. If you have a resume, send it to hello@hiddentreasuresmn.org.
+- title: Short phone interview
+  text: We review every submission carefully and reach out to selected applicants to confirm details and answer initial questions.
+- title: In-person interview
+  text: From there, we may meet to hear more of your story and explore how you might fit into our mission.
+nextStepsNote: We receive more applications than we can respond to individually, but every submission is read and appreciated.
+volunteerNote: Hidden Treasures is a diverse community of people growing together. We are a Christian organization, but you do not need to be Christian to join us. You just need to be comfortable around lots of folks in addiction recovery and all walks of life, prayer, and corny jokes.
+volunteerTasks:
+- Cleaning the store
+- Hauling furniture
+- Putting out items
+- Sorting books
+- Taking fabrics home to measure
+volunteerAge: Volunteers must be 16 or older.

@@ -1,0 +1,32 @@
+---
+import Form from './Form.astro';
+import Icon from './Icon.astro';
+import { reader } from '../lib/content';
+const s = await reader.singletons.settings.read();
+---
+<section class="band section-tight" id="newsletter">
+  <div class="wrap split" style="align-items:center">
+    <div class="reveal">
+      <p class="eyebrow">Stay in the loop</p>
+      <h2 class="h2" style="margin-bottom:16px">Don't miss out.</h2>
+      <div class="pills" style="margin:0 0 20px">{['Sales', 'Sneak peeks', 'Exclusive offers', 'Fun updates'].map((t) => <span class="pill-item" style="background:rgba(255,253,249,.7)">{t}</span>)}</div>
+      <p style="margin:0 0 22px;font-size:17px">For daily new arrivals, follow along on social. Inventory moves faster than any website can.</p>
+      <div style="display:flex;gap:12px">
+        {s?.instagramUrl && <a class="iconbtn iconbtn-ink" href={s.instagramUrl} aria-label="Hidden Treasures on Instagram"><Icon name="instagram" size={22} /></a>}
+        {s?.facebookUrl && <a class="iconbtn iconbtn-ink" href={s.facebookUrl} aria-label="Hidden Treasures on Facebook"><Icon name="facebook" size={22} /></a>}
+      </div>
+    </div>
+    <div class="card pad reveal" style="box-shadow:0 24px 50px rgba(35,31,27,.14)">
+      <Form
+        form="newsletter"
+        submit="Sign me up"
+        thanks="You are on the list. Watch your inbox for the next sale."
+        fields={[
+          { name: 'first_name', label: 'First name', required: true, autocomplete: 'given-name' },
+          { name: 'last_name', label: 'Last name', autocomplete: 'family-name' },
+          { name: 'email', label: 'Email address', type: 'email', required: true, full: true, autocomplete: 'email' },
+        ]}
+      />
+    </div>
+  </div>
+</section>

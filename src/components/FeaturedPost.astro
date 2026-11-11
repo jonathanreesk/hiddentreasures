@@ -1,0 +1,46 @@
+---
+import Icon from './Icon.astro';
+import { dateRange, typeLabel, videoEmbed, type Post } from '../lib/content';
+interface Props { post: Post; link?: boolean }
+const { post, link = true } = Astro.props;
+const embed = videoEmbed(post.videoUrl);
+---
+<article class="card feature" data-feature>
+  <div class="media">
+    {post.image && <img src={post.image} alt="" loading="lazy" />}
+    <div class="shade"></div>
+    <img class="flytag" src="/images/brand/tag-blue.png" alt="" width="120" />
+    <div class="over">
+      <p class="label" style="margin:0 0 8px;color:#ffd9cc">{post.badge || typeLabel[post.type]}</p>
+      <p class="big">{post.title}</p>
+      <p style="margin:12px 0 0;font-size:17px;font-weight:600">{dateRange(post.startDate!, post.endDate)}{post.timeText ? ` · ${post.timeText}` : ''}</p>
+    </div>
+    {embed && (
+      <button type="button" class="iconbtn play" aria-label={`Play video: ${post.title}`} data-video={embed}><Icon name="play" size={24} /></button>
+    )}
+  </div>
+  <div class="txt">
+    <div style="display:flex;gap:10px;align-items:center;margin-bottom:14px;flex-wrap:wrap">
+      <span class="badge">{typeLabel[post.type]}</span>
+      {post.location && <span class="muted" style="font-size:15px;font-weight:600">{post.location}</span>}
+    </div>
+    {post.summary && <p class="muted" style="margin:0 0 24px;font-size:17px;line-height:1.65">{post.summary}</p>}
+    {link && <a class="btn btn-ink" href={`/news/${post.slug}`}>Read more</a>}
+  </div>
+</article>
+
+<script>
+  // Swap the flyer for the video player when someone presses play
+  document.querySelectorAll<HTMLButtonElement>('[data-video]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const media = btn.closest('.media')!;
+      const iframe = document.createElement('iframe');
+      iframe.src = btn.dataset.video + '?autoplay=1';
+      iframe.title = btn.getAttribute('aria-label') || 'Video';
+      iframe.allow = 'autoplay; encrypted-media; picture-in-picture; fullscreen';
+      iframe.allowFullscreen = true;
+      media.innerHTML = '';
+      media.appendChild(iframe);
+    });
+  });
+</script>

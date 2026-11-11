@@ -1,0 +1,38 @@
+intro: Find a treasure. Change a life.
+items:
+- label: Donate goods
+  href: /donate
+  highlight: true
+- label: Sales and events calendar
+  href: /news
+  highlight: false
+- label: Shop from home on eBay
+  href: https://www.ebay.com/usr/hiddentreasuresmn
+  highlight: false
+- label: The Trove pop-up boutique
+  href: /trove
+  highlight: false
+- label: Work here
+  href: /work-with-us
+  highlight: false
+- label: Volunteer
+  href: /work-with-us#volunteer
+  highlight: false
+- label: Pickups
+  href: /donate#pickup
+  highlight: false
+- label: Partners
+  href: /partners
+  highlight: false
+- label: Treasure Hunter rewards
+  href: /loyalty
+  highlight: false
+- label: Prayer request
+  href: mailto:hello@hiddentreasuresmn.org?subject=Prayer%20Request
+  highlight: false
+- label: Jericho Road
+  href: https://www.jerichoroad.us
+  highlight: false
+- label: Our story
+  href: /our-story
+  highlight: false

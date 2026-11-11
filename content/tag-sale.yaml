@@ -1,0 +1,22 @@
+enabled: true
+weeks:
+- start: '2026-11-01'
+  end: '2026-11-07'
+  color: blue
+  discount: 90% off
+- start: '2026-11-08'
+  end: '2026-11-14'
+  color: green
+  discount: 50% off
+- start: '2026-11-15'
+  end: '2026-11-21'
+  color: green
+  discount: 90% off
+- start: '2026-11-22'
+  end: '2026-11-28'
+  color: red
+  discount: 50% off
+- start: '2026-11-29'
+  end: '2026-12-05'
+  color: red
+  discount: 90% off

@@ -1,0 +1,34 @@
+---
+import { reader } from '../lib/content';
+import TagSale from './TagSale.astro';
+const s = await reader.singletons.settings.read();
+const tel = s?.phone?.replace(/\D/g, '');
+---
+<section class="wrap visit" aria-label="Hours and location">
+  <div class="card info">
+    <div>
+      <div class="status" data-status data-days={(s?.openDays ?? []).join(',')} data-open={s?.openHour ?? 10} data-close={s?.closeHour ?? 19}>
+        <span class="dotc"></span><span class="label" data-status-label style="color:var(--ink-2)">Store hours</span>
+      </div>
+      <p class="t">Shop</p>
+      {s?.shopHours.map((h) => <p>{h.days}: {h.hours}</p>)}
+    </div>
+    <div>
+      <span class="label" style="color:var(--ink-2)">Drop off</span>
+      <p class="t">Donations</p>
+      {s?.donateHours.map((h) => <p>{h.days}: {h.hours}</p>)}
+    </div>
+    <div>
+      <span class="label" style="color:var(--ink-2)">Find us</span>
+      <p class="t">{s?.addressLine1}</p>
+      <p>{s?.addressLine2}</p>
+      {s?.mapsUrl && <p><a href={s.mapsUrl} style="font-weight:700">Get directions</a></p>}
+    </div>
+    <div class="dark">
+      <span class="label" style="color:var(--blue)">Questions?</span>
+      <p class="t"><a href={`tel:${tel}`} style="color:#fff;text-decoration:none">{s?.phone}</a></p>
+      <p><a href={`mailto:${s?.email}`}>{s?.email}</a></p>
+    </div>
+  </div>
+  <TagSale />
+</section>

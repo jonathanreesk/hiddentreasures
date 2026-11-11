@@ -1,0 +1,13 @@
+---
+interface Props { eyebrow: string; title: string; lead?: string; image?: string }
+const { eyebrow, title, lead, image } = Astro.props;
+---
+<section class="page-hero">
+  {image && <img class="bg" src={image} alt="" />}
+  <div class="wrap">
+    <p class="eyebrow pop">{eyebrow}</p>
+    <h1 class="h1 pop" style="max-width:860px;animation-delay:.08s">{title}</h1>
+    {lead && <p class="lead pop" style="animation-delay:.16s">{lead}</p>}
+    <slot />
+  </div>
+</section>

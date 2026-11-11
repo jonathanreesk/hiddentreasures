@@ -1,0 +1,33 @@
+---
+// Homepage band: a slow-moving ribbon of partner ministries, linking to /partners.
+import PartnerMark from './PartnerMark.astro';
+import { reader } from '../lib/content';
+const p = await reader.singletons.partners.read();
+const items = p?.items ?? [];
+---
+{items.length > 0 && (
+  <section class="section-tight partners-band" aria-labelledby="partners-h">
+    <div class="wrap section-head reveal" style="margin-bottom:32px">
+      <div style="max-width:620px">
+        <p class="eyebrow">Partners in the mission</p>
+        <h2 class="h2" id="partners-h">We walk alongside {items.length} ministries who share our vision.</h2>
+      </div>
+      <a class="btn btn-outline" href="/partners">Meet our partners</a>
+    </div>
+    <div class="marquee" data-marquee>
+      <div class="marquee-track">
+        {[0, 1].map((copy) => (
+          <ul class="marquee-list" aria-hidden={copy === 1 ? 'true' : undefined}>
+            {items.map((it, i) => (
+              <li>
+                <a href="/partners" class="mlogo" tabindex={copy === 1 ? -1 : undefined} aria-label={it.name}>
+                  <PartnerMark tile eager name={it.name} logo={it.logo} dark={it.logoOnDark} size={64} index={i} />
+                </a>
+              </li>
+            ))}
+          </ul>
+        ))}
+      </div>
+    </div>
+  </section>
+)}

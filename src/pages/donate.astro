@@ -1,0 +1,152 @@
+---
+import Layout from '../layouts/Layout.astro';
+import PageHero from '../components/PageHero.astro';
+import Form from '../components/Form.astro';
+import Faq from '../components/Faq.astro';
+import VisitCard from '../components/VisitCard.astro';
+import DonateArt from '../components/DonateArt.astro';
+import { reader } from '../lib/content';
+const d = await reader.singletons.donate.read();
+const s = await reader.singletons.settings.read();
+const hours = s?.donateHours.find((h) => !/closed/i.test(h.hours));
+---
+<Layout title="Donate goods" description="Donate clothing, furniture, housewares, books, toys and more to Hidden Treasures in St Anthony, MN. Drop-off hours, what we accept, and tips for the donation door.">
+  <PageHero eyebrow="Donate goods" title="Make a difference. Donate today." lead={d?.intro} image="/images/uploads/donation-drop.jpg">
+    <div class="btn-row" style="margin-top:32px">
+      <a class="btn btn-red" href="#dropoff">Drop-off details</a>
+      <a class="btn btn-ghost" href="#accept">What we accept</a>
+    </div>
+  </PageHero>
+  <VisitCard />
+
+  <!-- Donation door is open -->
+  <section class="section-tight" id="dropoff" style="padding-top:110px">
+    <div class="wrap art-row reveal" style="grid-template-columns:minmax(0,1fr) minmax(0,1.1fr)">
+      <img src="/images/uploads/donations.jpg" alt="Donations being unloaded from a car into carts at the back of the store" style="border-radius:var(--radius);width:100%;aspect-ratio:4/3;object-fit:cover" />
+      <div>
+        <p class="eyebrow">Our donation door is open</p>
+        <h2 class="h2" style="margin-bottom:14px">{hours ? `${hours.hours}, ${hours.days}` : 'Monday to Saturday'}</h2>
+        <p class="lead" style="margin:0">{d?.dropoff}</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- What we're looking for / cannot take -->
+  <section class="section" id="accept" style="padding-top:60px">
+    <div class="wrap split">
+      <div class="card pad reveal" style="box-shadow:inset 0 0 0 1px rgba(35,31,27,.08)">
+        <div style="display:flex;justify-content:space-between;gap:16px;align-items:flex-start">
+          <div>
+            <p class="eyebrow">What we're looking for</p>
+            <h2 class="h3" style="font-size:32px;margin-bottom:6px">We gladly accept</h2>
+            {d?.acceptedIntro && <p class="muted" style="margin:0 0 18px">{d.acceptedIntro}</p>}
+          </div>
+          <DonateArt name="shirt" size={110} />
+        </div>
+        <ul class="accept-grid">{d?.accepted.map((a) => <li>{a}</li>)}</ul>
+      </div>
+      <div class="card pad reveal" style="background:var(--sand);transition-delay:80ms">
+        <div style="display:flex;justify-content:space-between;gap:16px;align-items:flex-start">
+          <div>
+            <p class="eyebrow">Please check first</p>
+            <h2 class="h3" style="font-size:32px;margin-bottom:6px">Some things we cannot take</h2>
+          </div>
+          <DonateArt name="megaphone" size={110} />
+        </div>
+        {d?.cannotTakeIntro && <p style="margin:0 0 18px;color:var(--ink-2)">{d.cannotTakeIntro}</p>}
+        <ul style="margin:0;padding-left:20px;color:var(--ink-2);display:grid;gap:8px">{d?.notAccepted.map((n) => <li>{n}</li>)}</ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- Be a hero at the donation door -->
+  {d?.doorTips && d.doorTips.length > 0 && (
+    <section class="section engine">
+      <div class="wrap art-row reveal" style="grid-template-columns:minmax(0,1fr) 200px">
+        <div>
+          <p class="eyebrow">Want to be a hero at the donation door?</p>
+          <h2 class="h2" style="margin-bottom:28px">A few tips that help our team.</h2>
+          <ul class="tips" style="color:var(--cream)">{d.doorTips.map((t) => <li>{t}</li>)}</ul>
+          <p class="serif" style="margin:28px 0 0;font-size:26px;color:var(--blue)">Thank you!</p>
+        </div>
+        <div style="background:var(--cream);border-radius:50%;padding:20px;display:flex"><DonateArt name="hands" size={160} /></div>
+      </div>
+    </section>
+  )}
+
+  <!-- Why / tax / round up -->
+  <section class="section">
+    <div class="wrap grid3">
+      <div class="card pad outline reveal" style="grid-column:span 2">
+        <p class="eyebrow">Why donate?</p>
+        <p class="serif" style="font-size:24px;line-height:1.45;margin:0 0 18px">{d?.whyDonate}</p>
+        {d?.taxNote && <p class="badge" style="display:inline-block;background:var(--red);color:#fff;padding:8px 14px">{d.taxNote}</p>}
+      </div>
+      {d?.roundUp && (
+        <div class="card pad reveal" style="background:var(--blue);display:flex;flex-direction:column;gap:14px;transition-delay:80ms">
+          <DonateArt name="coin" size={110} />
+          <p class="label" style="margin:0">No items to share?</p>
+          <p style="margin:0;font-size:17px">{d.roundUp}</p>
+        </div>
+      )}
+    </div>
+  </section>
+
+  <section class="section" style="background:var(--paper)">
+    <div class="wrap split">
+      <div class="reveal">
+        <p class="eyebrow">Questions</p>
+        <h2 class="h2" style="margin-bottom:20px">Good to know.</h2>
+        <Faq items={d?.faqs ?? []} />
+      </div>
+      <div style="display:flex;flex-direction:column;gap:40px">
+        <div class="reveal" id="pickup">
+          <p class="eyebrow">Furniture and large items</p>
+          {d?.pickupsPaused ? (
+            <>
+              <h2 class="h3" style="font-size:32px;margin-bottom:14px">Pickups are paused for now.</h2>
+              <p class="muted" style="margin:0 0 22px">{d?.pausedMessage}</p>
+              {d?.pausedLinkUrl && <a class="btn btn-red" href={d.pausedLinkUrl}>{d.pausedLinkText || 'Learn more'}</a>}
+            </>
+          ) : (
+            <>
+              <h2 class="h3" style="font-size:32px;margin-bottom:14px">Schedule a pickup.</h2>
+              <p class="muted" style="margin:0 0 22px">{d?.pickup}</p>
+              <Form
+                form="pickup"
+                submit="Request a pickup"
+                thanks="We got your request and will call or email to set a time."
+                fields={[
+                  { name: 'name', label: 'Your name', required: true, autocomplete: 'name' },
+                  { name: 'phone', label: 'Phone', type: 'tel', required: true, autocomplete: 'tel' },
+                  { name: 'email', label: 'Email', type: 'email', full: true, autocomplete: 'email' },
+                  { name: 'address', label: 'Pickup address', required: true, full: true, autocomplete: 'street-address' },
+                  { name: 'items', label: 'What are you donating?', type: 'textarea', required: true },
+                  { name: 'preferred_date', label: 'Preferred date', type: 'date' },
+                ]}
+              />
+            </>
+          )}
+        </div>
+        <div class="reveal" id="bulk">
+          <p class="eyebrow">Business or bulk donations</p>
+          <h2 class="h3" style="font-size:32px;margin-bottom:14px">Clearing out a space?</h2>
+          <p class="muted" style="margin:0 0 22px">{d?.bulk}</p>
+          <Form
+            form="bulk"
+            submit="Send details"
+            thanks="Thank you. We will reach out to plan your donation."
+            fields={[
+              { name: 'name', label: 'Your name', required: true, autocomplete: 'name' },
+              { name: 'organization', label: 'Business or organization', autocomplete: 'organization' },
+              { name: 'phone', label: 'Phone', type: 'tel', required: true, autocomplete: 'tel' },
+              { name: 'email', label: 'Email', type: 'email', required: true, autocomplete: 'email' },
+              { name: 'kind', label: 'Type of donation', type: 'select', full: true, options: ['Business or office', 'Estate cleanout', 'Moving', 'Other'] },
+              { name: 'details', label: 'Tell us about the items and timing', type: 'textarea', required: true },
+            ]}
+          />
+        </div>
+      </div>
+    </div>
+  </section>
+</Layout>

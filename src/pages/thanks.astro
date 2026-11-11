@@ -1,0 +1,19 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+<Layout title="Thank you">
+  <section class="section">
+    <div class="wrap narrow" style="text-align:center">
+      <img src="/images/brand/tag-red.png" alt="" width="160" style="margin:0 auto 24px" />
+      <h1 class="h2" id="t">Thank you!</h1>
+      <p class="lead" id="m">We got your message and will be in touch soon.</p>
+      <a class="btn btn-red" href="/">Back to home</a>
+    </div>
+  </section>
+  <script>
+    if (location.search.includes('error')) {
+      document.getElementById('t')!.textContent = 'Sorry, that did not go through.';
+      document.getElementById('m')!.textContent = 'Please go back and try again, or call the store.';
+    }
+  </script>
+</Layout>

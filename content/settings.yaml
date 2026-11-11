@@ -1,0 +1,30 @@
+phone: 612.706.3223
+email: hello@hiddentreasuresmn.org
+addressLine1: 2915 Pentagon Dr
+addressLine2: St Anthony, MN 55418
+mapsUrl: https://maps.google.com/?q=2915+Pentagon+Dr+St+Anthony+MN+55418
+shopHours:
+- days: Mon to Sat
+  hours: 10am to 7pm
+- days: Sunday
+  hours: Closed
+donateHours:
+- days: Mon to Sat
+  hours: 10am to 4pm
+- days: Sunday
+  hours: Closed
+openDays:
+- Mon
+- Tue
+- Wed
+- Thu
+- Fri
+- Sat
+openHour: 10
+closeHour: 19
+instagramUrl: ''
+facebookUrl: ''
+giveUrl: ''
+ebayUrl: https://www.ebay.com/usr/hiddentreasuresmn
+loyaltyUrl: /loyalty
+prayerEmail: hello@hiddentreasuresmn.org

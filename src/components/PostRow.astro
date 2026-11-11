@@ -1,0 +1,14 @@
+---
+import { monthShort, dayNum, dateRange, typeLabel, type Post } from '../lib/content';
+interface Props { post: Post }
+const { post } = Astro.props;
+const end = post.endDate && post.endDate !== post.startDate ? `-${dayNum(post.endDate)}` : '';
+---
+<a class="evrow" href={`/news/${post.slug}`}>
+  <span class="date"><span class="m">{monthShort(post.startDate!)}</span><span class="d" style={end ? 'font-size:20px' : ''}>{dayNum(post.startDate!)}{end}</span></span>
+  <span class="evmeta">
+    <span class="k">{post.badge || typeLabel[post.type]}</span>
+    <span class="t">{post.title}</span>
+    <span class="w">{dateRange(post.startDate!, post.endDate)}{post.timeText ? ` · ${post.timeText}` : ''}</span>
+  </span>
+</a>

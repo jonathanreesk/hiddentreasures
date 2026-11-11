@@ -1,0 +1,55 @@
+---
+// Hand-drawn style illustrations for the Donate page, redrawn from the old site's graphics in brand colors.
+interface Props { name: 'box' | 'shirt' | 'megaphone' | 'hands' | 'coin'; size?: number }
+const { name, size = 160 } = Astro.props;
+const R = '#a33749', B = '#a6ccdd', K = '#231f1b', T = '#cdb68c', O = '#c45d3b';
+---
+<svg class="dart" width={size} height={size} viewBox="0 0 160 160" aria-hidden="true" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  {name === 'box' && (
+    <g>
+      <path d="M30 62 L80 44 L130 62 L80 82 Z" fill="#7d2636" />
+      <path d="M30 62 L80 82 L80 140 L30 120 Z" fill={R} stroke={K} stroke-width="3" />
+      <path d="M130 62 L80 82 L80 140 L130 120 Z" fill="#8a2c3d" stroke={K} stroke-width="3" />
+      <path d="M30 62 L14 40 L64 24 L80 44" fill={R} stroke={K} stroke-width="3" />
+      <path d="M130 62 L146 40 L104 22 L80 44" fill={R} stroke={K} stroke-width="3" />
+      <path d="M105 104 c0 -8 12 -8 12 0 c0 -8 12 -8 12 0 c0 10 -12 16 -12 20 c0 -4 -12 -10 -12 -20z" fill="#fff" transform="translate(-16 -12)" />
+    </g>
+  )}
+  {name === 'shirt' && (
+    <g>
+      <path d="M58 30 L44 38 L28 56 L42 70 L52 62 L52 104 L108 104 L108 62 L118 70 L132 56 L116 38 L102 30 C98 42 62 42 58 30 Z" fill="#3e5f9e" stroke={K} stroke-width="3" />
+      <path d="M72 64 c0 -8 8 -9 8 -3 c0 -6 8 -5 8 3 c0 8 -8 12 -8 15 c0 -3 -8 -7 -8 -15z" fill={R} />
+      <path d="M24 98 L80 112 L136 98 L136 140 L80 150 L24 140 Z" fill={B} stroke={K} stroke-width="3" />
+      <path d="M24 98 L10 84 L66 74 L80 112 M136 98 L150 84 L94 74 L80 112" fill={B} stroke={K} stroke-width="3" />
+    </g>
+  )}
+  {name === 'megaphone' && (
+    <g>
+      <path d="M30 70 L92 40 L92 120 L30 92 Z" fill={B} stroke={K} stroke-width="3" />
+      <ellipse cx="92" cy="80" rx="14" ry="40" fill={B} stroke={R} stroke-width="7" />
+      <rect x="16" y="66" width="18" height="30" rx="4" fill={R} stroke={K} stroke-width="3" />
+      <path d="M40 92 L46 126" stroke={K} stroke-width="8" />
+      <path d="M118 46 l14 -10 M122 80 h18 M118 114 l14 10" stroke={R} stroke-width="6" />
+      <path d="M126 58 c0 -5 6 -5 6 0 c0 -5 6 -5 6 0 c0 5 -6 8 -6 10 c0 -2 -6 -5 -6 -10z" fill={R} />
+    </g>
+  )}
+  {name === 'hands' && (
+    <g>
+      <g stroke={K} stroke-width="4">
+        <path d="M80 12 v14 M80 134 v14 M12 80 h14 M134 80 h14 M32 32 l10 10 M118 118 l10 10 M128 32 l-10 10 M42 118 l-10 10" />
+      </g>
+      <path d="M80 112 C40 86 40 54 60 50 C70 48 78 56 80 64 C82 56 90 48 100 50 C120 54 120 86 80 112 Z" fill={R} />
+      <path d="M44 92 C50 100 62 110 74 112 L74 124 C60 122 46 112 40 100 Z" fill={B} stroke={K} stroke-width="3" />
+      <path d="M116 92 C110 100 98 110 86 112 L86 124 C100 122 114 112 120 100 Z" fill={B} stroke={K} stroke-width="3" />
+    </g>
+  )}
+  {name === 'coin' && (
+    <g>
+      <path d="M62 20 C76 14 92 24 92 36 L104 44 C110 50 104 58 96 54 L86 50 C84 60 76 66 66 64 Z" fill={R} stroke={K} stroke-width="3" />
+      <circle cx="70" cy="66" r="11" fill="#3e5f9e" stroke={K} stroke-width="3" />
+      <rect x="28" y="92" width="104" height="54" rx="10" fill={B} stroke={K} stroke-width="3" />
+      <rect x="60" y="98" width="40" height="6" rx="3" fill={K} />
+      <path d="M72 120 c0 -8 8 -9 8 -3 c0 -6 8 -5 8 3 c0 8 -8 12 -8 15 c0 -3 -8 -7 -8 -15z" fill={R} />
+    </g>
+  )}
+</svg>

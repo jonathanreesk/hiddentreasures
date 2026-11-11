@@ -1,0 +1,93 @@
+---
+import Icon from './Icon.astro';
+import { img } from '../lib/content';
+interface Slide { eyebrow: string; title: string; body: string; image: string | null; tint: string; primary: { label: string; href: string }; secondary: { label: string; href: string } }
+interface Props { slides: readonly Slide[] }
+const { slides } = Astro.props;
+---
+<section class="hero" aria-roledescription="carousel" aria-label="Featured" data-hero style="--slide-ms:6500ms">
+  {slides.map((s, i) => (
+    <div class={`slide ${s.tint === 'red' ? 'red' : ''} ${i === 0 ? 'on' : ''}`} aria-roledescription="slide" aria-label={`${i + 1} of ${slides.length}`} aria-hidden={i === 0 ? 'false' : 'true'} data-slide>
+      {s.image && <img class="bg" src={img(s.image)} alt="" loading={i === 0 ? 'eager' : 'lazy'} fetchpriority={i === 0 ? 'high' : 'auto'} />}
+      <div class={`scrim ${s.tint === 'red' ? 'red' : ''}`}></div>
+      <div class="wrap inner">
+        <div class="copy">
+          {s.eyebrow && <p class="eyebrow">{s.eyebrow}</p>}
+          {i === 0 ? <h1 class="h1">{s.title}</h1> : <h2 class="h1">{s.title}</h2>}
+          {s.body && <p class="body">{s.body}</p>}
+          <div class="btn-row">
+            {s.primary?.label && <a class={`btn ${s.tint === 'red' ? 'btn-light' : 'btn-red'}`} href={s.primary.href} tabindex={i === 0 ? undefined : -1}>{s.primary.label}</a>}
+            {s.secondary?.label && <a class="btn btn-ghost" href={s.secondary.href} tabindex={i === 0 ? undefined : -1}>{s.secondary.label}</a>}
+          </div>
+        </div>
+      </div>
+    </div>
+  ))}
+  {slides.length > 1 && (
+    <div class="wrap hero-ctrl">
+      <div class="dots">
+        {slides.map((s, i) => (
+          <button type="button" class={`dot ${i === 0 ? 'on' : ''}`} aria-label={`Show slide ${i + 1}: ${s.title}`} data-dot={i}><span class="track"><span class="fill"></span></span></button>
+        ))}
+        <button type="button" class="iconbtn" aria-label="Pause slideshow" data-pause style="width:44px;height:44px;margin-left:8px">
+          <Icon name="pause" size={16} /><Icon name="play" size={16} />
+        </button>
+      </div>
+      <div class="arrows">
+        <button type="button" class="iconbtn" aria-label="Previous slide" data-prev><Icon name="left" /></button>
+        <button type="button" class="iconbtn" aria-label="Next slide" data-next><Icon name="right" /></button>
+      </div>
+    </div>
+  )}
+</section>
+
+<script>
+  const hero = document.querySelector<HTMLElement>('[data-hero]');
+  if (hero) {
+    const slides = [...hero.querySelectorAll<HTMLElement>('[data-slide]')];
+    const dots = [...hero.querySelectorAll<HTMLElement>('[data-dot]')];
+    const pauseBtn = hero.querySelector<HTMLButtonElement>('[data-pause]');
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    let idx = 0;
+    let paused = reduce;
+    let timer: number | undefined;
+    const show = (n: number) => {
+      idx = (n + slides.length) % slides.length;
+      slides.forEach((s, i) => {
+        const on = i === idx;
+        s.classList.toggle('on', on);
+        s.setAttribute('aria-hidden', String(!on));
+        s.querySelectorAll('a').forEach((a) => (on ? a.removeAttribute('tabindex') : a.setAttribute('tabindex', '-1')));
+      });
+      dots.forEach((d, i) => {
+        d.classList.remove('on');
+        if (i === idx) { void d.offsetWidth; d.classList.add('on'); }
+      });
+      restart();
+    };
+    const restart = () => {
+      window.clearTimeout(timer);
+      if (!paused && slides.length > 1) timer = window.setTimeout(() => show(idx + 1), 6500);
+    };
+    const setPaused = (p: boolean) => {
+      paused = p;
+      hero.classList.toggle('paused', p);
+      pauseBtn?.setAttribute('aria-label', p ? 'Play slideshow' : 'Pause slideshow');
+      restart();
+    };
+    dots.forEach((d) => d.addEventListener('click', () => show(Number(d.dataset.dot))));
+    hero.querySelector('[data-prev]')?.addEventListener('click', () => show(idx - 1));
+    hero.querySelector('[data-next]')?.addEventListener('click', () => show(idx + 1));
+    pauseBtn?.addEventListener('click', () => setPaused(!paused));
+    // Swipe on phones
+    let x0: number | null = null;
+    hero.addEventListener('touchstart', (e) => (x0 = e.touches[0].clientX), { passive: true });
+    hero.addEventListener('touchend', (e) => {
+      if (x0 === null) return;
+      const dx = e.changedTouches[0].clientX - x0;
+      if (Math.abs(dx) > 50) show(idx + (dx < 0 ? 1 : -1));
+      x0 = null;
+    });
+    setPaused(paused);
+  }
+</script>

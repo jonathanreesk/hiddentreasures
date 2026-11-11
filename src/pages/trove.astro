@@ -1,0 +1,66 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { reader, img } from '../lib/content';
+const t = await reader.singletons.trove.read();
+const s = await reader.singletons.settings.read();
+const open = t?.status === 'open';
+const maps = `https://maps.google.com/?q=${encodeURIComponent((t?.address || '').split(',')[0] + ' St Anthony MN 55418')}`;
+const tones = [['var(--red)', '#fff'], ['var(--blue)', 'var(--ink)'], ['var(--toffee)', 'var(--ink)'], ['var(--ink)', 'var(--cream)']];
+---
+<Layout title="The Trove pop-up boutique" description="The Trove is Hidden Treasures' pop-up boutique across the lot at 2912 Pentagon Dr, home to the Christmas Market, Furniture Boutique and more.">
+  <section class="trove-hero">
+    <div class="wrap split" style="align-items:center">
+      <div>
+        <p class="eyebrow pop">Pop-up boutique</p>
+        <h1 class="h1 pop" style="animation-delay:.08s">the Trove</h1>
+        <p class="mono pop" style="margin:10px 0 0;color:var(--muted);animation-delay:.12s">/trōv/ · a store of valuable or delightful things</p>
+        <p class="lead pop" style="margin:22px 0 0;animation-delay:.16s">{t?.intro}</p>
+        <div class="btn-row pop" style="margin-top:28px;animation-delay:.24s">
+          <a class="btn btn-red" href={maps}>Get directions</a>
+          <a class="btn btn-outline" href={`tel:${s?.phone?.replace(/\D/g, '')}`}>Call {s?.phone}</a>
+        </div>
+      </div>
+      <div class="trove-now card pad pop" style="animation-delay:.2s">
+        <span class="trove-badge" style={open ? 'background:#e4f2e8;color:#205a33' : 'background:var(--sand);color:var(--ink-2)'}>
+          <span class="d" style={open ? 'background:#2e7d4f' : 'background:#8a8079'}></span>{open ? 'Open now for' : 'Coming up next'}
+        </span>
+        <p class="serif" style="margin:14px 0 8px;font-size:40px;line-height:1.05">{t?.current}</p>
+        <p class="muted" style="margin:0 0 18px">{t?.currentDetails}</p>
+        <p class="label" style="margin:0 0 4px;color:var(--red)">Where</p>
+        <p style="margin:0 0 20px;font-weight:600">{t?.address}</p>
+        {t?.currentLink && <a class="btn btn-ink" href={t.currentLink}>Details</a>}
+        <p class="muted" style="margin:18px 0 0;font-size:14px">Hours change between pop-ups. Call the store for the latest open or closed status.</p>
+      </div>
+    </div>
+  </section>
+
+  {t?.gallery && t.gallery.length > 0 && (
+    <section class="section-tight">
+      <div class="wrap">
+        <div class="photo-strip reveal" style="grid-template-columns:repeat(4,minmax(0,1fr))">
+          {t.gallery.map((g, i) => <img src={img(g)} alt="" loading="lazy" style={i === 0 ? '' : ''} />)}
+        </div>
+      </div>
+    </section>
+  )}
+
+  {t?.past && t.past.length > 0 && (
+    <section class="section">
+      <div class="wrap">
+        <div class="section-head reveal">
+          <div><p class="eyebrow">Previously at the Trove</p><h2 class="h2">Every pop-up is a little different.</h2></div>
+          <a class="btn btn-outline" href="/news">See what's coming up</a>
+        </div>
+        <div class="grid2">
+          {t.past.map((p, i) => (
+            <article class="card pad lift reveal" style={`background:${tones[i % 4][0]};color:${tones[i % 4][1]};transition-delay:${(i % 2) * 80}ms`}>
+              <p class="label" style="margin:0 0 10px;opacity:.8">Pop-up</p>
+              <h3 class="serif" style="font-size:32px;margin-bottom:10px">{p.name}</h3>
+              <p style="margin:0;opacity:.9">{p.text}</p>
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+</Layout>

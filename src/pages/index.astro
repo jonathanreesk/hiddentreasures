@@ -1,0 +1,156 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Hero from '../components/Hero.astro';
+import VisitCard from '../components/VisitCard.astro';
+import FeaturedPost from '../components/FeaturedPost.astro';
+import PostRow from '../components/PostRow.astro';
+import Stories from '../components/Stories.astro';
+import Newsletter from '../components/Newsletter.astro';
+import PartnersStrip from '../components/PartnersStrip.astro';
+import { reader, getPosts } from '../lib/content';
+const settings = await reader.singletons.settings.read();
+const donate = await reader.singletons.donate.read();
+
+const home = await reader.singletons.home.read();
+const posts = await getPosts();
+const featured = posts.find((p) => p.pinned) ?? posts[0];
+const others = posts.filter((p) => p !== featured).slice(0, 8);
+---
+<Layout>
+  <Hero slides={home?.slides ?? []} />
+  <VisitCard />
+
+  <!-- Three ways in -->
+  <section class="section" style="padding-bottom:40px">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <div style="max-width:640px">
+          <p class="eyebrow">How you can help</p>
+          <h2 class="h2">Three ways to be part of the story.</h2>
+        </div>
+        <p class="muted" style="margin:0;max-width:380px;font-size:17px">Most of all, we run on donated goods. They are where the work begins.</p>
+      </div>
+      <div class="grid3">
+        <article class="card pad lift path reveal" style="background:var(--red);color:#fff">
+          <img class="tag" src="/images/brand/tag-blue.png" alt="" width="150" />
+          <span class="label" style="color:#ffd9cc">Start here</span>
+          <h3 class="h3" style="font-size:34px;max-width:220px">Donate your goods</h3>
+          <p style="margin:0;color:#fbe9ec">Clothing, furniture, housewares, books and toys. Every bag turns into meaningful work.</p>
+          <div class="links">
+            <a class="linkrow" href="/donate#dropoff">Drop-off details <span aria-hidden="true">→</span></a>
+            <a class="linkrow" href="/donate#pickup">{donate?.pickupsPaused ? 'Furniture and large items' : 'Schedule a furniture pickup'} <span aria-hidden="true">→</span></a>
+            <a class="linkrow" href="/donate#bulk">Business or bulk donations <span aria-hidden="true">→</span></a>
+            <a class="linkrow" href="/donate#accept">What we accept <span aria-hidden="true">→</span></a>
+          </div>
+        </article>
+        <article class="card pad lift path outline reveal" style="transition-delay:80ms">
+          <span class="label" style="color:var(--red)">Thrift with purpose</span>
+          <h3 class="h3" style="font-size:34px">Shop the store</h3>
+          <p class="muted" style="margin:0">New treasures hit the floor every day. Every purchase supports the mission.</p>
+          <div class="links">
+            <a class="linkrow linkrow-ink" href="/visit">Hours and directions <span aria-hidden="true">→</span></a>
+            <a class="linkrow linkrow-ink" href="/news">Sales and events <span aria-hidden="true">→</span></a>
+            {settings?.ebayUrl && <a class="linkrow linkrow-ink" href={settings.ebayUrl}>Shop from home on eBay <span aria-hidden="true">→</span></a>}
+            <a class="linkrow linkrow-ink" href="/visit#loyalty">Treasure Hunter rewards <span aria-hidden="true">→</span></a>
+          </div>
+        </article>
+        <article class="card pad lift path reveal" style="background:var(--blue);transition-delay:160ms">
+          <span class="label">Employment program</span>
+          <h3 class="h3" style="font-size:34px">Work with us</h3>
+          <p style="margin:0">Looking for a fresh start, or know someone who is? Pastors, case workers and families can refer directly.</p>
+          <div class="links">
+            <a class="linkrow linkrow-ink" href="/work-with-us#apply">Apply for a job <span aria-hidden="true">→</span></a>
+            <a class="linkrow linkrow-ink" href="/work-with-us#refer">Refer someone <span aria-hidden="true">→</span></a>
+            <a class="linkrow linkrow-ink" href="/work-with-us#volunteer">Volunteer <span aria-hidden="true">→</span></a>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- Inside the store -->
+  <section class="section-tight" style="padding-top:70px;padding-bottom:0">
+    <div class="wrap">
+      <div class="photo-strip reveal">
+        <img src="/images/uploads/sales-floor.jpg" alt="A shopper browsing racks of women's clothing on the sales floor" loading="lazy" />
+        <img src="/images/uploads/checkout.jpg" alt="Shoppers checking out at the register" loading="lazy" />
+        <img src="/images/uploads/music-movies.jpg" alt="The Music and Movies corner with records and DVDs" loading="lazy" />
+        <img src="/images/uploads/donations.jpg" alt="Donations being unloaded from a car into carts" loading="lazy" />
+        <img src="/images/uploads/donation-drop.jpg" alt="A team member welcoming donors at the donation drop site" loading="lazy" />
+      </div>
+    </div>
+  </section>
+
+  <!-- The engine -->
+  <section class="engine section" style="margin-top:80px">
+    <img class="watermark" src="/images/brand/wordmark-light.png" alt="" />
+    <div class="wrap" style="position:relative">
+      <div class="reveal" style="max-width:760px">
+        <p class="eyebrow">What your donation makes possible</p>
+        <h2 class="h2">{home?.engineTitle}</h2>
+        <p class="lead" style="margin:22px 0 0">{home?.engineIntro}</p>
+      </div>
+      <div class="steps">
+        <div class="string" aria-hidden="true"></div>
+        <div class="step reveal"><div class="num" style="background:var(--red)">01</div><h3>You donate</h3><p>The things you no longer need become the store's entire inventory.</p></div>
+        <div class="step reveal" style="transition-delay:100ms"><div class="num" style="background:var(--orange)">02</div><h3>Our team gets to work</h3><p>Men and women with barriers to employment sort, price and sell it, in real, paid jobs.</p></div>
+        <div class="step reveal" style="transition-delay:200ms"><div class="num" style="background:var(--blue);color:var(--ink)">03</div><h3>Neighbors find treasures</h3><p>Shoppers get quality everyday goods at low prices, and keep them out of landfills.</p></div>
+        <div class="step reveal" style="transition-delay:300ms"><div class="num" style="background:var(--toffee);color:var(--ink)">04</div><h3>Lives are rebuilt</h3><p>Work brings structure, belonging and room to grow for people in recovery and re-entry.</p></div>
+      </div>
+      <div class="btn-row" style="margin-top:64px;align-items:center">
+        <a class="btn btn-red" href="/donate">Donate your goods</a>
+        <a class="btn btn-ghost" href="/our-story">Read our full story</a>
+        <p style="margin:0 0 0 8px;font-size:15px;color:#b9ae9f">Serving the Twin Cities since 2008. A ministry of Masterworks of Minneapolis, founded in 1991.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- News and events -->
+  {featured && (
+    <section class="section" style="padding-bottom:20px">
+      <div class="wrap">
+        <div class="section-head reveal">
+          <div>
+            <p class="eyebrow">News and events</p>
+            <h2 class="h2">What is happening at the store.</h2>
+          </div>
+          <a class="btn btn-outline" href="/news">See all news and events</a>
+        </div>
+        <div class="events">
+          <div class="reveal"><FeaturedPost post={featured} /></div>
+          <div style="display:flex;flex-direction:column;gap:12px" data-upcoming>
+            <p class="label" style="margin:0 0 4px;color:var(--ink-2)" data-uplabel>Coming up</p>
+            {others.map((p) => (
+              <div data-end={p.endDate || p.startDate} data-type={p.type}><PostRow post={p} /></div>
+            ))}
+            <p data-empty hidden class="card" style="margin:0;padding:24px">More events coming soon. Sign up below to hear first.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  )}
+
+  <PartnersStrip />
+  <Stories homeOnly />
+  <Newsletter />
+</Layout>
+
+<script>
+  // Hide past events from "Coming up" (news posts always show), keep the list to 4.
+  const box = document.querySelector('[data-upcoming]');
+  if (box) {
+    const today = new Date().toLocaleDateString('en-CA', { timeZone: 'America/Chicago' });
+    let shown = 0;
+    box.querySelectorAll<HTMLElement>('[data-end]').forEach((el) => {
+      const past = el.dataset.type !== 'news' && (el.dataset.end || '') < today;
+      if (past || shown >= 4) el.hidden = true; else shown++;
+    });
+    if (shown === 0) {
+      // Nothing upcoming: show the three most recent posts instead
+      const recent = [...box.querySelectorAll<HTMLElement>('[data-end]')].slice(0, 3);
+      recent.forEach((el) => (el.hidden = false));
+      box.querySelector('[data-uplabel]')!.textContent = 'Recent';
+      if (recent.length === 0) box.querySelector<HTMLElement>('[data-empty]')!.hidden = false;
+    }
+  }
+</script>

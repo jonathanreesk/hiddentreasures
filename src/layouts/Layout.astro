@@ -1,0 +1,206 @@
+---
+import '../styles/global.css';
+import Icon from '../components/Icon.astro';
+import { reader } from '../lib/content';
+
+interface Props { title?: string; description?: string; image?: string }
+const {
+  title,
+  description = 'Hidden Treasures is a nonprofit Christian thrift store in St Anthony, MN. Donate goods, shop for bargains, and support meaningful work for neighbors rebuilding their lives.',
+  image = '/images/og.jpg',
+} = Astro.props;
+
+const settings = await reader.singletons.settings.read();
+const announcement = await reader.singletons.announcement.read();
+const pageTitle = title ? `${title} | Hidden Treasures Thrift Store` : 'Hidden Treasures Thrift Store | Find a treasure. Change a life.';
+const path = Astro.url.pathname.replace(/\/$/, '') || '/';
+const nav = [
+  { href: '/donate', label: 'Donate goods' },
+  { href: '/visit', label: 'Shop' },
+  { href: '/work-with-us', label: 'Work with us' },
+  { href: '/our-story', label: 'Our story' },
+  { href: '/news', label: 'News and events' },
+];
+const current = (href: string) => (path === href || path.startsWith(href + '/') ? 'page' : undefined);
+const annKey = announcement?.message ? announcement.message.length + ':' + announcement.message.slice(0, 24) : '';
+---
+<!doctype html>
+<html lang="en" class="no-js">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{pageTitle}</title>
+  <meta name="description" content={description} />
+  <link rel="canonical" href={new URL(Astro.url.pathname, Astro.site)} />
+  <meta property="og:title" content={pageTitle} />
+  <meta property="og:description" content={description} />
+  <meta property="og:image" content={new URL(image, Astro.site)} />
+  <meta property="og:type" content="website" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="theme-color" content="#a33749" />
+  <link rel="icon" type="image/png" href="/favicon.png" />
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Courier+Prime:wght@400;700&family=Open+Sans:wght@400;600;700&family=Young+Serif&display=swap" rel="stylesheet" />
+  <script is:inline>document.documentElement.classList.remove('no-js');</script>
+  <script type="application/ld+json" set:html={JSON.stringify({
+    '@context': 'https://schema.org',
+    '@type': 'ThriftStore',
+    name: 'Hidden Treasures Thrift Store',
+    telephone: settings?.phone,
+    email: settings?.email,
+    address: { '@type': 'PostalAddress', streetAddress: settings?.addressLine1, addressLocality: 'St Anthony', addressRegion: 'MN', postalCode: '55418', addressCountry: 'US' },
+    url: Astro.site?.toString(),
+  })} />
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+
+  {announcement?.enabled && announcement.message && (
+    <div class="announce" data-announce={annKey}>
+      <div class="wrap">
+        {announcement.label && <span class="pill">{announcement.label}</span>}
+        <p>{announcement.message}</p>
+        {announcement.linkUrl && <a href={announcement.linkUrl}>{announcement.linkText || 'Details'}</a>}
+        <button type="button" class="close" aria-label="Dismiss announcement" data-announce-close><Icon name="close" size={18} /></button>
+      </div>
+    </div>
+  )}
+
+  <header class="site-header">
+    <div class="wrap bar">
+      <a class="logo" href="/" aria-label="Hidden Treasures Thrift Store home">
+        <img src="/images/brand/wordmark-red.png" alt="Hidden Treasures Thrift Store" width="203" height="40" />
+      </a>
+      <nav class="nav" aria-label="Main">
+        {nav.map((n) => <a href={n.href} aria-current={current(n.href)}>{n.label}</a>)}
+      </nav>
+      <div style="display:flex;gap:10px;align-items:center">
+        <a class="btn btn-red hdr-cta" href="/donate">Donate your goods</a>
+        <button type="button" class="iconbtn iconbtn-ink menu-btn" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-nav" data-menu><Icon name="menu" size={22} /></button>
+      </div>
+    </div>
+    <nav id="mobile-nav" class="mobile-nav" aria-label="Mobile">
+      {nav.map((n) => <a class="linkrow linkrow-ink" href={n.href} aria-current={current(n.href)}>{n.label}</a>)}
+      <a class="btn btn-red" href="/donate" style="margin-top:12px">Donate your goods</a>
+    </nav>
+  </header>
+
+  <main id="main">
+    <slot />
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <div class="cols">
+        <div class="col">
+          <img src="/images/brand/logo-light.png" alt="Hidden Treasures Thrift Store" width="210" height="98" style="width:210px;height:auto" />
+          <p style="margin:6px 0 0;color:#b9ae9f;line-height:1.6">A nonprofit Christian thrift store and a ministry of Masterworks of Minneapolis.</p>
+          <div style="display:flex;gap:10px;margin-top:6px">
+            {settings?.instagramUrl && <a class="iconbtn" href={settings.instagramUrl} aria-label="Instagram"><Icon name="instagram" /></a>}
+            {settings?.facebookUrl && <a class="iconbtn" href={settings.facebookUrl} aria-label="Facebook"><Icon name="facebook" /></a>}
+          </div>
+        </div>
+        <div class="col">
+          <p class="label" style="margin:0">Visit</p>
+          <span>{settings?.addressLine1}</span>
+          <span>{settings?.addressLine2}</span>
+          <a href={`tel:${settings?.phone?.replace(/\D/g, '')}`}>{settings?.phone}</a>
+          <a href={`mailto:${settings?.email}`}>{settings?.email}</a>
+        </div>
+        <div class="col">
+          <p class="label" style="margin:0">Hours</p>
+          {settings?.shopHours.map((h) => <span>Shop {h.days}: {h.hours}</span>)}
+          {settings?.donateHours.map((h) => <span>Donations {h.days}: {h.hours}</span>)}
+        </div>
+        <div class="col">
+          <p class="label" style="margin:0">Get involved</p>
+          <a href="/donate">Donate goods</a>
+          <a href="/work-with-us#apply">Apply for a job</a>
+          <a href="/work-with-us#refer">Refer someone</a>
+          <a href="/work-with-us#volunteer">Volunteer</a>
+          {settings?.giveUrl && <a href={settings.giveUrl}>Give financially</a>}
+        </div>
+        <div class="col">
+          <p class="label" style="margin:0">More</p>
+          <a href="/our-story">Our story</a>
+          <a href="/trove">The Trove</a>
+          <a href="/partners">Partners</a>
+          {settings?.ebayUrl && <a href={settings.ebayUrl}>Shop on eBay</a>}
+          <a href="/loyalty">Treasure Hunters rewards</a>
+          {settings?.prayerEmail && <a href={`mailto:${settings.prayerEmail}?subject=Prayer%20Request`}>Prayer request</a>}
+          <a href="/links">All links</a>
+        </div>
+      </div>
+      <div class="base">
+        <span>© {new Date().getFullYear()} Hidden Treasures Thrift Store</span>
+        <span class="mono">Find a treasure. Change a life.</span>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Mobile menu
+    const menuBtn = document.querySelector<HTMLButtonElement>('[data-menu]');
+    const mobileNav = document.getElementById('mobile-nav');
+    menuBtn?.addEventListener('click', () => {
+      const open = mobileNav!.classList.toggle('open');
+      menuBtn.setAttribute('aria-expanded', String(open));
+      menuBtn.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+    });
+
+    // Announcement bar: remember dismissal for this message
+    const ann = document.querySelector<HTMLElement>('[data-announce]');
+    if (ann) {
+      const key = 'ht-ann-' + ann.dataset.announce;
+      try { if (localStorage.getItem(key)) ann.remove(); } catch {}
+      ann.querySelector('[data-announce-close]')?.addEventListener('click', () => {
+        try { localStorage.setItem(key, '1'); } catch {}
+        ann.remove();
+      });
+    }
+
+    // Reveal on scroll
+    const io = 'IntersectionObserver' in window
+      ? new IntersectionObserver((entries) => entries.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('in'); io!.unobserve(e.target); } }), { threshold: 0.12 })
+      : null;
+    document.querySelectorAll('.reveal').forEach((el) => (io ? io.observe(el) : el.classList.add('in')));
+
+    // "Open now" badge, computed in Minneapolis time
+    document.querySelectorAll<HTMLElement>('[data-status]').forEach((el) => {
+      const days = (el.dataset.days || '').split(',');
+      const open = Number(el.dataset.open);
+      const close = Number(el.dataset.close);
+      const parts: Record<string, string> = {};
+      new Intl.DateTimeFormat('en-US', { timeZone: 'America/Chicago', weekday: 'short', hour: 'numeric', hour12: false })
+        .formatToParts(new Date()).forEach((p) => (parts[p.type] = p.value));
+      const h = Number(parts.hour) % 24;
+      const isOpen = days.includes(parts.weekday) && h >= open && h < close;
+      el.classList.add(isOpen ? 'open' : 'closed');
+      const label = el.querySelector('[data-status-label]');
+      if (label) label.textContent = isOpen ? 'Open now' : days.includes(parts.weekday) ? 'Closed now' : 'Closed today';
+    });
+
+    // Forms: send in the background and show a thank-you message
+    document.querySelectorAll<HTMLFormElement>('form[data-form]').forEach((form) => {
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const btn = form.querySelector<HTMLButtonElement>('button[type=submit]');
+        const ok = form.parentElement!.querySelector<HTMLElement>('[data-ok]');
+        const err = form.parentElement!.querySelector<HTMLElement>('[data-err]');
+        if (btn) { btn.disabled = true; btn.textContent = 'Sending...'; }
+        try {
+          const res = await fetch(form.action, { method: 'POST', body: new FormData(form), headers: { accept: 'application/json' } });
+          if (!res.ok) throw new Error();
+          form.hidden = true;
+          if (ok) ok.hidden = false;
+        } catch {
+          if (err) err.hidden = false;
+          if (btn) { btn.disabled = false; btn.textContent = btn.dataset.label || 'Send'; }
+        }
+      });
+    });
+  </script>
+</body>
+</html>

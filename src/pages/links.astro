@@ -1,0 +1,24 @@
+---
+// Link-in-bio page for Instagram and Facebook. Edit the buttons in the editor under "Links page".
+import Layout from '../layouts/Layout.astro';
+import { reader } from '../lib/content';
+const l = await reader.singletons.links.read();
+const s = await reader.singletons.settings.read();
+---
+<Layout title="Links" description="Quick links for Hidden Treasures Thrift Store: donate, shop, work here, volunteer and more.">
+  <section class="section" style="padding-top:70px">
+    <div class="wrap" style="max-width:560px;text-align:center">
+      <img src="/images/brand/logo-red.png" alt="Hidden Treasures Thrift Store" width="260" style="width:260px;height:auto;margin:0 auto 18px" class="pop" />
+      {l?.intro && <p class="mono pop" style="margin:0 0 32px;font-weight:700;letter-spacing:.08em;color:var(--red)">{l.intro}</p>}
+      <div style="display:flex;flex-direction:column;gap:12px">
+        {l?.items.map((it, i) => (
+          <a class={`btn ${it.highlight ? 'btn-red' : 'btn-outline'} pop`} href={it.href} style={`min-height:56px;font-size:16px;animation-delay:${i * 50}ms`}>{it.label}</a>
+        ))}
+      </div>
+      <p class="muted" style="margin:36px 0 0;font-size:15px">
+        {s?.addressLine1}, {s?.addressLine2}<br />
+        <a href={`tel:${s?.phone?.replace(/\D/g, '')}`}>{s?.phone}</a> · <a href={`mailto:${s?.email}`}>{s?.email}</a>
+      </p>
+    </div>
+  </section>
+</Layout>

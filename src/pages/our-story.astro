@@ -1,0 +1,79 @@
+---
+import Layout from '../layouts/Layout.astro';
+import PageHero from '../components/PageHero.astro';
+import Form from '../components/Form.astro';
+import Stories from '../components/Stories.astro';
+import { reader, paragraphs, img } from '../lib/content';
+const a = await reader.singletons.about.read();
+---
+<Layout title="Our story" description="Hidden Treasures is a nonprofit Christian thrift store run by Masterworks of Minneapolis, holding the employment door open for people in recovery and re-entry.">
+  <PageHero eyebrow="Our story" title={a?.headline ?? 'Our story'} lead={a?.intro} image={img(a?.image) || undefined} />
+
+  {a?.mission && (
+    <section class="section-tight" style="background:var(--red);color:#fff">
+      <div class="wrap narrow reveal" style="text-align:center">
+        <p class="label" style="margin:0 0 14px;color:#ffd9cc">Our mission</p>
+        <p class="serif" style="margin:0;font-size:clamp(28px,3.4vw,40px);line-height:1.3">{a.mission}</p>
+      </div>
+    </section>
+  )}
+  {a?.convictions && a.convictions.length > 0 && (
+    <section class="section-tight">
+      <div class="wrap">
+        <p class="eyebrow reveal">Our core convictions</p>
+        <div class="steps" style="margin-top:28px">
+          {a.convictions.map((c, i) => (
+            <div class="card pad outline reveal" style={`transition-delay:${i * 80}ms`}>
+              <p class="mono" style="margin:0 0 10px;font-weight:700;color:var(--red)">{String(i + 1).padStart(2, '0')}</p>
+              <p class="serif" style="margin:0;font-size:24px;line-height:1.3">{c}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+  <section class="section">
+    <div class="wrap split">
+      <div class="prose reveal">
+        <p class="eyebrow">Our story</p>
+        {paragraphs(a?.story).map((p) => <p>{p}</p>)}
+      </div>
+      <div style="display:flex;flex-direction:column;gap:24px">
+        <div class="card pad reveal" style="background:var(--ink);color:var(--cream)">
+          <p class="label" style="color:var(--blue);margin:0 0 12px">Our faith</p>
+          {paragraphs(a?.faith).map((p) => <p style="margin:0 0 1em;color:var(--muted-on-dark)">{p}</p>)}
+        </div>
+        <div class="card pad outline reveal">
+          <p class="label" style="color:var(--red);margin:0 0 12px">Our partners</p>
+          {paragraphs(a?.partnersNote).map((p) => <p class="muted" style="margin:0 0 1em">{p}</p>)}
+          <a href="/partners" style="font-weight:700">Meet our partner ministries →</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <Stories />
+
+  <section class="section" id="share" style="background:var(--paper)">
+    <div class="wrap split">
+      <div class="reveal">
+        <p class="eyebrow">Share your story</p>
+        <h2 class="h2" style="margin-bottom:14px">Has Hidden Treasures been part of your story?</h2>
+        <p class="lead" style="margin:0">Program graduates, team members, donors and partners: we would love to hear from you. With your permission, we may share it here.</p>
+      </div>
+      <div class="reveal">
+        <Form
+          form="story"
+          submit="Share my story"
+          thanks="Thank you for sharing. We will reach out before anything is posted."
+          fields={[
+            { name: 'name', label: 'Name', required: true, autocomplete: 'name' },
+            { name: 'email', label: 'Email', type: 'email', required: true, autocomplete: 'email' },
+            { name: 'connection', label: 'Your connection', type: 'select', full: true, options: ['Program graduate', 'Team member', 'Donor or shopper', 'Referral partner', 'Other'] },
+            { name: 'story', label: 'Your story', type: 'textarea', required: true },
+          ]}
+        />
+      </div>
+    </div>
+  </section>
+</Layout>

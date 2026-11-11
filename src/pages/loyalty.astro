@@ -1,0 +1,46 @@
+---
+import Layout from '../layouts/Layout.astro';
+import PageHero from '../components/PageHero.astro';
+import Form from '../components/Form.astro';
+import { reader } from '../lib/content';
+const l = await reader.singletons.loyalty.read();
+---
+<Layout title="Treasure Hunters rewards" description="Join Treasure Hunters, the Hidden Treasures loyalty program: 5% back on every purchase, birthday bucks, coupons and reserved sales days.">
+  <PageHero eyebrow="Loyalty program" title="Treasure Hunters." lead={l?.intro} image="/images/uploads/living-room.jpg" />
+  <section class="section">
+    <div class="wrap split">
+      <div class="reveal">
+        <p class="eyebrow">Perks include</p>
+        <h2 class="h2" style="margin-bottom:28px">Thrift more, get more.</h2>
+        <ul class="checks">{l?.perks.map((p) => <li>{p}</li>)}</ul>
+        <div class="card pad" style="margin-top:32px;background:#f6e27a">
+          <p class="serif" style="margin:0 0 6px;font-size:26px">Sign up in-store</p>
+          <p style="margin:0">Ask at the register next time you stop by. It takes a minute.</p>
+        </div>
+      </div>
+      <div class="card pad reveal" id="profile" style="box-shadow:0 24px 50px rgba(35,31,27,.12)">
+        <p class="eyebrow">Complete your profile</p>
+        <p class="muted" style="margin:0 0 22px">{l?.profilePitch}</p>
+        <Form
+          form="loyalty"
+          submit="Save my profile"
+          thanks="Your profile is on its way to our team. Happy treasure hunting!"
+          fields={[
+            { name: 'first_name', label: 'First name', required: true, autocomplete: 'given-name' },
+            { name: 'last_name', label: 'Last name', required: true, autocomplete: 'family-name' },
+            { name: 'email', label: 'Email', type: 'email', required: true, autocomplete: 'email' },
+            { name: 'birthday', label: 'Birthday', type: 'date', required: true, help: "You'll get something special too!" },
+            { name: 'phone', label: 'Phone', type: 'tel', required: true, autocomplete: 'tel', help: 'Use this to sign in when you forget your card!' },
+            { name: 'address_1', label: 'Mailing address', required: true, full: true, autocomplete: 'address-line1', help: 'Where should we send special coupons and offers?' },
+            { name: 'address_2', label: 'Address line 2', full: true, autocomplete: 'address-line2' },
+            { name: 'city', label: 'City', required: true, autocomplete: 'address-level2' },
+            { name: 'state', label: 'State', required: true, autocomplete: 'address-level1' },
+            { name: 'zip', label: 'ZIP code', required: true, autocomplete: 'postal-code' },
+            { name: 'describes_you', label: 'Do any of these describe you?', type: 'checkboxes', options: ['Shopper', 'Donor', 'Volunteer', 'Employee'] },
+            { name: 'why_you_thrift', label: 'Tell us why you thrift or your favorite thing about Hidden Treasures!', type: 'textarea', help: 'Any questions about the program can go here too.' },
+          ]}
+        />
+      </div>
+    </div>
+  </section>
+</Layout>

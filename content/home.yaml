@@ -1,0 +1,36 @@
+slides:
+- eyebrow: Thrift store · Mission · Community
+  title: Find a treasure. Change a life.
+  body: Every item you donate or buy helps hold the door open for neighbors rebuilding their lives through real, meaningful work.
+  image: /images/uploads/storefront-photo.jpg
+  tint: dark
+  primary:
+    label: Donate your goods
+    href: /donate
+  secondary:
+    label: Plan your visit
+    href: /visit
+- eyebrow: Now open · Nov 9 to 21
+  title: The Christmas Market is open.
+  body: New and vintage holiday finds, just across the lot from the main store. Monday to Saturday, 10am to 6pm.
+  image: /images/uploads/shop-photo.jpg
+  tint: dark
+  primary:
+    label: See market details
+    href: /news/christmas-market
+  secondary:
+    label: Get directions
+    href: https://maps.google.com/?q=2915+Pentagon+Dr+St+Anthony+MN+55418
+- eyebrow: Work with us
+  title: You're welcome here.
+  body: We hold the employment door open for our brothers and sisters in recovery. A majority of our paid hours are reserved for friends in addiction recovery and re-entry.
+  image: /images/uploads/staff-welcome.jpg
+  tint: red
+  primary:
+    label: Express interest
+    href: /work-with-us#apply
+  secondary:
+    label: Refer someone
+    href: /work-with-us#refer
+engineTitle: One bag of donations. A lot of second chances.
+engineIntro: Hidden Treasures is a working ministry. Your donated goods become meaningful work for people rebuilding their lives, and quality, affordable finds for neighbors.

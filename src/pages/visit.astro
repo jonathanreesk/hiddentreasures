@@ -1,0 +1,73 @@
+---
+import Layout from '../layouts/Layout.astro';
+import PageHero from '../components/PageHero.astro';
+import VisitCard from '../components/VisitCard.astro';
+import PostRow from '../components/PostRow.astro';
+import Newsletter from '../components/Newsletter.astro';
+import { reader, getPosts } from '../lib/content';
+const s = await reader.singletons.settings.read();
+const posts = (await getPosts()).filter((p) => p.type !== 'news').slice(0, 6);
+const q = encodeURIComponent(`${s?.addressLine1} ${s?.addressLine2}`);
+---
+<Layout title="Shop and visit" description="Hours, directions and what is happening at Hidden Treasures Thrift Store in St Anthony, MN.">
+  <PageHero eyebrow="Shop the store" title="Come find your treasure." lead="Clothing, furniture, housewares, books, toys and more, priced for everyday budgets. New items hit the floor every day." image="/images/uploads/sales-floor.jpg">
+    <div class="btn-row" style="margin-top:32px">
+      {s?.mapsUrl && <a class="btn btn-red" href={s.mapsUrl}>Get directions</a>}
+      <a class="btn btn-ghost" href="/news">Sales and events</a>
+    </div>
+  </PageHero>
+  <VisitCard />
+  <section class="section-tight" style="padding-top:110px">
+    <div class="wrap">
+      <div class="section-head reveal" style="margin-bottom:28px">
+        <div><p class="eyebrow">Fresh on the floor</p><h2 class="h2">New treasures every day.</h2></div>
+        <a class="btn btn-outline" href="/trove">Visit the Trove</a>
+      </div>
+      <div class="photo-strip reveal">
+        <img src="/images/uploads/sectional.jpg" alt="A grey sectional sofa and wood coffee table set up on the sales floor" loading="lazy" />
+        <img src="/images/uploads/blue-chairs.jpg" alt="Two blue velvet tufted armchairs with a side table" loading="lazy" />
+        <img src="/images/uploads/dining.jpg" alt="A mahogany dining table with six red-cushioned chairs" loading="lazy" />
+        <img src="/images/uploads/red-sofa.jpg" alt="Sofas, lamps and end tables arranged as a living room" loading="lazy" />
+        <img src="/images/uploads/music-movies.jpg" alt="The Music and Movies corner with records, DVDs and a chalkboard sign" loading="lazy" />
+      </div>
+    </div>
+  </section>
+  <section class="section">
+    <div class="wrap split">
+      <div class="reveal">
+        <p class="eyebrow">Find us</p>
+        <h2 class="h2" style="margin-bottom:20px">{s?.addressLine1}</h2>
+        <p class="lead" style="margin:0 0 24px">{s?.addressLine2}</p>
+        <div class="video" style="aspect-ratio:4/3">
+          <iframe title="Map to Hidden Treasures" loading="lazy" src={`https://www.google.com/maps?q=${q}&output=embed`}></iframe>
+        </div>
+      </div>
+      <div class="reveal" style="display:flex;flex-direction:column;gap:12px">
+        <p class="eyebrow">Sales and events</p>
+        {posts.map((p) => <PostRow post={p} />)}
+        <a href="/news" style="font-weight:700;min-height:44px;display:inline-flex;align-items:center">All news and events →</a>
+      </div>
+    </div>
+  </section>
+  <section class="section-tight" id="loyalty" style="background:var(--paper)">
+    <div class="wrap grid2">
+      {s?.ebayUrl && (
+        <div class="card pad lift reveal" style="background:var(--blue)">
+          <p class="label" style="margin:0 0 10px">Shop from home</p>
+          <h2 class="h3" style="margin-bottom:12px">We sell on eBay too.</h2>
+          <p style="margin:0 0 22px">Some of our best finds are listed online. Every purchase supports the mission.</p>
+          <a class="btn btn-ink" href={s.ebayUrl}>Shop our eBay store</a>
+        </div>
+      )}
+      {s?.loyaltyUrl && (
+        <div class="card pad lift reveal" style="background:var(--red);color:#fff;transition-delay:80ms">
+          <p class="label" style="margin:0 0 10px;color:#ffd9cc">Treasure Hunter</p>
+          <h2 class="h3" style="margin-bottom:12px">Join our loyalty program.</h2>
+          <p style="margin:0 0 22px;color:#fbe9ec">5% back on every purchase, birthday bucks, coupons in the mail and reserved sales days.</p>
+          <a class="btn btn-light" href="/loyalty">Learn about Treasure Hunters</a>
+        </div>
+      )}
+    </div>
+  </section>
+  <Newsletter />
+</Layout>
