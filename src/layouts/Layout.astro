@@ -172,6 +172,8 @@ const annKey = announcement?.message ? announcement.message.length + ':' + annou
     // Announcement bar: remember dismissal for this message
     const ann = document.querySelector<HTMLElement>('[data-announce]');
     if (ann) {
+      // On phones the message is one line; tap it to read the whole thing
+      ann.querySelector('p')?.addEventListener('click', () => ann.classList.toggle('open'));
       const key = 'ht-ann-' + ann.dataset.announce;
       try { if (localStorage.getItem(key)) ann.remove(); } catch {}
       ann.querySelector('[data-announce-close]')?.addEventListener('click', () => {

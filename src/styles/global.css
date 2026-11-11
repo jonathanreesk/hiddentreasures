@@ -317,11 +317,14 @@ details.faq p { margin: 0 0 22px; font-size: 16px; line-height: 1.65; color: var
   .btn-row { gap: 10px; }
 
   /* Header and announcement */
-  .announce .wrap { justify-content: flex-start; gap: 4px 10px; padding: 8px 52px 8px 20px; min-height: 0; }
-  .announce p, .announce a { font-size: 14px; line-height: 1.4; }
-  .announce a { padding: 6px 0; }
-  .announce .pill { font-size: 11px; }
-  .announce .close { right: 4px; }
+  .announce .wrap { justify-content: flex-start; flex-wrap: nowrap; gap: 10px; padding: 0 48px 0 20px; min-height: 40px; }
+  .announce p { flex: 1 1 auto; min-width: 0; font-size: 13.5px; line-height: 1.4; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+  .announce a { flex: none; font-size: 13.5px; padding: 10px 0; }
+  .announce .pill { display: none; }
+  .announce .close { right: 2px; }
+  .announce.open .wrap { align-items: flex-start; padding-top: 8px; padding-bottom: 8px; }
+  .announce.open p { white-space: normal; }
+  .announce.open a { padding: 0; }
   .site-header .bar { height: 64px; }
   .site-header .logo img { height: 40px; }
   .menu-btn { width: 44px; height: 44px; }
