@@ -611,20 +611,3 @@ details.faq p { margin: 0 0 22px; font-size: 16px; line-height: 1.65; color: var
   .lightbox .lb-prev { left: calc(50% - 58px); }
   .lightbox .lb-next { right: calc(50% - 58px); }
 }
-
-/* Maroon header with a Wave Blue announcement ribbon */
-.site-header { background: rgba(163, 55, 73, .97); border-bottom-color: rgba(0, 0, 0, .12); color: #fff; }
-.site-header :focus-visible, .announce :focus-visible { outline-color: #fff; }
-.announce :focus-visible { outline-color: var(--ink); }
-.nav a { color: #fff; }
-.nav a::after { background: #fff; }
-.site-header .btn-light:hover { box-shadow: 0 10px 24px rgba(0, 0, 0, .22); }
-.mobile-nav { background: var(--red); color: #fff; }
-.mobile-nav a[aria-current='page'] { color: #fff; font-weight: 700; }
-.mobile-nav a[aria-current='page']::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--blue); order: -1; margin-right: -2px; }
-.mobile-nav .linkrow { justify-content: flex-start; }
-.announce { background: var(--blue); color: var(--ink); }
-.announce a { color: var(--ink); }
-.announce a:hover { color: var(--red-dark); }
-.announce .pill { background: var(--ink); color: #fff; }
-.announce .close { color: var(--ink); }
