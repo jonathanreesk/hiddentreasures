@@ -336,23 +336,25 @@ details.faq p { margin: 0 0 22px; font-size: 16px; line-height: 1.65; color: var
   .menu-btn { width: 44px; height: 44px; }
 
   /* Hero */
-  .hero { height: 560px; }
+  /* Sized to the screen so the first row of the hours panel is visible on load */
+  .hero { height: clamp(460px, calc(100svh - 205px), 560px); }
   .scrim { background: linear-gradient(180deg, rgba(35, 31, 27, .88) 0%, rgba(35, 31, 27, .8) 52%, rgba(35, 31, 27, .3) 78%, rgba(35, 31, 27, .3) 100%); }
   .slide .bg { inset: auto; top: 0; left: -5%; width: 110%; height: 118%; object-position: 53% 50%; transform-origin: center top; --kb-from: 1; --kb-end: .93; }
   .scrim.red { background: rgba(110, 32, 46, .86); }
-  .slide .inner { align-items: flex-start; padding-top: 44px; }
+  .slide .inner { align-items: flex-start; padding-top: 30px; }
   .slide .copy .eyebrow { margin-bottom: 12px; }
   .slide .copy p.body { font-size: 16px; margin: 14px 0 22px; }
-  .hero-ctrl { bottom: 72px; }
+  .hero-ctrl { bottom: 66px; }
+  .slide .copy p.body { display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden; }
   .page-hero .wrap { padding-top: 56px; padding-bottom: 84px; }
   .page-hero p.lead { margin-top: 14px; }
   .page-hero .btn-row { margin-top: 22px !important; }
   .trove-hero { padding: 56px 0 72px; }
 
   /* Hours card: two-up instead of four stacked blocks */
-  .visit { margin-top: -48px; }
+  .visit { margin-top: -56px; }
   .info { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .info > div { padding: 16px 14px 14px 16px; gap: 2px; }
+  .info > div { padding: 12px 14px 12px 16px; gap: 2px; }
   .info > div:nth-child(2) { border-left: 1px solid rgba(35, 31, 27, .1); }
   .info > div:nth-child(n+3) { border-top: 1px solid rgba(35, 31, 27, .1); }
   .info .t { font-size: 16px; margin-top: 2px; }
@@ -611,3 +613,6 @@ details.faq p { margin: 0 0 22px; font-size: 16px; line-height: 1.65; color: var
   .lightbox .lb-prev { left: calc(50% - 58px); }
   .lightbox .lb-next { right: calc(50% - 58px); }
 }
+
+/* Very narrow phones: text wraps more, so keep the fixed hero height */
+@media (max-width: 374px) { .hero { height: 560px; } }
