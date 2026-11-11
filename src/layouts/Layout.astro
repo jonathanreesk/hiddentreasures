@@ -71,19 +71,19 @@ const annKey = announcement?.message ? announcement.message.length + ':' + annou
   <header class="site-header">
     <div class="wrap bar">
       <a class="logo" href="/" aria-label="Hidden Treasures Thrift Store home">
-        <img src="/images/brand/wordmark-red.png" alt="Hidden Treasures Thrift Store" width="284" height="56" />
+        <img src="/images/brand/wordmark-light.png" alt="Hidden Treasures Thrift Store" width="284" height="56" />
       </a>
       <nav class="nav" aria-label="Main">
         {nav.map((n) => <a href={n.href} aria-current={current(n.href)}>{n.label}</a>)}
       </nav>
       <div style="display:flex;gap:10px;align-items:center">
-        <a class="btn btn-red hdr-cta" href="/donate">Donate your goods</a>
-        <button type="button" class="iconbtn iconbtn-ink menu-btn" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-nav" data-menu><span class="i-menu"><Icon name="menu" size={22} /></span><span class="i-close"><Icon name="close" size={22} /></span></button>
+        <a class="btn btn-light hdr-cta" href="/donate">Donate your goods</a>
+        <button type="button" class="iconbtn menu-btn" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-nav" data-menu><span class="i-menu"><Icon name="menu" size={22} /></span><span class="i-close"><Icon name="close" size={22} /></span></button>
       </div>
     </div>
     <nav id="mobile-nav" class="mobile-nav" aria-label="Mobile">
-      {nav.map((n) => <a class="linkrow linkrow-ink" href={n.href} aria-current={current(n.href)}>{n.label}</a>)}
-      <a class="btn btn-red" href="/donate" style="margin-top:12px">Donate your goods</a>
+      {nav.map((n) => <a class="linkrow" href={n.href} aria-current={current(n.href)}>{n.label}</a>)}
+      <a class="btn btn-light" href="/donate" style="margin-top:12px">Donate your goods</a>
     </nav>
   </header>
 
