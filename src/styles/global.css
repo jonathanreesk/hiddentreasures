@@ -170,6 +170,10 @@ h1, h2, h3 { font-family: var(--serif); font-weight: 400; margin: 0; line-height
 .info .dark { background: var(--ink); color: #fff; }
 .info .dark p, .info .dark a { color: var(--muted-on-dark); }
 .info .email-short { display: none; }
+.info .dark a.tel { display: inline-flex; align-items: center; gap: 8px; color: #fff; text-decoration: none; }
+.info .dark a.tel span { text-decoration: underline; text-decoration-thickness: 1.5px; text-underline-offset: 4px; text-decoration-color: var(--blue); }
+.info .dark a.tel svg { color: var(--blue); flex: none; }
+.info .dark a.tel:hover span { text-decoration-color: #fff; }
 .status { display: flex; align-items: center; gap: 10px; }
 .status .dotc { width: 10px; height: 10px; border-radius: 50%; background: #8a8079; box-shadow: 0 0 0 4px rgba(138, 128, 121, .18); }
 .status.open .label { color: #23693f !important; }

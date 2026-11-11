@@ -1,6 +1,7 @@
 ---
 import { reader } from '../lib/content';
 import TagSale from './TagSale.astro';
+import Icon from './Icon.astro';
 const s = await reader.singletons.settings.read();
 const tel = s?.phone?.replace(/\D/g, '');
 ---
@@ -27,7 +28,7 @@ const tel = s?.phone?.replace(/\D/g, '');
     </div>
     <div class="dark">
       <span class="label" style="color:var(--blue)">Questions?</span>
-      <p class="t"><a href={`tel:${tel}`} style="color:#fff;text-decoration:none">{s?.phone}</a></p>
+      <p class="t"><a class="tel" href={`tel:${tel}`} aria-label={`Call ${s?.phone}`}><Icon name="phone" size={16} /><span>{s?.phone}</span></a></p>
       <p><a href={`mailto:${s?.email}`} aria-label={`Email ${s?.email}`}><span class="email-full">{s?.email}</span><span class="email-short">Email us</span></a></p>
     </div>
   </div>
