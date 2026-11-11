@@ -22,7 +22,7 @@ const hours = s?.donateHours.find((h) => !/closed/i.test(h.hours));
   <!-- Donation door is open -->
   <section class="section-tight" id="dropoff" style="--pt:110px">
     <div class="wrap art-row reveal" style="grid-template-columns:minmax(0,1fr) minmax(0,1.1fr)">
-      <img src="/images/uploads/donations.jpg" alt="Donations being unloaded from a car into carts at the back of the store" style="border-radius:var(--radius);width:100%;aspect-ratio:4/3;object-fit:cover" />
+      <img src="/images/uploads/donations.jpg" alt="Donations being unloaded from a car into carts at the back of the store" data-zoom style="border-radius:var(--radius);width:100%;aspect-ratio:4/3;object-fit:cover" />
       <div>
         <p class="eyebrow">Our donation door is open</p>
         <h2 class="h2" style="margin-bottom:14px">{hours ? `${hours.hours}, ${hours.days}` : 'Monday to Saturday'}</h2>
