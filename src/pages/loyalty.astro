@@ -14,7 +14,7 @@ const l = await reader.singletons.loyalty.read();
         <h2 class="h2" style="margin-bottom:28px">Thrift more, get more.</h2>
         <ul class="checks">{l?.perks.map((p) => <li>{p}</li>)}</ul>
         <div class="card pad" style="margin-top:32px;background:#f6e27a">
-          <p class="serif" style="margin:0 0 6px;font-size:26px">Sign up in-store</p>
+          <p class="serif" style="margin:0 0 6px;font-size:clamp(20px,5.3vw,26px)">Sign up in-store</p>
           <p style="margin:0">Ask at the register next time you stop by. It takes a minute.</p>
         </div>
       </div>

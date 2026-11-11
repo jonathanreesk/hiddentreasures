@@ -1,51 +1,51 @@
-intro: Hidden Treasures is one part of a wider family of ministries, in Minnesota and around the world. We share their vision for recovery, restoration and the hope of the gospel, and we are glad to walk alongside them.
+intro: Hidden Treasures partners with other ministries in Minnesota and around the world. Here is who they are and what they do.
 note: This list is a starting point. To learn more, visit their websites or ask our leadership for more details.
 items:
 - name: Creation Stewards International
   url: https://www.creationstewardsint.org/
-  description: An organization equipping and mobilizing people around the world to care for God's creation through sustainable agriculture, conservation, and environmental stewardship.
+  description: Teaches and equips people around the world to care for God's creation through sustainable farming and conservation.
   focus: global
   logo: /images/partners/creation-stewards.png
   logoOnDark: false
 - name: Jericho Road
   url: http://www.jerichoroad.us/
-  description: A faith-based nonprofit that supports communities in crisis by providing transitional housing, addiction recovery programs, and other holistic services.
+  description: A faith-based nonprofit offering transitional housing and addiction recovery programs for people in crisis.
   focus: recovery
   logo: /images/partners/jericho-road.png
   logoOnDark: false
 - name: Metro Hope Ministries
   url: https://www.metrohope.org/
-  description: A residential, Christ-centered recovery program offering long-term support for men, women, and mothers with children seeking freedom from addiction.
+  description: A long-term, residential, Christ-centered addiction recovery program for men, women, and mothers with children.
   focus: recovery
   logo: /images/partners/metro-hope.png
   logoOnDark: false
 - name: Hope Academy
   url: http://hopeacademympls.org/
-  description: A private, faith-based school in Minneapolis providing high-quality, Christ-centered education to urban youth, making excellent education accessible to all families.
+  description: A private Christian school in Minneapolis serving urban youth and their families.
   focus: youth
   logo: /images/partners/hope-academy.png
   logoOnDark: false
 - name: InnerChange
   url: https://icminneapolis.novo.org/
-  description: A global network of Christian missionaries who live among and serve the poor, practicing incarnational ministry to bring hope and transformation.
+  description: Christian missionaries who live in poor neighborhoods around the world and serve the people there.
   focus: global
   logo: /images/partners/innerchange.png
   logoOnDark: false
 - name: Revive
   url: https://cityjoy.org/cityjoy-ministries-ministers/revive
-  description: A ministry focused on uplifting urban youth through long-term, life-on-life mentoring relationships.
+  description: Long-term, one-on-one mentoring for urban youth.
   focus: youth
   logo: /images/partners/revive.png
   logoOnDark: true
 - name: Training Leaders International
   url: https://trainingleadersinternational.org/
-  description: An organization dedicated to equipping pastors and church leaders worldwide with theological training, particularly in underserved areas.
+  description: Theological training for pastors and church leaders around the world, especially where it is hard to come by.
   focus: global
   logo: /images/partners/training-leaders.svg
   logoOnDark: true
 - name: The Steadfast Project
   url: https://tctnetwork.org/steadfastprayer
-  description: A ministry that fosters a culture of prayer in cities, training and supporting leaders who are committed to intercessory prayer for their communities.
+  description: Trains and supports leaders who commit to praying for their cities.
   focus: prayer
   logo: null
   logoOnDark: false

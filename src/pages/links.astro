@@ -6,7 +6,7 @@ const l = await reader.singletons.links.read();
 const s = await reader.singletons.settings.read();
 ---
 <Layout title="Links" description="Quick links for Hidden Treasures Thrift Store: donate, shop, work here, volunteer and more.">
-  <section class="section" style="padding-top:70px">
+  <section class="section" style="--pt:70px">
     <div class="wrap" style="max-width:560px;text-align:center">
       <img src="/images/brand/logo-red.png" alt="Hidden Treasures Thrift Store" width="260" style="width:260px;height:auto;margin:0 auto 18px" class="pop" />
       {l?.intro && <p class="mono pop" style="margin:0 0 32px;font-weight:700;letter-spacing:.08em;color:var(--red)">{l.intro}</p>}

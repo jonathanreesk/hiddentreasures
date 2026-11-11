@@ -33,7 +33,7 @@ const gcal = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=$
         {embed && <div class="video reveal" style="margin-bottom:32px"><iframe src={embed} title={`Video: ${post.title}`} loading="lazy" allow="encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe></div>}
         {!embed && post.image && <img src={post.image} alt="" class="reveal" style="border-radius:var(--radius);margin-bottom:32px;width:100%" />}
         <div class="prose">
-          {post.summary && <p class="serif" style="font-size:24px;line-height:1.45">{post.summary}</p>}
+          {post.summary && <p class="serif" style="font-size:clamp(19px,4.9vw,24px);line-height:1.45">{post.summary}</p>}
           {paragraphs(post.body).map((p) => <p>{p}</p>)}
         </div>
         {post.type !== 'news' && (

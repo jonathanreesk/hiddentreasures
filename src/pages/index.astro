@@ -21,12 +21,12 @@ const others = posts.filter((p) => p !== featured).slice(0, 8);
   <VisitCard />
 
   <!-- Three ways in -->
-  <section class="section" style="padding-bottom:40px">
+  <section class="section" style="--pb:40px">
     <div class="wrap">
       <div class="section-head reveal">
         <div style="max-width:640px">
           <p class="eyebrow">How you can help</p>
-          <h2 class="h2">Three ways to be part of the story.</h2>
+          <h2 class="h2">Donate, shop, or work with us.</h2>
         </div>
         <p class="muted" style="margin:0;max-width:380px;font-size:17px">Most of all, we run on donated goods. They are where the work begins.</p>
       </div>
@@ -34,8 +34,8 @@ const others = posts.filter((p) => p !== featured).slice(0, 8);
         <article class="card pad lift path reveal" style="background:var(--red);color:#fff">
           <img class="tag" src="/images/brand/tag-blue.png" alt="" width="150" />
           <span class="label" style="color:#ffd9cc">Start here</span>
-          <h3 class="h3" style="font-size:34px;max-width:220px">Donate your goods</h3>
-          <p style="margin:0;color:#fbe9ec">Clothing, furniture, housewares, books and toys. Every bag turns into meaningful work.</p>
+          <h3 class="h3" style="font-size:clamp(27px,7.0vw,34px);max-width:220px">Donate your goods</h3>
+          <p style="margin:0;color:#fbe9ec">Clothing, furniture, housewares, books and toys. Drop off at the back of the store.</p>
           <div class="links">
             <a class="linkrow" href="/donate#dropoff">Drop-off details <span aria-hidden="true">→</span></a>
             <a class="linkrow" href="/donate#pickup">{donate?.pickupsPaused ? 'Furniture and large items' : 'Schedule a furniture pickup'} <span aria-hidden="true">→</span></a>
@@ -45,8 +45,8 @@ const others = posts.filter((p) => p !== featured).slice(0, 8);
         </article>
         <article class="card pad lift path outline reveal" style="transition-delay:80ms">
           <span class="label" style="color:var(--red)">Thrift with purpose</span>
-          <h3 class="h3" style="font-size:34px">Shop the store</h3>
-          <p class="muted" style="margin:0">New treasures hit the floor every day. Every purchase supports the mission.</p>
+          <h3 class="h3" style="font-size:clamp(27px,7.0vw,34px)">Shop the store</h3>
+          <p class="muted" style="margin:0">New items go out on the floor every day, and what you spend supports the work.</p>
           <div class="links">
             <a class="linkrow linkrow-ink" href="/visit">Hours and directions <span aria-hidden="true">→</span></a>
             <a class="linkrow linkrow-ink" href="/news">Sales and events <span aria-hidden="true">→</span></a>
@@ -56,7 +56,7 @@ const others = posts.filter((p) => p !== featured).slice(0, 8);
         </article>
         <article class="card pad lift path reveal" style="background:var(--blue);transition-delay:160ms">
           <span class="label">Employment program</span>
-          <h3 class="h3" style="font-size:34px">Work with us</h3>
+          <h3 class="h3" style="font-size:clamp(27px,7.0vw,34px)">Work with us</h3>
           <p style="margin:0">Looking for a fresh start, or know someone who is? Pastors, case workers and families can refer directly.</p>
           <div class="links">
             <a class="linkrow linkrow-ink" href="/work-with-us#apply">Apply for a job <span aria-hidden="true">→</span></a>
@@ -69,7 +69,7 @@ const others = posts.filter((p) => p !== featured).slice(0, 8);
   </section>
 
   <!-- Inside the store -->
-  <section class="section-tight" style="padding-top:70px;padding-bottom:0">
+  <section class="section-tight" style="--pt:70px;--pb:0px">
     <div class="wrap">
       <div class="photo-strip reveal">
         <img src="/images/uploads/sales-floor.jpg" alt="A shopper browsing racks of women's clothing on the sales floor" loading="lazy" />
@@ -93,9 +93,9 @@ const others = posts.filter((p) => p !== featured).slice(0, 8);
       <div class="steps">
         <div class="string" aria-hidden="true"></div>
         <div class="step reveal"><div class="num" style="background:var(--red)">01</div><h3>You donate</h3><p>The things you no longer need become the store's entire inventory.</p></div>
-        <div class="step reveal" style="transition-delay:100ms"><div class="num" style="background:var(--orange)">02</div><h3>Our team gets to work</h3><p>Men and women with barriers to employment sort, price and sell it, in real, paid jobs.</p></div>
-        <div class="step reveal" style="transition-delay:200ms"><div class="num" style="background:var(--blue);color:var(--ink)">03</div><h3>Neighbors find treasures</h3><p>Shoppers get quality everyday goods at low prices, and keep them out of landfills.</p></div>
-        <div class="step reveal" style="transition-delay:300ms"><div class="num" style="background:var(--toffee);color:var(--ink)">04</div><h3>Lives are rebuilt</h3><p>Work brings structure, belonging and room to grow for people in recovery and re-entry.</p></div>
+        <div class="step reveal" style="transition-delay:100ms"><div class="num" style="background:var(--orange)">02</div><h3>Our team gets to work</h3><p>Our team sorts, prices and sells it. These are paid jobs, and most of the hours go to people in recovery and re-entry.</p></div>
+        <div class="step reveal" style="transition-delay:200ms"><div class="num" style="background:var(--blue);color:var(--ink)">03</div><h3>Neighbors find treasures</h3><p>Shoppers get good everyday things at low prices, and less ends up in a landfill.</p></div>
+        <div class="step reveal" style="transition-delay:300ms"><div class="num" style="background:var(--toffee);color:var(--ink)">04</div><h3>Lives are rebuilt</h3><p>A steady job and a team to show up for. For someone in recovery, that counts for a lot.</p></div>
       </div>
       <div class="btn-row" style="margin-top:64px;align-items:center">
         <a class="btn btn-red" href="/donate">Donate your goods</a>
@@ -107,7 +107,7 @@ const others = posts.filter((p) => p !== featured).slice(0, 8);
 
   <!-- News and events -->
   {featured && (
-    <section class="section" style="padding-bottom:20px">
+    <section class="section" style="--pb:20px">
       <div class="wrap">
         <div class="section-head reveal">
           <div>

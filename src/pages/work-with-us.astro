@@ -18,12 +18,12 @@ const w = await reader.singletons.work.read();
     <div class="wrap split" style="align-items:center">
       <div class="reveal">
         <p class="eyebrow">What to expect</p>
-        <h2 class="h2" style="margin-bottom:28px">Work that matters, with people who care.</h2>
+        <h2 class="h2" style="margin-bottom:28px">What working here is like.</h2>
         <ul class="checks">{w?.whatToExpect.map((x) => <li>{x}</li>)}</ul>
       </div>
       <div class="card pad reveal" style="background:var(--blue)">
         <p class="label" style="margin:0 0 10px">Who can apply</p>
-        <p class="serif" style="font-size:26px;line-height:1.35;margin:0">You do not need to be in recovery to work here. A majority of our paid hours are reserved for friends in addiction recovery and re-entry.</p>
+        <p class="serif" style="font-size:clamp(20px,5.3vw,26px);line-height:1.35;margin:0">You do not need to be in recovery to work here. A majority of our paid hours are reserved for friends in addiction recovery and re-entry.</p>
         <p style="margin:18px 0 0">Not sure if you qualify? Apply anyway, or call us and ask.</p>
       </div>
     </div>
@@ -39,7 +39,7 @@ const w = await reader.singletons.work.read();
           {w.roles.map((r, i) => (
             <div class="card pad outline lift reveal" style={`transition-delay:${i * 80}ms`}>
               <p class="label" style="margin:0 0 10px;color:var(--red)">{String(i + 1).padStart(2, '0')}</p>
-              <h3 class="serif" style="font-size:26px;margin-bottom:8px">{r.title}</h3>
+              <h3 class="serif" style="font-size:clamp(20px,5.3vw,26px);margin-bottom:8px">{r.title}</h3>
               <p class="muted" style="margin:0">{r.text}</p>
             </div>
           ))}

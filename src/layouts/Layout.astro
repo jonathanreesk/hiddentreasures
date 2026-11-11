@@ -78,7 +78,7 @@ const annKey = announcement?.message ? announcement.message.length + ':' + annou
       </nav>
       <div style="display:flex;gap:10px;align-items:center">
         <a class="btn btn-red hdr-cta" href="/donate">Donate your goods</a>
-        <button type="button" class="iconbtn iconbtn-ink menu-btn" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-nav" data-menu><Icon name="menu" size={22} /></button>
+        <button type="button" class="iconbtn iconbtn-ink menu-btn" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-nav" data-menu><span class="i-menu"><Icon name="menu" size={22} /></span><span class="i-close"><Icon name="close" size={22} /></span></button>
       </div>
     </div>
     <nav id="mobile-nav" class="mobile-nav" aria-label="Mobile">
@@ -140,15 +140,34 @@ const annKey = announcement?.message ? announcement.message.length + ':' + annou
     </div>
   </footer>
 
+  <button type="button" class="to-top" aria-label="Back to top" data-top><Icon name="left" size={20} /></button>
+
   <script>
+    // Back to top: appears after scrolling down a couple of screens
+    const topBtn = document.querySelector<HTMLButtonElement>('[data-top]');
+    if (topBtn) {
+      let ticking = false;
+      const update = () => { topBtn.classList.toggle('show', window.scrollY > window.innerHeight * 1.5); ticking = false; };
+      window.addEventListener('scroll', () => { if (!ticking) { ticking = true; requestAnimationFrame(update); } }, { passive: true });
+      topBtn.addEventListener('click', () => {
+        const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        window.scrollTo({ top: 0, behavior: reduce ? 'auto' : 'smooth' });
+        document.querySelector<HTMLElement>('.logo')?.focus({ preventScroll: true });
+      });
+      update();
+    }
+
     // Mobile menu
     const menuBtn = document.querySelector<HTMLButtonElement>('[data-menu]');
     const mobileNav = document.getElementById('mobile-nav');
-    menuBtn?.addEventListener('click', () => {
-      const open = mobileNav!.classList.toggle('open');
-      menuBtn.setAttribute('aria-expanded', String(open));
-      menuBtn.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
-    });
+    const setMenu = (open: boolean) => {
+      mobileNav!.classList.toggle('open', open);
+      menuBtn!.setAttribute('aria-expanded', String(open));
+      menuBtn!.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+    };
+    menuBtn?.addEventListener('click', () => setMenu(!mobileNav!.classList.contains('open')));
+    mobileNav?.querySelectorAll('a').forEach((a) => a.addEventListener('click', () => setMenu(false)));
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && mobileNav?.classList.contains('open')) { setMenu(false); menuBtn?.focus(); } });
 
     // Announcement bar: remember dismissal for this message
     const ann = document.querySelector<HTMLElement>('[data-announce]');

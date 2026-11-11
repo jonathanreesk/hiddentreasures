@@ -1,10 +1,10 @@
 headline: You're welcome here.
 intro: At Hidden Treasures we are passionate about holding the employment door open for our brothers and sisters in recovery from substance use disorder. You do not need to be in recovery to work here, but a majority of our paid hours are reserved for our friends in addiction recovery and re-entry. That's our mission!
 whatToExpect:
-- A real, paid job, not a simulation
-- Fair wages, job training and a supportive team
-- A place of belonging, structure and growth
-- Coworkers in recovery and not, committed to dignity, excellence and service
+- A paid job in the store
+- Training on the job
+- Coworkers in recovery, and coworkers who are not
+- Team meetings with Bible reading and prayer. Belief is never required.
 hiring: true
 applyHeading: Interested in joining our team?
 applyText: Fill out our expression of interest form. Hidden Treasures is not always hiring, and not always hiring for all positions. If something opens up (and you seem like a good fit!), someone from management will reach out.
@@ -27,10 +27,10 @@ nextSteps:
 - title: Fill out the form
   text: Tell us about yourself, the kind of work you are looking for, and your availability. If you have a resume, send it to hello@hiddentreasuresmn.org.
 - title: Short phone interview
-  text: We review every submission carefully and reach out to selected applicants to confirm details and answer initial questions.
+  text: We read every form. If there is an opening that fits, someone from management will call to go over the details and answer your questions.
 - title: In-person interview
-  text: From there, we may meet to hear more of your story and explore how you might fit into our mission.
-nextStepsNote: We receive more applications than we can respond to individually, but every submission is read and appreciated.
+  text: After the call, we may ask you to come in so we can meet you and hear more of your story.
+nextStepsNote: We get more applications than we can answer one by one, but we do read every one.
 volunteerNote: Hidden Treasures is a diverse community of people growing together. We are a Christian organization, but you do not need to be Christian to join us. You just need to be comfortable around lots of folks in addiction recovery and all walks of life, prayer, and corny jokes.
 volunteerTasks:
 - Cleaning the store

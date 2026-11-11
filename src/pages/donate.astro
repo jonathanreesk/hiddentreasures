@@ -20,7 +20,7 @@ const hours = s?.donateHours.find((h) => !/closed/i.test(h.hours));
   <VisitCard />
 
   <!-- Donation door is open -->
-  <section class="section-tight" id="dropoff" style="padding-top:110px">
+  <section class="section-tight" id="dropoff" style="--pt:110px">
     <div class="wrap art-row reveal" style="grid-template-columns:minmax(0,1fr) minmax(0,1.1fr)">
       <img src="/images/uploads/donations.jpg" alt="Donations being unloaded from a car into carts at the back of the store" style="border-radius:var(--radius);width:100%;aspect-ratio:4/3;object-fit:cover" />
       <div>
@@ -32,13 +32,13 @@ const hours = s?.donateHours.find((h) => !/closed/i.test(h.hours));
   </section>
 
   <!-- What we're looking for / cannot take -->
-  <section class="section" id="accept" style="padding-top:60px">
+  <section class="section" id="accept" style="--pt:60px">
     <div class="wrap split">
       <div class="card pad reveal" style="box-shadow:inset 0 0 0 1px rgba(35,31,27,.08)">
         <div style="display:flex;justify-content:space-between;gap:16px;align-items:flex-start">
           <div>
             <p class="eyebrow">What we're looking for</p>
-            <h2 class="h3" style="font-size:32px;margin-bottom:6px">We gladly accept</h2>
+            <h2 class="h3" style="font-size:clamp(25px,6.6vw,32px);margin-bottom:6px">We gladly accept</h2>
             {d?.acceptedIntro && <p class="muted" style="margin:0 0 18px">{d.acceptedIntro}</p>}
           </div>
           <DonateArt name="shirt" size={110} />
@@ -49,7 +49,7 @@ const hours = s?.donateHours.find((h) => !/closed/i.test(h.hours));
         <div style="display:flex;justify-content:space-between;gap:16px;align-items:flex-start">
           <div>
             <p class="eyebrow">Please check first</p>
-            <h2 class="h3" style="font-size:32px;margin-bottom:6px">Some things we cannot take</h2>
+            <h2 class="h3" style="font-size:clamp(25px,6.6vw,32px);margin-bottom:6px">Some things we cannot take</h2>
           </div>
           <DonateArt name="megaphone" size={110} />
         </div>
@@ -67,7 +67,7 @@ const hours = s?.donateHours.find((h) => !/closed/i.test(h.hours));
           <p class="eyebrow">Want to be a hero at the donation door?</p>
           <h2 class="h2" style="margin-bottom:28px">A few tips that help our team.</h2>
           <ul class="tips" style="color:var(--cream)">{d.doorTips.map((t) => <li>{t}</li>)}</ul>
-          <p class="serif" style="margin:28px 0 0;font-size:26px;color:var(--blue)">Thank you!</p>
+          <p class="serif" style="margin:28px 0 0;font-size:clamp(20px,5.3vw,26px);color:var(--blue)">Thank you!</p>
         </div>
         <div style="background:var(--cream);border-radius:50%;padding:20px;display:flex"><DonateArt name="hands" size={160} /></div>
       </div>
@@ -79,7 +79,7 @@ const hours = s?.donateHours.find((h) => !/closed/i.test(h.hours));
     <div class="wrap grid3">
       <div class="card pad outline reveal" style="grid-column:span 2">
         <p class="eyebrow">Why donate?</p>
-        <p class="serif" style="font-size:24px;line-height:1.45;margin:0 0 18px">{d?.whyDonate}</p>
+        <p class="serif" style="font-size:clamp(19px,4.9vw,24px);line-height:1.45;margin:0 0 18px">{d?.whyDonate}</p>
         {d?.taxNote && <p class="badge" style="display:inline-block;background:var(--red);color:#fff;padding:8px 14px">{d.taxNote}</p>}
       </div>
       {d?.roundUp && (
@@ -104,13 +104,13 @@ const hours = s?.donateHours.find((h) => !/closed/i.test(h.hours));
           <p class="eyebrow">Furniture and large items</p>
           {d?.pickupsPaused ? (
             <>
-              <h2 class="h3" style="font-size:32px;margin-bottom:14px">Pickups are paused for now.</h2>
+              <h2 class="h3" style="font-size:clamp(25px,6.6vw,32px);margin-bottom:14px">Pickups are paused for now.</h2>
               <p class="muted" style="margin:0 0 22px">{d?.pausedMessage}</p>
               {d?.pausedLinkUrl && <a class="btn btn-red" href={d.pausedLinkUrl}>{d.pausedLinkText || 'Learn more'}</a>}
             </>
           ) : (
             <>
-              <h2 class="h3" style="font-size:32px;margin-bottom:14px">Schedule a pickup.</h2>
+              <h2 class="h3" style="font-size:clamp(25px,6.6vw,32px);margin-bottom:14px">Schedule a pickup.</h2>
               <p class="muted" style="margin:0 0 22px">{d?.pickup}</p>
               <Form
                 form="pickup"
@@ -130,7 +130,7 @@ const hours = s?.donateHours.find((h) => !/closed/i.test(h.hours));
         </div>
         <div class="reveal" id="bulk">
           <p class="eyebrow">Business or bulk donations</p>
-          <h2 class="h3" style="font-size:32px;margin-bottom:14px">Clearing out a space?</h2>
+          <h2 class="h3" style="font-size:clamp(25px,6.6vw,32px);margin-bottom:14px">Clearing out a space?</h2>
           <p class="muted" style="margin:0 0 22px">{d?.bulk}</p>
           <Form
             form="bulk"

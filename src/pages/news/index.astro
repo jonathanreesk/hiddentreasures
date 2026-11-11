@@ -24,7 +24,7 @@ const posts = await getPosts();
                 <span class="badge">{p.badge || typeLabel[p.type]}</span>
                 <span class="badge" data-past hidden style="background:var(--sand)">Past</span>
               </div>
-              <h2 class="serif" style="font-size:26px;line-height:1.2;margin:6px 0 0">{p.title}</h2>
+              <h2 class="serif" style="font-size:clamp(20px,5.3vw,26px);line-height:1.2;margin:6px 0 0">{p.title}</h2>
               <p class="muted" style="margin:0;font-size:15px;font-weight:600">{dateRange(p.startDate!, p.endDate)}{p.timeText ? ` · ${p.timeText}` : ''}</p>
               {p.summary && <p class="muted" style="margin:0;font-size:15px">{p.summary}</p>}
             </div>

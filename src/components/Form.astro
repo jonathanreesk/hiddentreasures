@@ -36,7 +36,7 @@ const id = (n: string) => `${form}-${n}`;
   </form>
   <div class="form-msg pop" data-ok hidden role="status">
     <img src="/images/brand/tag-red.png" alt="" width="120" style="width:120px;margin:0 auto 14px" />
-    <p class="serif" style="margin:0 0 8px;font-size:30px">Thank you!</p>
+    <p class="serif" style="margin:0 0 8px;font-size:clamp(24px,6.1vw,30px)">Thank you!</p>
     <p class="muted" style="margin:0">{thanks}</p>
   </div>
   <p data-err hidden role="alert" style="margin:14px 0 0;color:var(--red);font-weight:600">Sorry, that did not go through. Please try again, or call the store.</p>
