@@ -171,6 +171,7 @@ h1, h2, h3 { font-family: var(--serif); font-weight: 400; margin: 0; line-height
 .info .dark p, .info .dark a { color: var(--muted-on-dark); }
 .status { display: flex; align-items: center; gap: 10px; }
 .status .dotc { width: 10px; height: 10px; border-radius: 50%; background: #8a8079; box-shadow: 0 0 0 4px rgba(138, 128, 121, .18); }
+.status.open .label { color: #23693f !important; }
 .status.open .dotc { background: #2e7d4f; box-shadow: 0 0 0 4px rgba(46, 125, 79, .18); }
 .status.closed .dotc { background: var(--red); box-shadow: 0 0 0 4px rgba(163, 55, 73, .18); }
 
@@ -322,12 +323,13 @@ details.faq p { margin: 0 0 22px; font-size: 16px; line-height: 1.65; color: var
   .announce .pill { font-size: 11px; }
   .announce .close { right: 4px; }
   .site-header .bar { height: 64px; }
-  .site-header .logo img { height: 32px; }
+  .site-header .logo img { height: 40px; }
   .menu-btn { width: 44px; height: 44px; }
 
   /* Hero */
   .hero { height: 560px; }
-  .scrim { background: rgba(35, 31, 27, .78); }
+  .scrim { background: linear-gradient(180deg, rgba(35, 31, 27, .88) 0%, rgba(35, 31, 27, .8) 52%, rgba(35, 31, 27, .3) 78%, rgba(35, 31, 27, .3) 100%); }
+  .slide .bg { height: 118%; object-position: 53% 50%; }
   .scrim.red { background: rgba(110, 32, 46, .86); }
   .slide .inner { align-items: flex-start; padding-top: 44px; }
   .slide .copy .eyebrow { margin-bottom: 12px; }
@@ -556,19 +558,23 @@ details.faq p { margin: 0 0 22px; font-size: 16px; line-height: 1.65; color: var
 
 /* Desktop first screen: a tall hero with the compact panel tucked into its base, all visible without scrolling */
 @media (min-width: 981px) {
-  .visit { margin-top: -64px; }
+  .visit { margin-top: -96px; }
+  .site-header .logo img { height: 56px; }
   .info > div { padding: 16px 26px 18px; gap: 2px; }
   .info .t { font-size: 20px; margin-top: 2px; }
   .info p { font-size: 14px; }
   .info .label { font-size: 13px; }
-  .hero { height: clamp(420px, calc(100svh - 272px), 760px); }
+  .hero { height: clamp(420px, calc(100svh - 242px), 820px); }
   .hero .h1 { font-size: clamp(40px, min(6vw, 8vh), 72px); }
-  .slide .inner { padding-bottom: 84px; }
+  .slide .inner { padding-bottom: 112px; }
+  .slide .bg { width: 122%; object-position: center 42%; }
+  .slide .copy p.body { max-width: 30ch; }
   .slide .copy p.body { font-size: clamp(16px, 2.3vh, 19px); margin: clamp(12px, 2.4vh, 22px) 0 clamp(18px, 3.4vh, 34px); }
-  .hero-ctrl { justify-content: flex-end; gap: 20px; bottom: 88px; }
+  .hero-ctrl { justify-content: flex-end; gap: 20px; bottom: 118px; }
   .page-hero .wrap { padding-top: clamp(48px, 9vh, 110px); padding-bottom: clamp(96px, 14vh, 130px); }
 }
 @media (min-width: 981px) and (max-height: 800px) {
   .site-header .bar { height: 72px; }
-  .hero { height: clamp(420px, calc(100svh - 260px), 760px); }
+  .site-header .logo img { height: 50px; }
+  .hero { height: clamp(420px, calc(100svh - 230px), 820px); }
 }
