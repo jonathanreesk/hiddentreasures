@@ -169,6 +169,7 @@ h1, h2, h3 { font-family: var(--serif); font-weight: 400; margin: 0; line-height
 .info p { margin: 0; font-size: 15px; color: var(--muted); }
 .info .dark { background: var(--ink); color: #fff; }
 .info .dark p, .info .dark a { color: var(--muted-on-dark); }
+.info .email-short { display: none; }
 .status { display: flex; align-items: center; gap: 10px; }
 .status .dotc { width: 10px; height: 10px; border-radius: 50%; background: #8a8079; box-shadow: 0 0 0 4px rgba(138, 128, 121, .18); }
 .status.open .label { color: #23693f !important; }
@@ -346,15 +347,15 @@ details.faq p { margin: 0 0 22px; font-size: 16px; line-height: 1.65; color: var
   /* Hours card: two-up instead of four stacked blocks */
   .visit { margin-top: -48px; }
   .info { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .info > div { padding: 18px 18px 16px; gap: 2px; }
+  .info > div { padding: 16px 14px 14px 16px; gap: 2px; }
   .info > div:nth-child(2) { border-left: 1px solid rgba(35, 31, 27, .1); }
-  .info > div:nth-child(n+3) { grid-column: 1 / -1; border-top: 1px solid rgba(35, 31, 27, .1); }
-  .info .t { font-size: 19px; margin-top: 2px; }
+  .info > div:nth-child(n+3) { border-top: 1px solid rgba(35, 31, 27, .1); }
+  .info .t { font-size: 17px; margin-top: 2px; }
   .info p { font-size: 14px; }
   .info .label { font-size: 12px; }
   .info a { display: inline-block; padding: 6px 0; }
-  .info .dark { flex-direction: row; flex-wrap: wrap; align-items: baseline; column-gap: 14px; }
-  .info .dark .label { flex-basis: 100%; }
+  .info .email-full { display: none; }
+  .info .email-short { display: inline; }
   .tagsale { margin-top: 12px; }
   .tagsale-week { padding: 14px 16px; gap: 14px; }
   .tagsale-line { font-size: 21px; }

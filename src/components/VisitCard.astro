@@ -28,7 +28,7 @@ const tel = s?.phone?.replace(/\D/g, '');
     <div class="dark">
       <span class="label" style="color:var(--blue)">Questions?</span>
       <p class="t"><a href={`tel:${tel}`} style="color:#fff;text-decoration:none">{s?.phone}</a></p>
-      <p><a href={`mailto:${s?.email}`}>{s?.email}</a></p>
+      <p><a href={`mailto:${s?.email}`} aria-label={`Email ${s?.email}`}><span class="email-full">{s?.email}</span><span class="email-short">Email us</span></a></p>
     </div>
   </div>
   <TagSale />
