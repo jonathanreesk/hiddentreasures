@@ -118,7 +118,7 @@ h1, h2, h3 { font-family: var(--serif); font-weight: 400; margin: 0; line-height
 .slide .bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transform: scale(1.1); }
 .slide.on .bg { animation: kb 9s ease-out forwards; }
 @keyframes kb { from { transform: scale(1.12); } to { transform: scale(1); } }
-.scrim { position: absolute; inset: 0; background: linear-gradient(90deg, rgba(35, 31, 27, .9) 0%, rgba(35, 31, 27, .66) 42%, rgba(35, 31, 27, .08) 82%); }
+.scrim { position: absolute; inset: 0; background: linear-gradient(90deg, rgba(35, 31, 27, .88) 0%, rgba(35, 31, 27, .6) 38%, rgba(35, 31, 27, 0) 74%); }
 .scrim.red { background: linear-gradient(90deg, rgba(110, 32, 46, .94) 0%, rgba(163, 55, 73, .72) 45%, rgba(163, 55, 73, .1) 85%); }
 .slide .inner { position: relative; height: 100%; display: flex; align-items: center; }
 .slide .copy { max-width: 640px; color: #fff; opacity: 0; transform: translateY(28px); transition: opacity .8s ease .35s, transform .8s var(--ease) .35s; }
