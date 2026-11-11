@@ -5,6 +5,7 @@ const s = await reader.singletons.settings.read();
 const tel = s?.phone?.replace(/\D/g, '');
 ---
 <section class="wrap visit" aria-label="Hours and location">
+  <div class="visit-box">
   <div class="card info">
     <div>
       <div class="status" data-status data-days={(s?.openDays ?? []).join(',')} data-open={s?.openHour ?? 10} data-close={s?.closeHour ?? 19}>
@@ -31,4 +32,5 @@ const tel = s?.phone?.replace(/\D/g, '');
     </div>
   </div>
   <TagSale />
+  </div>
 </section>

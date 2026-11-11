@@ -15,7 +15,7 @@ const weeks = t?.enabled ? t.weeks : [];
       return (
         <div class="tagsale-week" data-start={w.start} data-end={w.end} hidden>
           <span class="tagsale-tag" style={`background:${bg};color:${fg}`} aria-hidden="true"><span class="hole"></span></span>
-          <div>
+          <div class="tagsale-txt">
             <p class="label" style="margin:0;color:var(--red)">This week's tag sale</p>
             <p class="serif tagsale-line"><span style="text-transform:capitalize">{w.color}</span> tags are {w.discount}</p>
             <p class="muted" style="margin:0;font-size:14px">Through {dateLong(w.end!)}. Check the colored tag on each item.</p>
