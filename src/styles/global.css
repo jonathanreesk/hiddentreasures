@@ -350,7 +350,7 @@ details.faq p { margin: 0 0 22px; font-size: 16px; line-height: 1.65; color: var
   .info > div { padding: 16px 14px 14px 16px; gap: 2px; }
   .info > div:nth-child(2) { border-left: 1px solid rgba(35, 31, 27, .1); }
   .info > div:nth-child(n+3) { border-top: 1px solid rgba(35, 31, 27, .1); }
-  .info .t { font-size: 17px; margin-top: 2px; }
+  .info .t { font-size: 16px; margin-top: 2px; }
   .info p { font-size: 14px; }
   .info .label { font-size: 12px; }
   .info a { display: inline-block; padding: 6px 0; }
