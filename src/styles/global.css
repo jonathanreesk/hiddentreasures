@@ -575,7 +575,7 @@ details.faq p { margin: 0 0 22px; font-size: 16px; line-height: 1.65; color: var
   .hero { height: clamp(420px, calc(100svh - 242px), 820px); }
   .hero .h1 { font-size: clamp(40px, min(6vw, 8vh), 72px); }
   .slide .inner { padding-bottom: 112px; }
-  .slide .bg { width: 122%; object-position: center 42%; }
+  .slide .bg { width: 122%; object-position: center 54%; }
   .slide .copy p.body { max-width: 30ch; }
   .slide .copy p.body { font-size: clamp(16px, 2.3vh, 19px); margin: clamp(12px, 2.4vh, 22px) 0 clamp(18px, 3.4vh, 34px); }
   .hero-ctrl { justify-content: flex-end; gap: 20px; bottom: 118px; }
@@ -586,3 +586,7 @@ details.faq p { margin: 0 0 22px; font-size: 16px; line-height: 1.65; color: var
   .site-header .logo img { height: 50px; }
   .hero { height: clamp(420px, calc(100svh - 230px), 820px); }
 }
+/* Slider controls stay readable over bright parts of a photo */
+.hero .iconbtn { background: rgba(35, 31, 27, .5); backdrop-filter: blur(6px); }
+.hero .iconbtn:hover { background: rgba(35, 31, 27, .75); }
+.hero .dot .track { background: rgba(255, 255, 255, .5); box-shadow: 0 0 0 1px rgba(35, 31, 27, .25); }
