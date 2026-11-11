@@ -57,6 +57,9 @@ const { slides } = Astro.props;
         const on = i === idx;
         s.classList.toggle('on', on);
         s.setAttribute('aria-hidden', String(!on));
+        // Restart the slow zoom on the slide coming in; the one leaving holds where it was
+        const bg = s.querySelector<HTMLElement>('.bg');
+        if (on && bg) { bg.style.animation = 'none'; void bg.offsetWidth; bg.style.animation = ''; }
         s.querySelectorAll('a').forEach((a) => (on ? a.removeAttribute('tabindex') : a.setAttribute('tabindex', '-1')));
       });
       dots.forEach((d, i) => {
