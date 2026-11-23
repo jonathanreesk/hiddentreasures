@@ -670,6 +670,3 @@ details.faq p { margin: 0 0 22px; font-size: 16px; line-height: 1.65; color: var
 .md-prev { left: 12px; } .md-next { right: 12px; }
 @media (max-width: 600px) { .md-close { top: 8px; right: 8px; } .media-grid { grid-template-columns: 1fr 1fr; gap: 8px; } }
 
-.hero-badge { position: absolute; z-index: 2; right: 4%; top: 50%; width: min(440px, 34vw); transform: translateY(-58%) rotate(-6deg); opacity: .16; pointer-events: none; animation: badgeIn 1.6s var(--ease) both .3s; }
-@keyframes badgeIn { from { opacity: 0; transform: translateY(-52%) rotate(-12deg) scale(.94); } to { opacity: .16; transform: translateY(-58%) rotate(-6deg); } }
-@media (max-width: 980px) { .hero-badge { display: none; } }

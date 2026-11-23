@@ -24,7 +24,8 @@ const others = posts.filter((p) => p !== featured).slice(0, 8);
   <VisitCard />
 
   <!-- Three ways in -->
-  <section class="section" style="--pb:40px">
+  <section class="section has-wm" style="--pb:40px">
+    <Watermark variant="badge" tone="dark" opacity={0.045} rotate={-4} style="width:min(1100px,110vw);left:50%;top:50%;margin-left:min(-550px,-55vw);margin-top:-390px" />
     <div class="wrap">
       <div class="section-head reveal">
         <div style="max-width:640px">
