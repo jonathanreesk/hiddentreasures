@@ -349,7 +349,6 @@ details.faq p { margin: 0 0 22px; font-size: 16px; line-height: 1.65; color: var
   .page-hero .wrap { padding-top: 56px; padding-bottom: 84px; }
   .page-hero p.lead { margin-top: 14px; }
   .page-hero .btn-row { margin-top: 22px !important; }
-  .trove-hero { padding: 56px 0 72px; }
 
   /* Hours card: two-up instead of four stacked blocks */
   .visit { margin-top: -56px; }
@@ -529,18 +528,12 @@ details.faq p { margin: 0 0 22px; font-size: 16px; line-height: 1.65; color: var
 .photo-strip { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 14px; }
 .photo-strip img { width: 100%; height: 100%; object-fit: cover; border-radius: 18px; aspect-ratio: 4 / 3; }
 .photo-strip img:first-child { grid-row: span 2; aspect-ratio: auto; }
-.trove-badge { display: inline-flex; align-items: center; gap: 10px; padding: 8px 16px; border-radius: 999px; font-weight: 700; font-size: 15px; }
-.trove-badge .d { width: 10px; height: 10px; border-radius: 50%; }
 @media (max-width: 760px) {
   .art-row { grid-template-columns: minmax(0, 1fr); }
   .art-row .dart { width: 120px; height: 120px; }
   .photo-strip { grid-template-columns: 1fr 1fr; }
   .photo-strip img:first-child { grid-column: span 2; grid-row: auto; aspect-ratio: 4 / 3; }
 }
-.trove-hero { background: #f6dfe2; padding: 100px 0 90px; position: relative; overflow: hidden; }
-.trove-hero .h1 { font-size: clamp(56px, 8vw, 104px); letter-spacing: -.02em; }
-.trove-hero::after { content: ''; position: absolute; right: -80px; top: -80px; width: 340px; height: 340px; border-radius: 50%; border: 18px solid rgba(163, 55, 73, .1); }
-.trove-now { box-shadow: 0 30px 60px rgba(35, 31, 27, .14); position: relative; z-index: 1; }
 @media (max-width: 760px) { .photo-strip[style] { grid-template-columns: 1fr 1fr !important; } }
 .tagsale[hidden], .tagsale-week[hidden] { display: none; }
 
@@ -616,3 +609,72 @@ details.faq p { margin: 0 0 22px; font-size: 16px; line-height: 1.65; color: var
 
 /* Very narrow phones: text wraps more, so keep the fixed hero height */
 @media (max-width: 374px) { .hero { height: 560px; } }
+
+/* Calendar */
+.cal-legend { display: flex; flex-wrap: wrap; gap: 8px 18px; margin-bottom: 14px; font-size: 14px; color: var(--muted); }
+.cal-legend span { display: inline-flex; align-items: center; gap: 8px; }
+.cal-legend i { width: 16px; height: 16px; border-radius: 4px; box-shadow: inset 0 0 0 1px rgba(35, 31, 27, .12); }
+.cal-month[hidden] { display: none; }
+.cal-grid { border-radius: var(--radius); overflow: hidden; background: var(--paper); box-shadow: 0 20px 50px rgba(35, 31, 27, .08), inset 0 0 0 1px rgba(35, 31, 27, .08); }
+.cal-row { display: grid; grid-template-columns: 84px repeat(7, minmax(0, 1fr)); }
+.cal-row + .cal-row { border-top: 1px solid rgba(35, 31, 27, .08); }
+.cal-head span { padding: 12px 10px; font-family: var(--mono); font-weight: 700; font-size: 13px; letter-spacing: .1em; text-transform: uppercase; color: var(--ink-2); background: var(--sand); }
+.cal-tagcol { display: flex; align-items: center; justify-content: center; padding: 8px; background: rgba(233, 225, 214, .5); }
+.cal-tag { font-family: var(--mono); font-weight: 700; font-size: 13px; line-height: 1.15; text-align: center; padding: 8px 6px 8px 14px; clip-path: polygon(16% 0, 100% 0, 100% 100%, 16% 100%, 0 50%); min-width: 64px; }
+.cal-day { min-height: 112px; padding: 8px; border-left: 1px solid rgba(35, 31, 27, .08); display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.cal-day .n { font-family: var(--serif); font-size: 18px; line-height: 1; margin-bottom: 4px; }
+.cal-day.closed { background: repeating-linear-gradient(135deg, #ece6dc 0 6px, #f7f2ea 6px 12px); }
+.cal-day.today { box-shadow: inset 0 0 0 3px var(--red); }
+.cal-day.today .n { color: var(--red); }
+.cal-day.empty { background: rgba(247, 242, 234, .6); }
+.cal-closed { font-size: 12px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; }
+.cal-ev { display: block; font-size: 12.5px; font-weight: 700; line-height: 1.25; color: var(--ink); text-decoration: none; padding: 5px 7px; border-radius: 7px; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; transition: transform .2s, box-shadow .2s; }
+.cal-ev:hover { transform: translateY(-1px); box-shadow: 0 6px 14px rgba(35, 31, 27, .12); color: var(--ink); }
+.cal-ev.multi { border-radius: 0; margin: 0 -9px; padding-left: 16px; min-height: 26px; }
+.cal-agenda { display: none; list-style: none; margin: 0; padding: 0; }
+.cal-agenda li { display: flex; gap: 14px; align-items: flex-start; padding: 12px 0; border-bottom: 1px dashed rgba(35, 31, 27, .16); }
+.cal-agenda .date { flex: none; width: 56px; height: 56px; border-radius: 12px; background: var(--sand); display: flex; flex-direction: column; align-items: center; justify-content: center; }
+.cal-agenda .date .m { font-family: var(--mono); font-size: 11px; font-weight: 700; text-transform: uppercase; }
+.cal-agenda .date .d { font-family: var(--serif); font-size: 22px; line-height: 1; }
+.iconbtn:disabled { opacity: .35; cursor: default; transform: none; }
+@media (max-width: 860px) {
+  .cal-grid { display: none; }
+  .cal-agenda { display: block; }
+}
+
+/* Compass badge watermarks */
+.has-wm { position: relative; overflow: hidden; isolation: isolate; }
+.has-wm > .wrap, .has-wm > div:not(.wm) { position: relative; z-index: 1; }
+.wm { position: absolute; z-index: 0; pointer-events: none; user-select: none; max-width: none; transform: translate3d(0, var(--drift, 0px), 0) rotate(var(--r, 0deg)); transition: opacity 1.2s ease; will-change: transform; }
+@media (max-width: 760px) { .wm { width: 80vw !important; } }
+
+/* Media grid and viewer */
+.media-grid { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 14px; }
+.media-grid li[hidden] { display: none; }
+.media-tile { position: relative; display: block; width: 100%; aspect-ratio: 4 / 3; padding: 0; border: 0; border-radius: 16px; overflow: hidden; cursor: zoom-in; background: var(--sand); }
+.media-tile img { width: 100%; height: 100%; object-fit: cover; transition: transform .6s var(--ease); }
+.media-tile:hover img { transform: scale(1.05); }
+.media-ph { position: absolute; inset: 0; background: var(--ink); }
+.media-play { position: absolute; left: 50%; top: 50%; width: 64px; height: 64px; margin: -32px 0 0 -32px; border-radius: 50%; background: rgba(255, 255, 255, .92); color: var(--red); display: flex; align-items: center; justify-content: center; box-shadow: 0 10px 30px rgba(0, 0, 0, .25); transition: transform .3s var(--ease); }
+.media-tile:hover .media-play { transform: scale(1.08); }
+.media-cap { position: absolute; left: 0; right: 0; bottom: 0; padding: 26px 14px 12px; text-align: left; color: #fff; font-weight: 600; font-size: 14px; background: linear-gradient(0deg, rgba(35, 31, 27, .75), transparent); opacity: 0; transition: opacity .3s; }
+.media-tile:hover .media-cap, .media-tile:focus-visible .media-cap { opacity: 1; }
+.media-dialog { width: min(1200px, 94vw); max-height: 92vh; padding: 0; border: 0; border-radius: 18px; background: #111; color: #fff; overflow: visible; }
+.media-dialog::backdrop { background: rgba(20, 17, 14, .86); }
+.media-stage { display: flex; align-items: center; justify-content: center; aspect-ratio: 16 / 10; max-height: 80vh; overflow: hidden; border-radius: 18px 18px 0 0; }
+.media-stage img, .media-stage video { max-width: 100%; max-height: 80vh; object-fit: contain; }
+.media-stage iframe { width: 100%; height: 100%; border: 0; }
+.media-dcap { margin: 0; padding: 14px 20px; font-size: 15px; color: #e9e1d6; min-height: 20px; }
+.md-close { position: absolute; top: -18px; right: -18px; background: var(--red); }
+.md-prev, .md-next { position: absolute; top: 50%; margin-top: -24px; background: rgba(0, 0, 0, .5); }
+.md-prev { left: 12px; } .md-next { right: 12px; }
+@media (max-width: 600px) { .md-close { top: 8px; right: 8px; } .media-grid { grid-template-columns: 1fr 1fr; gap: 8px; } }
+
+
+/* A little peek of the compass rose tucked behind the header */
+.site-header { overflow: hidden; }
+.site-header > .bar, .site-header > .wrap, .site-header > nav { position: relative; z-index: 1; }
+.header-peek { position: absolute; z-index: 0; right: -70px; top: -26px; width: 300px; opacity: .1; transform: rotate(-14deg); pointer-events: none; transition: opacity .4s ease, transform .8s var(--ease); }
+.site-header:hover .header-peek { opacity: .16; transform: rotate(-8deg); }
+@media (max-width: 980px) { .header-peek { width: 200px; right: -60px; top: -18px; opacity: .09; } }
+@media (prefers-reduced-motion: reduce) { .header-peek { transition: none; } }

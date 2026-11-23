@@ -1,0 +1,10 @@
+---
+// The five "featured" photos from the gallery. Staff choose them in the editor.
+import { getGallery } from '../lib/content';
+const photos = (await getGallery()).filter((m) => m.featured && m.image).slice(0, 5);
+---
+{photos.length > 0 && (
+  <div class="photo-strip reveal">
+    {photos.map((p) => <img src={p.image} alt={p.alt} loading="lazy" />)}
+  </div>
+)}

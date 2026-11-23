@@ -1,12 +1,14 @@
 ---
 // Homepage band: a slow-moving ribbon of partner ministries, linking to /partners.
 import PartnerMark from './PartnerMark.astro';
+import Watermark from './Watermark.astro';
 import { reader } from '../lib/content';
 const p = await reader.singletons.partners.read();
 const items = p?.items ?? [];
 ---
 {items.length > 0 && (
-  <section class="section-tight partners-band" aria-labelledby="partners-h">
+  <section class="section-tight partners-band has-wm" aria-labelledby="partners-h">
+    <Watermark variant="rose" tone="red" opacity={0.06} style="width:520px;left:-80px;top:10px" />
     <div class="wrap section-head reveal" style="margin-bottom:32px">
       <div style="max-width:620px">
         <p class="eyebrow">Partners in the mission</p>

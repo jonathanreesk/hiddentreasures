@@ -1,10 +1,12 @@
 ---
 import Form from './Form.astro';
 import Icon from './Icon.astro';
+import Watermark from './Watermark.astro';
 import { reader } from '../lib/content';
 const s = await reader.singletons.settings.read();
 ---
-<section class="band section-tight" id="newsletter">
+<section class="band section-tight has-wm" id="newsletter">
+  <Watermark variant="badge" tone="dark" opacity={0.06} rotate={6} style="width:560px;left:-140px;bottom:-120px" />
   <div class="wrap split" style="align-items:center">
     <div class="reveal">
       <p class="eyebrow">Stay in the loop</p>

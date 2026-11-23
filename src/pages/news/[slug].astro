@@ -1,7 +1,8 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 import PostRow from '../../components/PostRow.astro';
-import { getPosts, paragraphs, dateRange, typeLabel, videoEmbed, reader } from '../../lib/content';
+import MediaGrid from '../../components/MediaGrid.astro';
+import { getPosts, paragraphs, dateRange, typeLabel, videoEmbed, reader, img } from '../../lib/content';
 
 export async function getStaticPaths() {
   const posts = await getPosts();
@@ -9,6 +10,8 @@ export async function getStaticPaths() {
 }
 const { post } = Astro.props;
 const embed = videoEmbed(post.videoUrl);
+const upload = img(post.videoUpload);
+const media = (post.gallery ?? []).filter((g) => g.image).map((g) => ({ kind: 'photo' as const, image: img(g.image), embed: '', file: '', caption: g.caption ?? '', alt: g.caption ?? '' }));
 const more = (await getPosts()).filter((p) => p.slug !== post.slug).slice(0, 3);
 const s = await reader.singletons.settings.read();
 const start = post.startDate!.replace(/-/g, '');
@@ -31,11 +34,13 @@ const gcal = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=$
     <div class="wrap split">
       <div>
         {embed && <div class="video reveal" style="margin-bottom:32px"><iframe src={embed} title={`Video: ${post.title}`} loading="lazy" allow="encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe></div>}
-        {!embed && post.image && <img src={post.image} alt="" class="reveal" style="border-radius:var(--radius);margin-bottom:32px;width:100%" data-zoom />}
+        {!embed && upload && <div class="video reveal" style="margin-bottom:32px"><video src={upload} controls playsinline poster={post.image || undefined} style="width:100%;height:100%"></video></div>}
+        {!embed && !upload && post.image && <img src={post.image} alt="" class="reveal" style="border-radius:var(--radius);margin-bottom:32px;width:100%" data-zoom />}
         <div class="prose">
           {post.summary && <p class="serif" style="font-size:clamp(19px,4.9vw,24px);line-height:1.45">{post.summary}</p>}
           {paragraphs(post.body).map((p) => <p>{p}</p>)}
         </div>
+        {media.length > 0 && <div style="margin:28px 0 8px"><p class="eyebrow">Photos</p><MediaGrid items={media} id={`post-${post.slug}`} /></div>}
         {post.type !== 'news' && (
           <div class="btn-row" style="margin-top:12px">
             <a class="btn btn-ink" href={gcal}>Add to Google Calendar</a>

@@ -1,0 +1,80 @@
+---
+// Photo and video grid with a full-screen viewer. Used by the Gallery page and news posts.
+import type { MediaItem } from '../lib/content';
+interface Props { items: MediaItem[]; filters?: boolean; id?: string }
+const { items, filters = false, id = 'media' } = Astro.props;
+const hasVideos = items.some((i) => i.kind === 'video');
+---
+{items.length > 0 && (
+  <div class="media-wrap" data-media={id}>
+    {filters && hasVideos && (
+      <div class="chips" role="group" aria-label="Show" style="margin-bottom:24px">
+        <button type="button" class="chip" aria-pressed="true" data-mf="all">All</button>
+        <button type="button" class="chip" aria-pressed="false" data-mf="photo">Photos</button>
+        <button type="button" class="chip" aria-pressed="false" data-mf="video">Videos</button>
+      </div>
+    )}
+    <ul class="media-grid">
+      {items.map((m, i) => (
+        <li data-kind={m.kind}>
+          <button type="button" class="media-tile" data-open={i} aria-label={`${m.kind === 'video' ? 'Play video' : 'View photo'}${m.caption ? `: ${m.caption}` : ''}`}>
+            {m.image ? <img src={m.image} alt={m.alt} loading="lazy" /> : <span class="media-ph"></span>}
+            {m.kind === 'video' && <span class="media-play" aria-hidden="true"><svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5l12 7-12 7z"></path></svg></span>}
+            {m.caption && <span class="media-cap">{m.caption}</span>}
+          </button>
+        </li>
+      ))}
+    </ul>
+    <dialog class="media-dialog" aria-label="Photo and video viewer">
+      <div class="media-stage" data-stage></div>
+      <p class="media-dcap" data-dcap></p>
+      <button type="button" class="iconbtn md-close" aria-label="Close" data-close><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"></path></svg></button>
+      <button type="button" class="iconbtn md-prev" aria-label="Previous" data-prev><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"></path></svg></button>
+      <button type="button" class="iconbtn md-next" aria-label="Next" data-next><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"></path></svg></button>
+    </dialog>
+    <script type="application/json" data-items set:html={JSON.stringify(items)}></script>
+  </div>
+)}
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-media]').forEach((root) => {
+    const items = JSON.parse(root.querySelector('[data-items]')!.textContent || '[]');
+    const dlg = root.querySelector<HTMLDialogElement>('dialog')!;
+    const stage = root.querySelector<HTMLElement>('[data-stage]')!;
+    const cap = root.querySelector<HTMLElement>('[data-dcap]')!;
+    let cur = 0;
+    const visible = () => [...root.querySelectorAll<HTMLElement>('.media-grid li')].filter((li) => !li.hidden).map((li) => Number(li.querySelector<HTMLElement>('[data-open]')!.dataset.open));
+    const show = (i: number) => {
+      cur = i;
+      const m = items[i];
+      stage.innerHTML = '';
+      if (m.kind === 'video' && m.embed) {
+        const f = document.createElement('iframe');
+        f.src = m.embed + '?autoplay=1'; f.allow = 'autoplay; encrypted-media; picture-in-picture; fullscreen'; f.allowFullscreen = true; f.title = m.caption || 'Video';
+        stage.appendChild(f);
+      } else if (m.kind === 'video' && m.file) {
+        const v = document.createElement('video');
+        v.src = m.file; v.controls = true; v.autoplay = true; v.playsInline = true; if (m.image) v.poster = m.image;
+        stage.appendChild(v);
+      } else {
+        const im = document.createElement('img');
+        im.src = m.image; im.alt = m.alt || '';
+        stage.appendChild(im);
+      }
+      cap.textContent = m.caption || '';
+    };
+    const step = (d: number) => { const v = visible(); const k = v.indexOf(cur); show(v[(k + d + v.length) % v.length]); };
+    root.querySelectorAll<HTMLElement>('[data-open]').forEach((b) => b.addEventListener('click', () => { show(Number(b.dataset.open)); dlg.showModal(); }));
+    root.querySelector('[data-close]')!.addEventListener('click', () => dlg.close());
+    root.querySelector('[data-prev]')!.addEventListener('click', () => step(-1));
+    root.querySelector('[data-next]')!.addEventListener('click', () => step(1));
+    dlg.addEventListener('click', (e) => { if (e.target === dlg) dlg.close(); });
+    dlg.addEventListener('close', () => (stage.innerHTML = ''));
+    dlg.addEventListener('keydown', (e) => { if (e.key === 'ArrowRight') step(1); if (e.key === 'ArrowLeft') step(-1); });
+    const btns = [...root.querySelectorAll<HTMLButtonElement>('[data-mf]')];
+    btns.forEach((b) => b.addEventListener('click', () => {
+      btns.forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
+      root.querySelectorAll<HTMLElement>('.media-grid li').forEach((li) => { li.hidden = !(b.dataset.mf === 'all' || li.dataset.kind === b.dataset.mf); });
+    }));
+  });
+</script>

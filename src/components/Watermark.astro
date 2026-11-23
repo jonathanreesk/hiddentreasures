@@ -1,0 +1,9 @@
+---
+// Faint background watermark of the Hidden Treasures compass badge (designed by a team member).
+// variant: 'badge' = the full badge, 'rose' = just the compass rose line art.
+// tone: match to the section: 'light' on dark sections, 'dark' on cream, 'red' on cream for warmth.
+interface Props { variant?: 'badge' | 'rose'; tone?: 'light' | 'dark' | 'red'; style?: string; opacity?: number; rotate?: number }
+const { variant = 'badge', tone = 'dark', style = '', opacity = 0.06, rotate = 0 } = Astro.props;
+const src = `/images/brand/compass-${variant}-${tone}.png`;
+---
+<img class="wm" src={src} alt="" aria-hidden="true" loading="lazy" decoding="async" data-wm style={`opacity:${opacity};--r:${rotate}deg;${style}`} />

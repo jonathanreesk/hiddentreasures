@@ -66,3 +66,25 @@ export function videoEmbed(url?: string | null) {
   } catch {}
   return '';
 }
+
+export type MediaItem = { kind: 'photo' | 'video'; image: string; embed: string; file: string; caption: string; alt: string; featured?: boolean };
+
+export async function getGallery(): Promise<MediaItem[]> {
+  const g = await reader.singletons.gallery.read();
+  return (g?.items ?? [])
+    .map((i) => ({
+      kind: (i.kind === 'video' && (i.videoUrl || i.videoUpload) ? 'video' : 'photo') as 'photo' | 'video',
+      image: img(i.image),
+      embed: videoEmbed(i.videoUrl),
+      file: img(i.videoUpload),
+      caption: i.caption ?? '',
+      alt: i.altText || i.caption || '',
+      featured: i.featured,
+    }))
+    .filter((i) => i.image || i.embed || i.file);
+}
+
+export async function pageImage(key: string, fallback: string) {
+  const p = (await reader.singletons.pageImages.read()) as Record<string, string | null> | null;
+  return img(p?.[key]) || fallback;
+}

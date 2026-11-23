@@ -175,11 +175,11 @@ Every address from the old Squarespace site still works, so Instagram bios, prin
 | `/partners` | `/partners` (new page, editable) |
 | `/search`, `/home` | `/` (home) |
 | `/email` | `/#newsletter` (the newsletter signup) |
-| `/loyalty` | `/loyalty`: rebuilt Treasure Hunters page, including the "Complete your profile" form |
-| `/trove` | `/trove`: rebuilt page for the Trove pop-up boutique |
+| `/loyalty` | `/loyalty`: rebuilt loyalty program page, including the "Complete your profile" form |
+| `/trove` | `/news` (the space across the lot no longer has a name; its events are posts) |
 | eBay store, Jericho Road, prayer request email | Buttons on `/links`, plus links in the footer and on the Shop page |
 
-**Important:** the old Treasure Hunters "Complete your profile" form was a Squarespace form, so it stops working when Squarespace is cancelled. The new site has its own copy of that form with the same fields, emailed to the store through SendGrid. Export any existing profile submissions from Squarespace (Contacts or Form Storage) before you cancel.
+**Important:** the old loyalty "Complete your profile" form was a Squarespace form, so it stops working when Squarespace is cancelled. The new site has its own copy of that form with the same fields, emailed to the store through SendGrid. Export any existing profile submissions from Squarespace (Contacts or Form Storage) before you cancel.
 
 The existing Google Forms for job interest and volunteering are still used: the Apply and Volunteer buttons open them. To use the site's own built-in forms instead, clear those links under **Work with us page** in the editor.
 
@@ -198,8 +198,15 @@ These spots still have placeholder text in [brackets]. Fill them in through the 
 ## Seasonal content to keep up to date
 
 - **Color tag sale:** under **Color tag sale**, add each week's tag color and discount. The site shows only the current week, in Minneapolis time.
-- **The Trove:** under **The Trove**, set whether it's open, the current pop-up, and its dates.
-- **November calendar:** the old site's November calendar is now individual posts under **News and events**, one per sale, closure and event. Add next month's posts the same way, instead of uploading a calendar image.
+- **Sales and events calendar:** the calendar on the News and events page (`/news#calendar`) builds itself from the posts under **News and events**, the color tag weeks, and Sunday closures. Add each sale, closure and event as a post and it appears on the calendar automatically. To also offer the designed Canva calendar as a download, upload it under **Monthly calendar graphic** with its month (for example 2026-12).
+
+## Photos and videos
+
+- **Gallery** (`/gallery`): under **Photos and videos → Photo and video gallery**, add a photo, or a video with a cover photo. Videos can be a YouTube or Vimeo link (best), or a short MP4 upload under 50 MB. Tick **Show on the homepage and Shop page photo strips** on up to five photos to feature them there.
+- **Page header photos:** under **Photos and videos → Page header photos**, swap the big photo at the top of Donate, Shop, Work with us, News and events, Loyalty, Partners and Gallery.
+- **News and events posts:** each post has a main photo or flyer, a video link or short video upload, and a **More photos** list that shows as a gallery on the post's page.
+- **Editing a photo** (crop, brighten, straighten): do it on a phone or computer first, then upload the edited copy. To replace a photo, open it in the editor, remove it, and upload the new one. Wide photos (landscape) work best everywhere.
+- **Why links for long videos:** every upload is saved in the GitHub repo, and big video files make it slow and can hit GitHub's 100 MB limit. YouTube or Vimeo links have no limit and load faster for visitors.
 
 ## Quick guide for staff (in the editor)
 

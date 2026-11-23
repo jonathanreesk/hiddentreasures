@@ -23,6 +23,7 @@ export default defineConfig({
     '/about': '/our-story',
     '/search': '/',
     '/home': '/',
+    '/trove': '/news',
     '/email': '/#newsletter',
   },
 });

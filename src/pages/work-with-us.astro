@@ -3,11 +3,14 @@ import Layout from '../layouts/Layout.astro';
 import PageHero from '../components/PageHero.astro';
 import Form from '../components/Form.astro';
 import Stories from '../components/Stories.astro';
-import { reader } from '../lib/content';
+import Watermark from '../components/Watermark.astro';
+
+import { reader, pageImage } from '../lib/content';
+const hero = await pageImage('work', '/images/uploads/staff-welcome.jpg');
 const w = await reader.singletons.work.read();
 ---
 <Layout title="Work with us" description="Real, paid jobs for men and women with barriers to employment. Apply, refer someone, or volunteer at Hidden Treasures.">
-  <PageHero eyebrow="Work with us" title={w?.headline || "You're welcome here."} lead={w?.intro} image="/images/uploads/staff-welcome.jpg">
+  <PageHero eyebrow="Work with us" title={w?.headline || "You're welcome here."} lead={w?.intro} image={hero}>
     <div class="btn-row" style="margin-top:32px">
       <a class="btn btn-red" href={w?.applyFormUrl || '#apply'} target={w?.applyFormUrl ? '_blank' : undefined} rel="noopener">Express interest</a>
       <a class="btn btn-ghost" href="#refer">Refer someone</a>
@@ -111,7 +114,8 @@ const w = await reader.singletons.work.read();
     </div>
   </section>
 
-  <section class="section" id="volunteer">
+  <section class="section has-wm" id="volunteer">
+    <Watermark variant="rose" tone="dark" opacity={0.05} style="width:620px;right:-120px;top:20px" />
     <div class="wrap split">
       <div class="reveal">
         <p class="eyebrow">Volunteer</p>

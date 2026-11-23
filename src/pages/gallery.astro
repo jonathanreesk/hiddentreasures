@@ -1,0 +1,19 @@
+---
+import Layout from '../layouts/Layout.astro';
+import PageHero from '../components/PageHero.astro';
+import MediaGrid from '../components/MediaGrid.astro';
+import Watermark from '../components/Watermark.astro';
+import { reader, getGallery, pageImage } from '../lib/content';
+const g = await reader.singletons.gallery.read();
+const items = await getGallery();
+const hero = await pageImage('gallery', '/images/uploads/furniture-room.jpg');
+---
+<Layout title="Gallery" description="Photos and videos from inside Hidden Treasures Thrift Store in St Anthony, MN.">
+  <PageHero eyebrow="Gallery" title="Inside the store." lead={g?.intro} image={hero} />
+  <section class="section has-wm">
+    <Watermark variant="rose" tone="dark" opacity={0.05} style="width:620px;right:-120px;top:20px" />
+    <div class="wrap">
+      <MediaGrid items={items} filters id="gallery" />
+    </div>
+  </section>
+</Layout>
