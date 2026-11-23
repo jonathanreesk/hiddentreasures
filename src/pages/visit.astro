@@ -8,7 +8,7 @@ import PhotoStrip from '../components/PhotoStrip.astro';
 import { reader, getPosts, pageImage } from '../lib/content';
 const hero = await pageImage('visit', '/images/uploads/sales-floor.jpg');
 const s = await reader.singletons.settings.read();
-const posts = (await getPosts()).filter((p) => p.type !== 'news').slice(0, 6);
+const posts = (await getPosts()).filter((p) => p.type !== 'news').sort((a, b) => (a.startDate ?? '').localeCompare(b.startDate ?? '')).slice(0, 15);
 const q = encodeURIComponent(`${s?.addressLine1} ${s?.addressLine2}`);
 ---
 <Layout title="Shop and visit" description="Hours, directions and what is happening at Hidden Treasures Thrift Store in St Anthony, MN.">
@@ -40,7 +40,7 @@ const q = encodeURIComponent(`${s?.addressLine1} ${s?.addressLine2}`);
       </div>
       <div class="reveal" style="display:flex;flex-direction:column;gap:12px">
         <p class="eyebrow">Sales and events</p>
-        {posts.map((p) => <PostRow post={p} />)}
+        <div data-when-list data-limit="6" style="display:flex;flex-direction:column;gap:12px">{posts.map((p) => <PostRow post={p} />)}<p data-empty hidden class="muted" style="margin:0">Nothing coming up right now. Check back soon!</p></div>
         <a href="/news" style="font-weight:700;min-height:44px;display:inline-flex;align-items:center">All news and events →</a>
       </div>
     </div>

@@ -191,7 +191,7 @@ These spots still have placeholder text in [brackets]. Fill them in through the 
 - **Store emails:** the old site mixes hello@hiddentreasuresmn.org, info@hiddentreasuresmn.org and hello@htmn.org. The new site uses hello@ everywhere, so confirm that's the right inbox. If htmn.org is also the store's domain, add it in Vercel so it redirects to the site, but keep the `htmn.org/loyalty` link working.
 - **Store info and hours:** Instagram and Facebook links. The icons only appear once these are filled in.
 - **Stories:** add 2 or 3 first-person stories. The section stays hidden until there is at least one.
-- **News and events:** add the Christmas Market video link, and the real flyer image if you want it
+- **News and events:** add the real Christmas Market flyer image if you want it (the tour video is already in)
 
 ---
 
@@ -202,6 +202,7 @@ These spots still have placeholder text in [brackets]. Fill them in through the 
 
 ## Photos and videos
 
+- **Homepage video:** under **Everyday edits → Homepage video**, tick **Show the video on the homepage**, then upload an MP4 or paste a YouTube link, and set the headline, short text, cover photo and button. Untick to hide the band.
 - **Gallery** (`/gallery`): under **Photos and videos → Photo and video gallery**, add a photo, or a video with a cover photo. Videos can be a YouTube or Vimeo link (best), or a short MP4 upload under 50 MB. Tick **Show on the homepage and Shop page photo strips** on up to five photos to feature them there.
 - **Page header photos:** under **Photos and videos → Page header photos**, swap the big photo at the top of Donate, Shop, Work with us, News and events, Loyalty, Partners and Gallery.
 - **News and events posts:** each post has a main photo or flyer, a video link or short video upload, and a **More photos** list that shows as a gallery on the post's page.
@@ -212,15 +213,22 @@ These spots still have placeholder text in [brackets]. Fill them in through the 
 
 | I want to... | Go to |
 |---|---|
-| Post an event, sale or news update | **News and events → +**. Fill in the title, type, date and summary. Add a photo or flyer and a YouTube or Vimeo link if you have them. Tick **Feature on the homepage** to make it the big card. |
-| Show or hide the red bar at the top | **Announcement bar** → tick or untick **Show the bar**, then edit the message |
-| Change hours or the phone number | **Store info and hours** |
+| Post an event, sale or news update | **Everyday edits → Events, sales and news → +**. Fill in the title, type, date and summary. Add a photo or flyer and a YouTube or Vimeo link if you have them. Tick **Feature on the homepage** to make it the big card. |
+| Show or hide the red bar at the top | **Everyday edits → Top ribbon** → tick or untick **Show the bar**, then edit the message |
+| Change hours or the phone number | **Everyday edits → Store info and hours** |
+| Change the homepage video | **Everyday edits → Homepage video** |
 | Change the homepage slideshow | **Homepage → Slideshow**. Add, remove or reorder slides and swap the photos. |
 | Add a story | **Stories → +** |
 
 Click **Save** after each change. The live site updates in about a minute.
 
-Past events drop off the homepage "Coming up" list automatically, so there's no need to delete them.
+Old events take care of themselves, so there's no need to delete them:
+
+- Anything running today shows a green **Happening now** (or **Today**) flag, and tomorrow's events show **Tomorrow**.
+- For two days after an event ends it shows **Ended yesterday** or **Just ended**, then it disappears from the homepage, the Shop page and the News page (visitors can still tap **Show past events** on the News page).
+- The calendar keeps every day, past and future.
+- General news posts stay up for two weeks. Closures behave like events.
+- Lists show the soonest events first.
 
 ---
 

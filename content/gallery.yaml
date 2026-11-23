@@ -1,5 +1,12 @@
 intro: 'A look inside Hidden Treasures: our team, our shoppers, and the treasures that come through the door every day.'
 items:
+- kind: video
+  image: /images/uploads/christmas-market-video-cover.jpg
+  videoUrl: null
+  videoUpload: /videos/christmas-market-2026.mp4
+  caption: A tour of the Christmas Market
+  altText: Video tour of the Christmas Market
+  featured: false
 - kind: photo
   image: /images/uploads/front-table.jpg
   videoUrl: null

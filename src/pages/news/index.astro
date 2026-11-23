@@ -5,7 +5,7 @@ import Newsletter from '../../components/Newsletter.astro';
 import Calendar from '../../components/Calendar.astro';
 import { getPosts, dateRange, typeLabel, pageImage } from '../../lib/content';
 const hero = await pageImage('news', '/images/uploads/front-table.jpg');
-const posts = await getPosts();
+const posts = (await getPosts()).sort((a, b) => (a.startDate ?? '').localeCompare(b.startDate ?? ''));
 ---
 <Layout title="News and events" description="Sales, events and news from Hidden Treasures Thrift Store.">
   <PageHero eyebrow="News and events" title="What is happening at the store." lead="Seasonal markets, sales, and updates from our team." image={hero}>
@@ -22,12 +22,12 @@ const posts = await getPosts();
       </div>
       <div class="post-grid">
         {posts.map((p) => (
-          <a class="card post-card lift outline" href={`/news/${p.slug}`} data-type={p.type} data-end={p.endDate || p.startDate}>
+          <a class="card post-card lift outline" href={`/news/${p.slug}`} data-type={p.type} data-when data-start={p.startDate} data-end={p.endDate || p.startDate} data-closed={/closed/i.test(`${p.badge ?? ''} ${p.title}`) ? '1' : undefined}>
             <div class="thumb">{p.image ? <img src={p.image} alt="" loading="lazy" /> : <div style="height:100%;display:flex;align-items:center;justify-content:center;background:var(--red)"><img src="/images/brand/tag-blue.png" alt="" width="120" /></div>}</div>
             <div class="body">
               <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
                 <span class="badge">{p.badge || typeLabel[p.type]}</span>
-                <span class="badge" data-past hidden style="background:var(--sand)">Past</span>
+                <span class="when-flag" data-flag hidden></span>
               </div>
               <h2 class="serif" style="font-size:clamp(20px,5.3vw,26px);line-height:1.2;margin:6px 0 0">{p.title}</h2>
               <p class="muted" style="margin:0;font-size:15px;font-weight:600">{dateRange(p.startDate!, p.endDate)}{p.timeText ? ` · ${p.timeText}` : ''}</p>
@@ -37,19 +37,28 @@ const posts = await getPosts();
         ))}
       </div>
       {posts.length === 0 && <p class="lead">Nothing posted yet. Check back soon.</p>}
+      <div style="text-align:center;margin-top:36px"><button type="button" class="btn btn-outline" data-show-past hidden>Show past events</button></div>
     </div>
   </section>
   <Newsletter />
 </Layout>
 
 <script>
-  const today = new Date().toLocaleDateString('en-CA', { timeZone: 'America/Chicago' });
-  const cards = [...document.querySelectorAll<HTMLElement>('[data-type]')];
-  cards.forEach((c) => { if (c.dataset.type !== 'news' && (c.dataset.end || '') < today) c.querySelector<HTMLElement>('[data-past]')!.hidden = false; });
+  const cards = [...document.querySelectorAll<HTMLElement>('.post-grid [data-type]')];
   const btns = [...document.querySelectorAll<HTMLButtonElement>('[data-filter]')];
   btns.forEach((b) => b.addEventListener('click', () => {
     const f = b.dataset.filter;
     btns.forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
-    cards.forEach((c) => { c.hidden = !(f === 'all' || c.dataset.type === f); if (!c.hidden) c.classList.add('pop'); });
+    const showPast = document.documentElement.classList.contains('show-past');
+    cards.forEach((c) => { c.hidden = !(f === 'all' || c.dataset.type === f) || (c.classList.contains('expired') && !showPast); if (!c.hidden) c.classList.add('pop'); });
   }));
+  const pastBtn = document.querySelector<HTMLButtonElement>('[data-show-past]');
+  if (pastBtn && cards.some((c) => c.classList.contains('expired'))) {
+    pastBtn.hidden = false;
+    pastBtn.addEventListener('click', () => {
+      document.documentElement.classList.add('show-past');
+      cards.forEach((c) => { if (c.classList.contains('expired')) { c.hidden = false; c.classList.add('pop'); } });
+      pastBtn.hidden = true;
+    });
+  }
 </script>

@@ -42,17 +42,16 @@ export default config({
   ui: {
     brand: { name: 'Hidden Treasures' },
     navigation: {
-      'Posts': ['events', 'stories'],
-      'Site-wide': ['settings', 'announcement', 'tagSale', 'calendar'],
+      'Everyday edits': ['events', 'announcement', 'homeVideo', 'tagSale', 'settings'],
       'Photos and videos': ['gallery', 'pageImages'],
-      'Pages': ['home', 'donate', 'work', 'about', 'loyalty', 'partners', 'links'],
+      'Pages': ['home', 'donate', 'work', 'about', 'loyalty', 'partners', 'links', 'stories', 'calendar'],
     },
   },
 
   collections: {
     // ------------------------------------------------------------- NEWS + EVENTS
     events: collection({
-      label: 'News and events',
+      label: 'Events, sales and news',
       slugField: 'title',
       path: 'content/events/*',
       format: { data: 'yaml' },
@@ -140,13 +139,13 @@ export default config({
     }),
 
     announcement: singleton({
-      label: 'Announcement bar',
+      label: 'Top ribbon (announcement)',
       path: 'content/announcement',
       format: { data: 'yaml' },
       schema: {
-        enabled: fields.checkbox({ label: 'Show the bar at the top of every page', defaultValue: false }),
-        label: fields.text({ label: 'Small label', defaultValue: 'Now open' }),
-        message: fields.text({ label: 'Message' }),
+        enabled: fields.checkbox({ label: '1. Show the ribbon at the top of every page', defaultValue: false }),
+        label: fields.text({ label: '2. Small label', description: 'One or two words, for example: Now open', defaultValue: 'Now open' }),
+        message: fields.text({ label: '3. Message', description: 'Keep it to one short sentence' }),
         linkText: fields.text({ label: 'Link text', defaultValue: 'Details' }),
         linkUrl: fields.text({ label: 'Link', defaultValue: '/news' }),
       },
@@ -260,6 +259,28 @@ export default config({
           }),
           { label: 'Weeks', itemLabel: (p) => `${p.fields.start.value}: ${p.fields.color.value} tags ${p.fields.discount.value}` }
         ),
+      },
+    }),
+
+    // ------------------------------------------------------------- HOMEPAGE VIDEO
+    homeVideo: singleton({
+      label: 'Homepage video',
+      path: 'content/home-video',
+      format: { data: 'yaml' },
+      schema: {
+        show: fields.checkbox({ label: '1. Show the video on the homepage', defaultValue: true }),
+        video: fields.file({
+          label: '2. Upload the video (MP4)',
+          description: 'Short clips under 50 MB work best. For anything longer, leave this empty and paste a YouTube link below.',
+          directory: 'public/videos',
+          publicPath: '/videos/',
+        }),
+        youtube: fields.url({ label: 'Or paste a YouTube or Vimeo link instead', description: 'If both are filled in, the link is used.' }),
+        title: fields.text({ label: '3. Headline next to the video' }),
+        text: fields.text({ label: 'A sentence or two (optional)', multiline: true }),
+        cover: image('Cover photo (optional)', 'The still image people see before pressing play. Leave empty to use the first frame.'),
+        buttonText: fields.text({ label: 'Button text (optional)', description: 'For example: See market details' }),
+        buttonLink: fields.text({ label: 'Button link (optional)', description: 'For example: /news/christmas-market' }),
       },
     }),
 

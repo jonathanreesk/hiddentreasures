@@ -263,6 +263,40 @@ const annKey = announcement?.message ? announcement.message.length + ':' + annou
       if (label) label.textContent = isOpen ? 'Open now' : days.includes(parts.weekday) ? 'Closed now' : 'Closed today';
     });
 
+    // Event timing: hide events that ended more than 2 days ago, flag "Happening now" and "Just ended".
+    // Runs in the visitor's browser in Minneapolis time, so lists stay current between site updates.
+    {
+      const today = new Date().toLocaleDateString('en-CA', { timeZone: 'America/Chicago' });
+      const days = (a: string, b: string) => Math.round((Date.parse(a + 'T00:00:00Z') - Date.parse(b + 'T00:00:00Z')) / 86400000);
+      document.querySelectorAll<HTMLElement>('[data-when]').forEach((el) => {
+        const start = el.dataset.start || '', end = el.dataset.end || start, type = el.dataset.type;
+        const flag = el.querySelector<HTMLElement>('[data-flag]');
+        const setFlag = (t: string, cls: string) => { if (flag) { flag.textContent = t; flag.className = 'when-flag ' + cls; flag.hidden = false; } };
+        // General news (not a closure) has no flags and drops off after two weeks
+        if (type === 'news' && !el.dataset.closed) { if (days(today, start) > 14) { el.classList.add('expired'); el.hidden = true; } return; }
+        if (start <= today && today <= end) setFlag(start === end ? 'Today' : 'Happening now', 'now');
+        else if (start > today && days(start, today) === 1) setFlag('Tomorrow', 'soon');
+        else if (end < today) {
+          const ago = days(today, end);
+          if (ago <= 2) setFlag(ago === 1 ? 'Ended yesterday' : 'Just ended', 'ended');
+          else { el.classList.add('expired'); el.hidden = true; }
+        }
+      });
+      // Lists show only the first few current items; featured spots pick the first current item
+      document.querySelectorAll<HTMLElement>('[data-when-list]').forEach((list) => {
+        const limit = Number(list.dataset.limit || 99);
+        let shown = 0;
+        list.querySelectorAll<HTMLElement>('[data-when]').forEach((el) => { if (!el.hidden) { if (shown >= limit) el.hidden = true; else shown++; } });
+        const empty = list.querySelector<HTMLElement>('[data-empty]');
+        if (empty) empty.hidden = shown > 0;
+      });
+      document.querySelectorAll<HTMLElement>('[data-when-pick]').forEach((box) => {
+        const items = [...box.querySelectorAll<HTMLElement>('[data-pick-item]')];
+        const ok = items.find((it) => !it.querySelector<HTMLElement>('[data-when]')?.hidden) || items[0];
+        items.forEach((it) => { it.hidden = it !== ok; const w = it.querySelector<HTMLElement>('[data-when]'); if (it === ok && w) w.hidden = false; });
+      });
+    }
+
     // Watermarks drift very slightly as you scroll (off for reduced motion)
     const wms = [...document.querySelectorAll<HTMLElement>('[data-wm]')];
     if (wms.length && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {

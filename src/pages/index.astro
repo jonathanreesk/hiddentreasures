@@ -10,18 +10,24 @@ import Stories from '../components/Stories.astro';
 import Newsletter from '../components/Newsletter.astro';
 import PartnersStrip from '../components/PartnersStrip.astro';
 import PhotoStrip from '../components/PhotoStrip.astro';
+import VideoFeature from '../components/VideoFeature.astro';
 import { reader, getPosts } from '../lib/content';
 const settings = await reader.singletons.settings.read();
 const donate = await reader.singletons.donate.read();
 
 const home = await reader.singletons.home.read();
 const posts = await getPosts();
-const featured = posts.find((p) => p.pinned) ?? posts[0];
-const others = posts.filter((p) => p !== featured).slice(0, 8);
+// Pinned posts first, then the rest soonest-first. The page script hides anything that ended more than 2 days ago.
+const byStart = [...posts].sort((a, b) => (a.startDate ?? '').localeCompare(b.startDate ?? ''));
+const candidates = [...posts.filter((p) => p.pinned), ...byStart.filter((p) => !p.pinned && p.type !== 'news')].slice(0, 6);
+const featured = candidates[0] ?? posts[0];
+const others = byStart.slice(0, 12);
 ---
 <Layout>
   <Hero slides={home?.slides ?? []} />
   <VisitCard />
+
+  <VideoFeature />
 
   <!-- Three ways in -->
   <section class="section has-wm" style="--pb:40px">
@@ -116,12 +122,10 @@ const others = posts.filter((p) => p !== featured).slice(0, 8);
           <div class="btn-row"><a class="btn btn-red" href="/news#calendar">Sales calendar</a><a class="btn btn-outline" href="/news">All news and events</a></div>
         </div>
         <div class="events">
-          <div class="reveal"><FeaturedPost post={featured} /></div>
-          <div style="display:flex;flex-direction:column;gap:12px" data-upcoming>
-            <p class="label" style="margin:0 0 4px;color:var(--ink-2)" data-uplabel>Coming up</p>
-            {others.map((p) => (
-              <div data-end={p.endDate || p.startDate} data-type={p.type}><PostRow post={p} /></div>
-            ))}
+          <div class="reveal" data-when-pick>{(candidates.length ? candidates : [featured]).map((c, i) => <div data-pick-item hidden={i > 0}><FeaturedPost post={c} /></div>)}</div>
+          <div style="display:flex;flex-direction:column;gap:12px" data-when-list data-limit="4">
+            <p class="label" style="margin:0 0 4px;color:var(--ink-2)">Coming up</p>
+            {others.map((p) => <PostRow post={p} />)}
             <p data-empty hidden class="card" style="margin:0;padding:24px">More events coming soon. Sign up below to hear first.</p>
           </div>
         </div>
@@ -134,22 +138,3 @@ const others = posts.filter((p) => p !== featured).slice(0, 8);
   <Newsletter />
 </Layout>
 
-<script>
-  // Hide past events from "Coming up" (news posts always show), keep the list to 4.
-  const box = document.querySelector('[data-upcoming]');
-  if (box) {
-    const today = new Date().toLocaleDateString('en-CA', { timeZone: 'America/Chicago' });
-    let shown = 0;
-    box.querySelectorAll<HTMLElement>('[data-end]').forEach((el) => {
-      const past = el.dataset.type !== 'news' && (el.dataset.end || '') < today;
-      if (past || shown >= 4) el.hidden = true; else shown++;
-    });
-    if (shown === 0) {
-      // Nothing upcoming: show the three most recent posts instead
-      const recent = [...box.querySelectorAll<HTMLElement>('[data-end]')].slice(0, 3);
-      recent.forEach((el) => (el.hidden = false));
-      box.querySelector('[data-uplabel]')!.textContent = 'Recent';
-      if (recent.length === 0) box.querySelector<HTMLElement>('[data-empty]')!.hidden = false;
-    }
-  }
-</script>
