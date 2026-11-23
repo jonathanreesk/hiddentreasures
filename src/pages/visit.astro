@@ -4,13 +4,15 @@ import PageHero from '../components/PageHero.astro';
 import VisitCard from '../components/VisitCard.astro';
 import PostRow from '../components/PostRow.astro';
 import Newsletter from '../components/Newsletter.astro';
-import { reader, getPosts } from '../lib/content';
+import PhotoStrip from '../components/PhotoStrip.astro';
+import { reader, getPosts, pageImage } from '../lib/content';
+const hero = await pageImage('visit', '/images/uploads/sales-floor.jpg');
 const s = await reader.singletons.settings.read();
 const posts = (await getPosts()).filter((p) => p.type !== 'news').slice(0, 6);
 const q = encodeURIComponent(`${s?.addressLine1} ${s?.addressLine2}`);
 ---
 <Layout title="Shop and visit" description="Hours, directions and what is happening at Hidden Treasures Thrift Store in St Anthony, MN.">
-  <PageHero eyebrow="Shop the store" title="Come find your treasure." lead="Clothing, furniture, housewares, books, toys and more, priced for everyday budgets. New items hit the floor every day." image="/images/uploads/sales-floor.jpg">
+  <PageHero eyebrow="Shop the store" title="Come find your treasure." lead="Clothing, furniture, housewares, books, toys and more, priced for everyday budgets. New items hit the floor every day." image={hero}>
     <div class="btn-row" style="margin-top:32px">
       {s?.mapsUrl && <a class="btn btn-red" href={s.mapsUrl}>Get directions</a>}
       <a class="btn btn-ghost" href="/news">Sales and events</a>
@@ -21,15 +23,9 @@ const q = encodeURIComponent(`${s?.addressLine1} ${s?.addressLine2}`);
     <div class="wrap">
       <div class="section-head reveal" style="margin-bottom:28px">
         <div><p class="eyebrow">Fresh on the floor</p><h2 class="h2">New treasures every day.</h2></div>
-        <a class="btn btn-outline" href="/trove">Visit the Trove</a>
+        <a class="btn btn-outline" href="/gallery">See the gallery</a>
       </div>
-      <div class="photo-strip reveal">
-        <img src="/images/uploads/sectional.jpg" alt="A grey sectional sofa and wood coffee table set up on the sales floor" loading="lazy" />
-        <img src="/images/uploads/blue-chairs.jpg" alt="Two blue velvet tufted armchairs with a side table" loading="lazy" />
-        <img src="/images/uploads/dining.jpg" alt="A mahogany dining table with six red-cushioned chairs" loading="lazy" />
-        <img src="/images/uploads/red-sofa.jpg" alt="Sofas, lamps and end tables arranged as a living room" loading="lazy" />
-        <img src="/images/uploads/music-movies.jpg" alt="The Music and Movies corner with records, DVDs and a chalkboard sign" loading="lazy" />
-      </div>
+      <PhotoStrip />
     </div>
   </section>
   <section class="section">
@@ -54,17 +50,17 @@ const q = encodeURIComponent(`${s?.addressLine1} ${s?.addressLine2}`);
       {s?.ebayUrl && (
         <div class="card pad lift reveal" style="background:var(--blue)">
           <p class="label" style="margin:0 0 10px">Shop from home</p>
-          <h2 class="h3" style="margin-bottom:12px">We sell on eBay too.</h2>
-          <p style="margin:0 0 22px">Some of our best finds are listed online. Every purchase supports the mission.</p>
+          <h2 class="h3" style="margin-bottom:12px">Shop from home.</h2>
+          <p style="margin:0 0 22px">We occasionally list items online, so you can shop from home too.</p>
           <a class="btn btn-ink" href={s.ebayUrl}>Shop our eBay store</a>
         </div>
       )}
       {s?.loyaltyUrl && (
         <div class="card pad lift reveal" style="background:var(--red);color:#fff;transition-delay:80ms">
-          <p class="label" style="margin:0 0 10px;color:#ffd9cc">Treasure Hunter</p>
+          <p class="label" style="margin:0 0 10px;color:#ffd9cc">Loyalty cards</p>
           <h2 class="h3" style="margin-bottom:12px">Join our loyalty program.</h2>
-          <p style="margin:0 0 22px;color:#fbe9ec">5% back on every purchase, birthday bucks, coupons in the mail and reserved sales days.</p>
-          <a class="btn btn-light" href="/loyalty">Learn about Treasure Hunters</a>
+          <p style="margin:0 0 22px;color:#fbe9ec">5% back on every purchase, birthday bucks and exclusive email deals.</p>
+          <a class="btn btn-light" href="/loyalty">About the loyalty program</a>
         </div>
       )}
     </div>

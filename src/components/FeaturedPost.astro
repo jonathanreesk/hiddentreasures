@@ -1,9 +1,10 @@
 ---
 import Icon from './Icon.astro';
-import { dateRange, typeLabel, videoEmbed, type Post } from '../lib/content';
+import { dateRange, typeLabel, videoEmbed, img, type Post } from '../lib/content';
 interface Props { post: Post; link?: boolean }
 const { post, link = true } = Astro.props;
 const embed = videoEmbed(post.videoUrl);
+const upload = img(post.videoUpload);
 ---
 <article class="card feature" data-feature>
   <div class="media">
@@ -15,8 +16,8 @@ const embed = videoEmbed(post.videoUrl);
       <p class="big">{post.title}</p>
       <p style="margin:12px 0 0;font-size:17px;font-weight:600">{dateRange(post.startDate!, post.endDate)}{post.timeText ? ` · ${post.timeText}` : ''}</p>
     </div>
-    {embed && (
-      <button type="button" class="iconbtn play" aria-label={`Play video: ${post.title}`} data-video={embed}><Icon name="play" size={24} /></button>
+    {(embed || upload) && (
+      <button type="button" class="iconbtn play" aria-label={`Play video: ${post.title}`} data-video={embed || upload} data-file={upload && !embed ? '1' : undefined}><Icon name="play" size={24} /></button>
     )}
   </div>
   <div class="txt">
@@ -34,6 +35,7 @@ const embed = videoEmbed(post.videoUrl);
   document.querySelectorAll<HTMLButtonElement>('[data-video]').forEach((btn) => {
     btn.addEventListener('click', () => {
       const media = btn.closest('.media')!;
+      if (btn.dataset.file) { const v = document.createElement('video'); v.src = btn.dataset.video!; v.controls = true; v.autoplay = true; v.playsInline = true; v.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;background:#000'; media.innerHTML = ''; media.appendChild(v); return; }
       const iframe = document.createElement('iframe');
       iframe.src = btn.dataset.video + '?autoplay=1';
       iframe.title = btn.getAttribute('aria-label') || 'Video';

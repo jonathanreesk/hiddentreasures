@@ -1,0 +1,72 @@
+intro: 'A look inside Hidden Treasures: our team, our shoppers, and the treasures that come through the door every day.'
+items:
+- kind: photo
+  image: /images/uploads/front-table.jpg
+  videoUrl: null
+  videoUpload: null
+  caption: The front display table
+  altText: A styled display table of dishes, flowers, pillows and a summer dress at the front of the store
+  featured: true
+- kind: photo
+  image: /images/uploads/sales-floor.jpg
+  videoUrl: null
+  videoUpload: null
+  caption: Women’s clothing
+  altText: A shopper browsing racks of women’s clothing on the sales floor
+  featured: true
+- kind: photo
+  image: /images/uploads/furniture-room.jpg
+  videoUrl: null
+  videoUpload: null
+  caption: Furniture and home
+  altText: Armchairs, lamps and framed art in the furniture area
+  featured: true
+- kind: photo
+  image: /images/uploads/music-movies.jpg
+  videoUrl: null
+  videoUpload: null
+  caption: Music and movies
+  altText: The Music and Movies corner with records, DVDs and a chalkboard sign
+  featured: true
+- kind: photo
+  image: /images/uploads/checkout.jpg
+  videoUrl: null
+  videoUpload: null
+  caption: At the register
+  altText: Shoppers checking out at the register
+  featured: true
+- kind: photo
+  image: /images/uploads/wall-art.jpg
+  videoUrl: null
+  videoUpload: null
+  caption: Art and decor
+  altText: Framed art, clocks and mirrors on the wall near the checkout line
+  featured: false
+- kind: photo
+  image: /images/uploads/staff-welcome.jpg
+  videoUrl: null
+  videoUpload: null
+  caption: Welcome in!
+  altText: A team member welcoming shoppers into the store
+  featured: false
+- kind: photo
+  image: /images/uploads/donation-drop.jpg
+  videoUrl: null
+  videoUpload: null
+  caption: The donation drop site
+  altText: A team member at the donations drop site door
+  featured: false
+- kind: photo
+  image: /images/uploads/donations.jpg
+  videoUrl: null
+  videoUpload: null
+  caption: Donations coming in
+  altText: Donations being unloaded from a car into carts
+  featured: false
+- kind: photo
+  image: /images/uploads/storefront-photo.jpg
+  videoUrl: null
+  videoUpload: null
+  caption: 2915 Pentagon Dr
+  altText: The Hidden Treasures storefront and parking lot
+  featured: false

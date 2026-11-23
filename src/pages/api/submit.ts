@@ -16,7 +16,7 @@ const FORM_NAMES: Record<string, string> = {
   volunteer: 'Volunteer application',
   story: 'Shared story',
   contact: 'Contact message',
-  loyalty: 'Treasure Hunters profile',
+  loyalty: 'Loyalty card profile',
 };
 
 const esc = (s: string) => s.replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]!));

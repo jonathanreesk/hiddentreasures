@@ -4,13 +4,10 @@ items:
   href: /donate
   highlight: true
 - label: Sales and events calendar
-  href: /news
+  href: /news#calendar
   highlight: false
-- label: Shop from home on eBay
+- label: Shop from home
   href: https://www.ebay.com/usr/hiddentreasuresmn
-  highlight: false
-- label: The Trove pop-up boutique
-  href: /trove
   highlight: false
 - label: Work here
   href: /work-with-us
@@ -24,7 +21,7 @@ items:
 - label: Partners
   href: /partners
   highlight: false
-- label: Treasure Hunter rewards
+- label: Loyalty program
   href: /loyalty
   highlight: false
 - label: Prayer request

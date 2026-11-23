@@ -1,0 +1,139 @@
+---
+// Month calendar built from News and events posts, the color tag sale weeks and store hours.
+// Phones get an agenda list instead of the grid. Staff never edit this directly.
+import { reader, getPosts, img } from '../lib/content';
+
+const posts = (await getPosts()).filter((p) => p.startDate);
+const tag = await reader.singletons.tagSale.read();
+const settings = await reader.singletons.settings.read();
+const cal = await reader.singletons.calendar.read();
+const openDays = new Set(settings?.openDays ?? ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']);
+const DOW = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+const tagHex: Record<string, [string, string]> = {
+  blue: ['#3e5f9e', '#fff'], green: ['#3f8f4f', '#fff'], red: ['#a33749', '#fff'], yellow: ['#f2c94c', '#231f1b'],
+  orange: ['#c45d3b', '#fff'], purple: ['#6b4c9a', '#fff'], pink: ['#e58fb2', '#231f1b'], white: ['#ffffff', '#231f1b'],
+};
+
+const iso = (y: number, m: number, d: number) => `${y}-${String(m + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+const keys = new Set<string>();
+for (const p of posts) {
+  const [y, m] = p.startDate!.split('-').map(Number);
+  keys.add(`${y}-${String(m).padStart(2, '0')}`);
+  if (p.endDate) { const [y2, m2] = p.endDate.split('-').map(Number); keys.add(`${y2}-${String(m2).padStart(2, '0')}`); }
+}
+for (const w of tag?.weeks ?? []) keys.add(w.start!.slice(0, 7));
+const monthKeys = [...keys].sort();
+
+const months = monthKeys.map((key) => {
+  const [y, m1] = key.split('-').map(Number);
+  const m = m1 - 1;
+  const first = new Date(Date.UTC(y, m, 1)).getUTCDay();
+  const days = new Date(Date.UTC(y, m + 1, 0)).getUTCDate();
+  const cells: { date: string; day: number; dow: number; closed: boolean; events: any[] }[] = [];
+  for (let d = 1; d <= days; d++) {
+    const date = iso(y, m, d);
+    const dow = (first + d - 1) % 7;
+    const events = posts
+      .filter((p) => p.startDate! <= date && date <= (p.endDate || p.startDate!))
+      .map((p) => ({ ...p, multi: !!p.endDate && p.endDate !== p.startDate, isStart: p.startDate === date || dow === 0 || d === 1 }))
+      .sort((a, b) => Number(a.multi) - Number(b.multi));
+    const closedPost = events.some((e) => /closed/i.test(e.badge || '') || /closed/i.test(e.title));
+    cells.push({ date, day: d, dow, closed: !openDays.has(DOW[dow]) || closedPost, events });
+  }
+  // weeks with leading blanks
+  const weeks: (typeof cells[number] | null)[][] = [];
+  let row: (typeof cells[number] | null)[] = Array(first).fill(null);
+  for (const c of cells) { row.push(c); if (row.length === 7) { weeks.push(row); row = []; } }
+  if (row.length) weeks.push([...row, ...Array(7 - row.length).fill(null)]);
+  const weekTags = weeks.map((wk) => {
+    const dates = wk.filter(Boolean).map((c) => c!.date);
+    const t = (tag?.enabled ? tag.weeks : []).find((w) => dates.some((d) => w.start! <= d && d <= w.end!));
+    return t ? { label: t.discount, color: t.color, bg: tagHex[t.color]?.[0] ?? '#3e5f9e', fg: tagHex[t.color]?.[1] ?? '#fff' } : null;
+  });
+  const graphic = cal?.months.find((c) => c.month?.trim() === key && c.image);
+  return { key, title: `${MONTHS[m]} ${y}`, weeks, weekTags, cells, graphic: graphic ? img(graphic.image) : '' };
+});
+const typeColor: Record<string, string> = { event: 'var(--blue)', sale: '#f6e27a', news: 'var(--sand)' };
+---
+{months.length > 0 && (
+  <section class="section-tight" id="calendar" style="scroll-margin-top:90px">
+    <div class="wrap">
+      <div class="section-head" style="margin-bottom:24px">
+        <div><p class="eyebrow">Sales and events calendar</p><h2 class="h2" data-cal-title>{months[0].title}</h2></div>
+        <div style="display:flex;gap:10px;align-items:center">
+          <button type="button" class="iconbtn iconbtn-ink" aria-label="Previous month" data-cal-prev><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"></path></svg></button>
+          <button type="button" class="iconbtn iconbtn-ink" aria-label="Next month" data-cal-next><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"></path></svg></button>
+        </div>
+      </div>
+      <div class="cal-legend">
+        <span><i style="background:#f6e27a"></i>Sale</span><span><i style="background:var(--blue)"></i>Event</span><span><i style="background:var(--sand)"></i>News or closure</span><span><i style="background:repeating-linear-gradient(135deg,#ece6dc 0 6px,#f7f2ea 6px 12px)"></i>Store closed</span>
+      </div>
+      {months.map((mo, mi) => (
+        <div class="cal-month" data-cal-month={mo.key} data-title={mo.title} hidden={mi > 0}>
+          <div class="cal-grid" role="table" aria-label={`${mo.title} calendar`}>
+            <div class="cal-row cal-head" role="row"><span role="columnheader" class="cal-tagcol">Tags</span>{DOW.map((d) => <span role="columnheader">{d}</span>)}</div>
+            {mo.weeks.map((wk, wi) => (
+              <div class="cal-row" role="row">
+                <span class="cal-tagcol" role="cell">
+                  {mo.weekTags[wi] && <span class="cal-tag" style={`background:${mo.weekTags[wi]!.bg};color:${mo.weekTags[wi]!.fg}`} title={`${mo.weekTags[wi]!.color} tags ${mo.weekTags[wi]!.label}`}><span class="sr-only">{mo.weekTags[wi]!.color} tags </span>{mo.weekTags[wi]!.label}</span>}
+                </span>
+                {wk.map((c) => c ? (
+                  <div class={`cal-day ${c.closed ? 'closed' : ''}`} role="cell" data-date={c.date}>
+                    <span class="n">{c.day}</span>
+                    {c.closed && c.events.length === 0 && <span class="cal-closed">Closed</span>}
+                    {c.events.map((e) => (
+                      <a href={`/news/${e.slug}`} class={`cal-ev ${e.multi ? 'multi' : ''}`} style={`background:${typeColor[e.type] ?? 'var(--sand)'}`} title={e.title}>
+                        {(!e.multi || e.isStart) ? e.title : <span aria-hidden="true">&nbsp;</span>}
+                      </a>
+                    ))}
+                  </div>
+                ) : <div class="cal-day empty" role="cell"></div>)}
+              </div>
+            ))}
+          </div>
+          <ol class="cal-agenda">
+            {mo.cells.filter((c) => c.events.some((e) => !e.multi || e.startDate === c.date || c.day === 1)).map((c) => (
+              <li>
+                <span class="date"><span class="m">{DOW[c.dow]}</span><span class="d">{c.day}</span></span>
+                <span style="display:flex;flex-direction:column;gap:6px">
+                  {c.events.filter((e) => !e.multi || e.startDate === c.date || c.day === 1).map((e) => <a href={`/news/${e.slug}`} style="font-weight:700;color:var(--ink)">{e.title}{e.timeText ? <span class="muted" style="font-weight:400"> · {e.timeText}</span> : ''}</a>)}
+                </span>
+              </li>
+            ))}
+          </ol>
+          {mo.graphic && (
+            <div style="margin-top:28px;text-align:center">
+              <a class="btn btn-outline" href={mo.graphic} download>Download the printable {mo.title} calendar</a>
+            </div>
+          )}
+        </div>
+      ))}
+      <p class="muted" style="margin:18px 0 0;font-size:14px">We are closed on Sundays. Color tag discounts change every week, so check the tag color on each item.</p>
+    </div>
+  </section>
+)}
+
+<script>
+  const months = [...document.querySelectorAll<HTMLElement>('[data-cal-month]')];
+  if (months.length) {
+    const title = document.querySelector('[data-cal-title]')!;
+    const now = new Date().toLocaleDateString('en-CA', { timeZone: 'America/Chicago' }).slice(0, 7);
+    let i = months.findIndex((m) => m.dataset.calMonth === now);
+    if (i < 0) i = Math.max(0, months.findIndex((m) => (m.dataset.calMonth || '') > now));
+    if (i < 0) i = months.length - 1;
+    const prev = document.querySelector<HTMLButtonElement>('[data-cal-prev]')!;
+    const next = document.querySelector<HTMLButtonElement>('[data-cal-next]')!;
+    const show = (n: number) => {
+      i = Math.min(Math.max(n, 0), months.length - 1);
+      months.forEach((m, k) => (m.hidden = k !== i));
+      title.textContent = months[i].dataset.title || '';
+      prev.disabled = i === 0; next.disabled = i === months.length - 1;
+      const today = new Date().toLocaleDateString('en-CA', { timeZone: 'America/Chicago' });
+      months[i].querySelector(`[data-date="${today}"]`)?.classList.add('today');
+    };
+    prev.addEventListener('click', () => show(i - 1));
+    next.addEventListener('click', () => show(i + 1));
+    show(i);
+  }
+</script>

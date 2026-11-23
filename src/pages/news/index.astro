@@ -2,11 +2,16 @@
 import Layout from '../../layouts/Layout.astro';
 import PageHero from '../../components/PageHero.astro';
 import Newsletter from '../../components/Newsletter.astro';
-import { getPosts, dateRange, typeLabel } from '../../lib/content';
+import Calendar from '../../components/Calendar.astro';
+import { getPosts, dateRange, typeLabel, pageImage } from '../../lib/content';
+const hero = await pageImage('news', '/images/uploads/front-table.jpg');
 const posts = await getPosts();
 ---
 <Layout title="News and events" description="Sales, events and news from Hidden Treasures Thrift Store.">
-  <PageHero eyebrow="News and events" title="What is happening at the store." lead="Seasonal markets, sales, and updates from our team." />
+  <PageHero eyebrow="News and events" title="What is happening at the store." lead="Seasonal markets, sales, and updates from our team." image={hero}>
+    <div class="btn-row" style="margin-top:28px"><a class="btn btn-red" href="#calendar">See the calendar</a></div>
+  </PageHero>
+  <Calendar />
   <section class="section">
     <div class="wrap">
       <div class="chips" role="group" aria-label="Filter posts" style="margin-bottom:36px" data-filters>

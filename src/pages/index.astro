@@ -1,12 +1,15 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import Hero from '../components/Hero.astro';
+import Watermark from '../components/Watermark.astro';
+
 import VisitCard from '../components/VisitCard.astro';
 import FeaturedPost from '../components/FeaturedPost.astro';
 import PostRow from '../components/PostRow.astro';
 import Stories from '../components/Stories.astro';
 import Newsletter from '../components/Newsletter.astro';
 import PartnersStrip from '../components/PartnersStrip.astro';
+import PhotoStrip from '../components/PhotoStrip.astro';
 import { reader, getPosts } from '../lib/content';
 const settings = await reader.singletons.settings.read();
 const donate = await reader.singletons.donate.read();
@@ -50,8 +53,8 @@ const others = posts.filter((p) => p !== featured).slice(0, 8);
           <div class="links">
             <a class="linkrow linkrow-ink" href="/visit">Hours and directions <span aria-hidden="true">→</span></a>
             <a class="linkrow linkrow-ink" href="/news">Sales and events <span aria-hidden="true">→</span></a>
-            {settings?.ebayUrl && <a class="linkrow linkrow-ink" href={settings.ebayUrl}>Shop from home on eBay <span aria-hidden="true">→</span></a>}
-            <a class="linkrow linkrow-ink" href="/visit#loyalty">Treasure Hunter rewards <span aria-hidden="true">→</span></a>
+            {settings?.ebayUrl && <a class="linkrow linkrow-ink" href={settings.ebayUrl}>Shop from home <span aria-hidden="true">→</span></a>}
+            <a class="linkrow linkrow-ink" href="/loyalty">Loyalty program <span aria-hidden="true">→</span></a>
           </div>
         </article>
         <article class="card pad lift path reveal" style="background:var(--blue);transition-delay:160ms">
@@ -71,19 +74,14 @@ const others = posts.filter((p) => p !== featured).slice(0, 8);
   <!-- Inside the store -->
   <section class="section-tight" style="--pt:70px;--pb:0px">
     <div class="wrap">
-      <div class="photo-strip reveal">
-        <img src="/images/uploads/sales-floor.jpg" alt="A shopper browsing racks of women's clothing on the sales floor" loading="lazy" />
-        <img src="/images/uploads/checkout.jpg" alt="Shoppers checking out at the register" loading="lazy" />
-        <img src="/images/uploads/music-movies.jpg" alt="The Music and Movies corner with records and DVDs" loading="lazy" />
-        <img src="/images/uploads/donations.jpg" alt="Donations being unloaded from a car into carts" loading="lazy" />
-        <img src="/images/uploads/donation-drop.jpg" alt="A team member welcoming donors at the donation drop site" loading="lazy" />
-      </div>
+      <PhotoStrip />
+      <div style="text-align:right;margin-top:14px"><a href="/gallery" style="font-weight:700">See the gallery →</a></div>
     </div>
   </section>
 
   <!-- The engine -->
-  <section class="engine section" style="margin-top:80px">
-    <img class="watermark" src="/images/brand/wordmark-light.png" alt="" />
+  <section class="engine section has-wm" style="margin-top:80px">
+    <Watermark variant="badge" tone="light" opacity={0.07} rotate={-8} style="width:640px;right:-120px;bottom:-60px" />
     <div class="wrap" style="position:relative">
       <div class="reveal" style="max-width:760px">
         <p class="eyebrow">What your donation makes possible</p>
@@ -114,7 +112,7 @@ const others = posts.filter((p) => p !== featured).slice(0, 8);
             <p class="eyebrow">News and events</p>
             <h2 class="h2">What is happening at the store.</h2>
           </div>
-          <a class="btn btn-outline" href="/news">See all news and events</a>
+          <div class="btn-row"><a class="btn btn-red" href="/news#calendar">Sales calendar</a><a class="btn btn-outline" href="/news">All news and events</a></div>
         </div>
         <div class="events">
           <div class="reveal"><FeaturedPost post={featured} /></div>

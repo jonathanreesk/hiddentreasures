@@ -5,13 +5,16 @@ import Form from '../components/Form.astro';
 import Faq from '../components/Faq.astro';
 import VisitCard from '../components/VisitCard.astro';
 import DonateArt from '../components/DonateArt.astro';
-import { reader } from '../lib/content';
+import Watermark from '../components/Watermark.astro';
+
+import { reader, pageImage } from '../lib/content';
+const hero = await pageImage('donate', '/images/uploads/donation-drop.jpg');
 const d = await reader.singletons.donate.read();
 const s = await reader.singletons.settings.read();
 const hours = s?.donateHours.find((h) => !/closed/i.test(h.hours));
 ---
 <Layout title="Donate goods" description="Donate clothing, furniture, housewares, books, toys and more to Hidden Treasures in St Anthony, MN. Drop-off hours, what we accept, and tips for the donation door.">
-  <PageHero eyebrow="Donate goods" title="Make a difference. Donate today." lead={d?.intro} image="/images/uploads/donation-drop.jpg">
+  <PageHero eyebrow="Donate goods" title="Make a difference. Donate today." lead={d?.intro} image={hero}>
     <div class="btn-row" style="margin-top:32px">
       <a class="btn btn-red" href="#dropoff">Drop-off details</a>
       <a class="btn btn-ghost" href="#accept">What we accept</a>
@@ -61,7 +64,8 @@ const hours = s?.donateHours.find((h) => !/closed/i.test(h.hours));
 
   <!-- Be a hero at the donation door -->
   {d?.doorTips && d.doorTips.length > 0 && (
-    <section class="section engine">
+    <section class="section engine has-wm">
+      <Watermark variant="badge" tone="light" opacity={0.06} rotate={-10} style="width:600px;left:-160px;bottom:-140px" />
       <div class="wrap art-row reveal" style="grid-template-columns:minmax(0,1fr) 200px">
         <div>
           <p class="eyebrow">Want to be a hero at the donation door?</p>

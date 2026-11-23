@@ -20,6 +20,14 @@ const image = (label: string, description?: string) =>
     publicPath: '/images/uploads/',
   });
 
+const videoFile = (label: string) =>
+  fields.file({
+    label,
+    description: 'Optional. Short MP4 clips only (under 50 MB). For longer videos, upload to YouTube and paste the link instead.',
+    directory: 'public/videos',
+    publicPath: '/videos/',
+  });
+
 const link = (label: string) =>
   fields.object(
     {
@@ -35,8 +43,9 @@ export default config({
     brand: { name: 'Hidden Treasures' },
     navigation: {
       'Posts': ['events', 'stories'],
-      'Site-wide': ['settings', 'announcement', 'tagSale'],
-      'Pages': ['home', 'donate', 'work', 'about', 'trove', 'loyalty', 'partners', 'links'],
+      'Site-wide': ['settings', 'announcement', 'tagSale', 'calendar'],
+      'Photos and videos': ['gallery', 'pageImages'],
+      'Pages': ['home', 'donate', 'work', 'about', 'loyalty', 'partners', 'links'],
     },
   },
 
@@ -68,6 +77,11 @@ export default config({
         body: fields.text({ label: 'Full details', multiline: true, description: 'Leave a blank line between paragraphs' }),
         image: image('Photo or flyer', 'Optional. Wide images look best.'),
         videoUrl: fields.url({ label: 'Video link (optional)', description: 'Paste a YouTube or Vimeo link and it will play on the page' }),
+        videoUpload: videoFile('Or upload a short video'),
+        gallery: fields.array(
+          fields.object({ image: image('Photo'), caption: fields.text({ label: 'Caption (optional)' }) }),
+          { label: 'More photos', itemLabel: (p) => p.fields.caption.value || 'Photo' }
+        ),
         pinned: fields.checkbox({ label: 'Feature on the homepage', defaultValue: false }),
       },
     }),
@@ -120,7 +134,7 @@ export default config({
         facebookUrl: fields.url({ label: 'Facebook link' }),
         giveUrl: fields.url({ label: 'Online giving link (optional)', description: 'Shown quietly in the footer only' }),
         ebayUrl: fields.url({ label: 'eBay store link', description: 'Shop from home' }),
-        loyaltyUrl: fields.url({ label: 'Treasure Hunter loyalty program link' }),
+        loyaltyUrl: fields.text({ label: 'Loyalty program link', defaultValue: '/loyalty' }),
         prayerEmail: fields.text({ label: 'Prayer request email', description: 'Where the "Prayer request" link sends email' }),
       },
     }),
@@ -249,36 +263,63 @@ export default config({
       },
     }),
 
-    // ------------------------------------------------------------- THE TROVE
-    trove: singleton({
-      label: 'The Trove (pop-up boutique)',
-      path: 'content/trove',
+    // ------------------------------------------------------------- GALLERY
+    gallery: singleton({
+      label: 'Photo and video gallery',
+      path: 'content/gallery',
       format: { data: 'yaml' },
       schema: {
         intro: fields.text({ label: 'Intro', multiline: true }),
-        address: fields.text({ label: 'Address' }),
-        status: fields.select({
-          label: 'Right now the Trove is',
-          options: [
-            { label: 'Open', value: 'open' },
-            { label: 'Closed between pop-ups', value: 'closed' },
-          ],
-          defaultValue: 'open',
-        }),
-        current: fields.text({ label: 'Current or next pop-up', description: 'For example: Christmas Market' }),
-        currentDetails: fields.text({ label: 'Its dates and hours', multiline: true }),
-        currentLink: fields.text({ label: 'Link for more details', description: 'For example /news/christmas-market' }),
-        past: fields.array(
-          fields.object({ name: fields.text({ label: 'Pop-up name' }), text: fields.text({ label: 'What it was', multiline: true }) }),
-          { label: 'Past pop-ups', itemLabel: (p) => p.fields.name.value }
+        items: fields.array(
+          fields.object({
+            kind: fields.select({ label: 'Type', options: [{ label: 'Photo', value: 'photo' }, { label: 'Video', value: 'video' }], defaultValue: 'photo' }),
+            image: image('Photo (for a video, this is the cover image)'),
+            videoUrl: fields.url({ label: 'Video link (YouTube or Vimeo)' }),
+            videoUpload: videoFile('Or upload a short video'),
+            caption: fields.text({ label: 'Caption' }),
+            altText: fields.text({ label: 'Describe the photo (for screen readers)', description: 'For example: A shopper browsing the women’s clothing racks' }),
+            featured: fields.checkbox({ label: 'Show on the homepage and Shop page photo strips', defaultValue: false }),
+          }),
+          { label: 'Photos and videos', itemLabel: (p) => `${p.fields.kind.value === 'video' ? 'Video' : 'Photo'}: ${p.fields.caption.value || 'untitled'}${p.fields.featured.value ? ' (featured)' : ''}` }
         ),
-        gallery: fields.array(image('Photo'), { label: 'Photo gallery' }),
+      },
+    }),
+
+    // ------------------------------------------------------------- PAGE IMAGES
+    pageImages: singleton({
+      label: 'Page header photos',
+      path: 'content/page-images',
+      format: { data: 'yaml' },
+      schema: {
+        donate: image('Donate page'),
+        visit: image('Shop page'),
+        work: image('Work with us page'),
+        news: image('News and events page'),
+        loyalty: image('Loyalty program page'),
+        partners: image('Partners page'),
+        gallery: image('Gallery page'),
+      },
+    }),
+
+    // ------------------------------------------------------------- CALENDAR GRAPHICS
+    calendar: singleton({
+      label: 'Monthly calendar graphic',
+      path: 'content/calendar',
+      format: { data: 'yaml' },
+      schema: {
+        months: fields.array(
+          fields.object({
+            month: fields.text({ label: 'Month', description: 'Year and month, for example 2026-12' }),
+            image: image('Calendar image (optional)', 'The designed monthly calendar, for example from Canva. Shown under the calendar on the News and events page, with a download link.'),
+          }),
+          { label: 'Months', itemLabel: (p) => p.fields.month.value }
+        ),
       },
     }),
 
     // ------------------------------------------------------------- LOYALTY
     loyalty: singleton({
-      label: 'Treasure Hunters (loyalty)',
+      label: 'Loyalty program',
       path: 'content/loyalty',
       format: { data: 'yaml' },
       schema: {
