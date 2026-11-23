@@ -86,6 +86,14 @@ From now on, every push to `main` redeploys the site automatically.
 
 This step lets staff edit on the live site, so changes are saved to GitHub instead of to your computer. You only do it once.
 
+**Recommended: Keystatic Cloud (staff sign in with email, no GitHub accounts)**
+
+1. Sign up at keystatic.cloud, create a team and a project, and connect the project to the `hiddentreasures` repo.
+2. In Vercel, add `PUBLIC_KEYSTATIC_CLOUD_PROJECT` with the project name (for example `hidden-treasures/website`), then redeploy.
+3. Invite staff by email from the team page in Keystatic Cloud. Free for up to 3 editors.
+
+The GitHub App steps below are only needed if you are not using Keystatic Cloud.
+
 **4a. Connect Keystatic to GitHub (on your computer)**
 
 1. Create a file called `.env` in the project folder containing:
@@ -138,7 +146,9 @@ Every form includes the visitor's email as **reply-to**, so staff can hit Reply.
 
 ## Step 6: Give store staff access
 
-Each editor needs a **free GitHub account**.
+**With Keystatic Cloud:** invite each person by email from your Keystatic Cloud team page, then send them to **hiddentreasuresmn.org/keystatic**. They sign in with their email. No GitHub account needed.
+
+**With GitHub logins instead:** each editor needs a **free GitHub account**.
 
 1. Ask each person to create an account at github.com.
 2. In the repo, go to **Settings → Collaborators** and invite them with **Write** access.

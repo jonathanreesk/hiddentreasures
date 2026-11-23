@@ -8,9 +8,17 @@ import { config, fields, collection, singleton } from '@keystatic/core';
 // ---------------------------------------------------------------------------
 const repo = import.meta.env.PUBLIC_GITHUB_REPO as string | undefined;
 
-const storage = repo
-  ? { kind: 'github' as const, repo: repo as `${string}/${string}` }
-  : { kind: 'local' as const };
+// Editor logins:
+// - PUBLIC_KEYSTATIC_CLOUD_PROJECT set (e.g. "team/project"): Keystatic Cloud, staff sign in with email
+// - else PUBLIC_GITHUB_REPO set: staff sign in with GitHub accounts
+// - else: local editing only (npm run dev)
+const cloudProject = import.meta.env.PUBLIC_KEYSTATIC_CLOUD_PROJECT as string | undefined;
+
+const storage = cloudProject
+  ? { kind: 'cloud' as const }
+  : repo
+    ? { kind: 'github' as const, repo: repo as `${string}/${string}` }
+    : { kind: 'local' as const };
 
 const image = (label: string, description?: string) =>
   fields.image({
@@ -39,6 +47,7 @@ const link = (label: string) =>
 
 export default config({
   storage,
+  ...(cloudProject ? { cloud: { project: cloudProject } } : {}),
   ui: {
     brand: { name: 'Hidden Treasures' },
     navigation: {
