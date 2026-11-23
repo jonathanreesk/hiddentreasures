@@ -6,7 +6,7 @@ const { post, link = true } = Astro.props;
 const embed = videoEmbed(post.videoUrl);
 const upload = img(post.videoUpload);
 ---
-<article class="card feature" data-feature>
+<article class="card feature" data-feature data-when data-start={post.startDate} data-end={post.endDate || post.startDate} data-type={post.type} data-closed={/closed/i.test(`${post.badge ?? ''} ${post.title}`) ? '1' : undefined}>
   <div class="media">
     {post.image && <img src={post.image} alt="" loading="lazy" />}
     <div class="shade"></div>
@@ -22,7 +22,7 @@ const upload = img(post.videoUpload);
   </div>
   <div class="txt">
     <div style="display:flex;gap:10px;align-items:center;margin-bottom:14px;flex-wrap:wrap">
-      <span class="badge">{typeLabel[post.type]}</span>
+      <span class="badge">{typeLabel[post.type]}</span><span class="when-flag" data-flag hidden></span>
       {post.location && <span class="muted" style="font-size:15px;font-weight:600">{post.location}</span>}
     </div>
     {post.summary && <p class="muted" style="margin:0 0 24px;font-size:17px;line-height:1.65">{post.summary}</p>}

@@ -1,0 +1,52 @@
+---
+// Homepage video band. Staff manage it under "Everyday edits > Homepage video".
+import { reader, img, videoEmbed } from '../lib/content';
+const v = await reader.singletons.homeVideo.read();
+const embed = videoEmbed(v?.youtube);
+const file = img(v?.video);
+const cover = img(v?.cover);
+const show = v?.show && (embed || file);
+---
+{show && (
+  <section class="section-tight video-band" aria-label="Video">
+    <div class="wrap video-feature">
+      <div class="vf-player reveal" data-vf>
+        {embed ? (
+          <button type="button" class="vf-cover" data-embed={embed} aria-label={`Play video: ${v?.title || 'video'}`}>
+            {cover && <img src={cover} alt="" loading="lazy" />}
+            <span class="vf-play" aria-hidden="true"><svg width="30" height="30" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5l12 7-12 7z"></path></svg></span>
+          </button>
+        ) : (
+          <>
+            <video src={file} poster={cover || undefined} preload="none" playsinline controls={false} data-file></video>
+            <button type="button" class="vf-cover vf-over" aria-label={`Play video: ${v?.title || 'video'}`} data-play>
+              <span class="vf-play" aria-hidden="true"><svg width="30" height="30" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5l12 7-12 7z"></path></svg></span>
+            </button>
+          </>
+        )}
+      </div>
+      <div class="vf-text reveal">
+        <p class="eyebrow">Watch</p>
+        {v?.title && <h2 class="h2" style="margin-bottom:16px">{v.title}</h2>}
+        {v?.text && <p class="lead" style="margin:0 0 26px">{v.text}</p>}
+        {v?.buttonText && v?.buttonLink && <a class="btn btn-red" href={v.buttonLink}>{v.buttonText}</a>}
+      </div>
+    </div>
+  </section>
+)}
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-vf]').forEach((box) => {
+    const vid = box.querySelector<HTMLVideoElement>('video[data-file]');
+    const over = box.querySelector<HTMLButtonElement>('[data-play]');
+    if (vid && over) {
+      over.addEventListener('click', () => { vid.controls = true; over.remove(); vid.play(); });
+    }
+    const yt = box.querySelector<HTMLButtonElement>('[data-embed]');
+    yt?.addEventListener('click', () => {
+      const f = document.createElement('iframe');
+      f.src = yt.dataset.embed + '?autoplay=1'; f.allow = 'autoplay; encrypted-media; picture-in-picture; fullscreen'; f.allowFullscreen = true; f.title = 'Video';
+      box.innerHTML = ''; box.appendChild(f);
+    });
+  });
+</script>
