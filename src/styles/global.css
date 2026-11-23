@@ -670,3 +670,11 @@ details.faq p { margin: 0 0 22px; font-size: 16px; line-height: 1.65; color: var
 .md-prev { left: 12px; } .md-next { right: 12px; }
 @media (max-width: 600px) { .md-close { top: 8px; right: 8px; } .media-grid { grid-template-columns: 1fr 1fr; gap: 8px; } }
 
+
+/* A little peek of the compass rose tucked behind the header */
+.site-header { overflow: hidden; }
+.site-header > .bar, .site-header > .wrap, .site-header > nav { position: relative; z-index: 1; }
+.header-peek { position: absolute; z-index: 0; right: -70px; top: -26px; width: 300px; opacity: .1; transform: rotate(-14deg); pointer-events: none; transition: opacity .4s ease, transform .8s var(--ease); }
+.site-header:hover .header-peek { opacity: .16; transform: rotate(-8deg); }
+@media (max-width: 980px) { .header-peek { width: 200px; right: -60px; top: -18px; opacity: .09; } }
+@media (prefers-reduced-motion: reduce) { .header-peek { transition: none; } }
