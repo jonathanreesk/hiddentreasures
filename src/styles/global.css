@@ -731,3 +731,6 @@ details.faq p { margin: 0 0 22px; font-size: 16px; line-height: 1.65; color: var
 .vf-photo { display: block; border-radius: var(--radius); overflow: hidden; aspect-ratio: 16 / 9; }
 .vf-photo img { width: 100%; height: 100%; object-fit: cover; transition: transform .6s ease; }
 .vf-photo:hover img { transform: scale(1.03); }
+
+/* Short slide headlines stay on one line on wider screens */
+@media (min-width: 760px) { .slide .h1.one-line { white-space: nowrap; } }
