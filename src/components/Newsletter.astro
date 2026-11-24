@@ -9,7 +9,9 @@ const s = await reader.singletons.settings.read();
   <Watermark variant="badge" tone="dark" opacity={0.06} rotate={6} style="width:560px;left:-140px;bottom:-120px" />
   <div class="wrap split" style="align-items:center">
     <div class="reveal">
-      <h2 class="h2" style="margin-bottom:16px">Get sale news by email</h2>
+      <p class="eyebrow">Stay in the loop</p>
+      <h2 class="h2" style="margin-bottom:16px">Don't miss out.</h2>
+      <div class="pills" style="margin:0 0 20px">{['Sales', 'Sneak peeks', 'Exclusive offers', 'Fun updates'].map((t) => <span class="pill-item" style="background:rgba(255,253,249,.7)">{t}</span>)}</div>
       <p style="margin:0 0 22px;font-size:17px">For daily new arrivals, follow along on social. Inventory moves faster than any website can.</p>
       <div style="display:flex;gap:12px">
         {s?.instagramUrl && <a class="iconbtn iconbtn-ink" href={s.instagramUrl} aria-label="Hidden Treasures on Instagram"><Icon name="instagram" size={22} /></a>}

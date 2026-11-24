@@ -32,6 +32,7 @@ const galleryIntro = (await reader.singletons.gallery.read())?.intro;
         )}
       </div>
       <div class="vf-text reveal">
+        <p class="eyebrow">Watch</p>
         {v?.title && <h2 class="h2" style="margin-bottom:16px">{v.title}</h2>}
         {v?.text && <p class="lead" style="margin:0 0 26px">{v.text}</p>}
         {v?.buttonText && v?.buttonLink && <a class="btn btn-red" href={v.buttonLink}>{v.buttonText}</a>}
@@ -44,7 +45,8 @@ const galleryIntro = (await reader.singletons.gallery.read())?.intro;
     <div class="wrap video-feature">
       <a class="vf-player vf-photo" href="/gallery"><img src={fill.image} alt={fill.alt} loading="lazy" /></a>
       <div class="vf-text">
-        <h2 class="h2" style="margin-bottom:16px">Take a look inside</h2>
+        <p class="eyebrow">Inside the store</p>
+        <h2 class="h2" style="margin-bottom:16px">Take a look inside.</h2>
         {galleryIntro && <p class="lead" style="margin:0 0 26px">{galleryIntro}</p>}
         <a class="btn btn-red" href="/gallery">See the gallery</a>
       </div>

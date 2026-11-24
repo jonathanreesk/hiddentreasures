@@ -17,6 +17,7 @@ const announcement = await reader.singletons.announcement.read();
 const pageTitle = title ? `${title} | Hidden Treasures Thrift Store` : 'Hidden Treasures Thrift Store | Find a treasure. Change a life.';
 const path = Astro.url.pathname.replace(/\/$/, '') || '/';
 const nav = [
+  { href: '/donate', label: 'Donate goods' },
   { href: '/visit', label: 'Shop' },
   { href: '/work-with-us', label: 'Work with us' },
   { href: '/our-story', label: 'Our story' },

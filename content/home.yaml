@@ -1,7 +1,7 @@
 slides:
-- eyebrow: ''
+- eyebrow: Thrift store · Mission · Community
   title: Find a treasure. Change a life.
-  body: Every donation and every purchase helps keep people in recovery and re-entry working.
+  body: Everything you donate or buy here helps keep people in recovery and re-entry working.
   image: /images/uploads/storefront-photo-sharp.jpg
   tint: dark
   primary:
@@ -24,7 +24,7 @@ slides:
     href: https://maps.google.com/?q=2915+Pentagon+Dr+St+Anthony+MN+55418
 - eyebrow: Work with us
   title: You're welcome here.
-  body: We hold the employment door open for our brothers and sisters in recovery.
+  body: We hold the employment door open for our brothers and sisters in recovery. Most of our paid hours are reserved for friends in addiction recovery and re-entry.
   image: /images/uploads/staff-welcome.jpg
   tint: red
   primary:
@@ -34,4 +34,4 @@ slides:
     label: Refer someone
     href: /work-with-us#refer
 engineTitle: One bag of donations. A lot of second chances.
-engineIntro: Everything we sell was donated. Sorting, pricing and selling it is paid work for people in recovery and re-entry. Neighbors get good things at low prices, and less ends up in a landfill.
+engineIntro: Everything we sell was donated. Sorting, pricing and selling it is paid work for people in recovery and re-entry, and it keeps prices low for our neighbors.

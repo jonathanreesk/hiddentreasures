@@ -12,7 +12,7 @@ const posts = (await getPosts()).filter((p) => p.type !== 'news').sort((a, b) =>
 const q = encodeURIComponent(`${s?.addressLine1} ${s?.addressLine2}`);
 ---
 <Layout title="Shop and visit" description="Hours, directions and what is happening at Hidden Treasures Thrift Store in St Anthony, MN.">
-  <PageHero eyebrow="Shop the store" title="Come see what's new" lead="Clothing, furniture, housewares, books, toys and more, priced for everyday budgets. New items go out every day." image={hero}>
+  <PageHero eyebrow="Shop the store" title="Come find your treasure." lead="Clothing, furniture, housewares, books, toys and more, priced for everyday budgets. New items hit the floor every day." image={hero}>
     <div class="btn-row" style="margin-top:32px">
       {s?.mapsUrl && <a class="btn btn-red" href={s.mapsUrl}>Get directions</a>}
       <a class="btn btn-ghost" href="/news">Sales and events</a>
@@ -22,7 +22,7 @@ const q = encodeURIComponent(`${s?.addressLine1} ${s?.addressLine2}`);
   <section class="section-tight" style="--pt:110px">
     <div class="wrap">
       <div class="section-head reveal" style="margin-bottom:28px">
-        <div><h2 class="h2">A look around</h2></div>
+        <div><p class="eyebrow">Fresh on the floor</p><h2 class="h2">New treasures every day.</h2></div>
         <a class="btn btn-outline" href="/gallery">See the gallery</a>
       </div>
       <PhotoStrip />
@@ -49,16 +49,18 @@ const q = encodeURIComponent(`${s?.addressLine1} ${s?.addressLine2}`);
     <div class="wrap grid2">
       {s?.ebayUrl && (
         <div class="card pad lift reveal" style="background:var(--blue)">
-          <h2 class="h3" style="margin-bottom:12px">Shop from home</h2>
-          <p style="margin:0 0 22px">We occasionally list items on eBay.</p>
+          <p class="label" style="margin:0 0 10px">Shop from home</p>
+          <h2 class="h3" style="margin-bottom:12px">Shop from home.</h2>
+          <p style="margin:0 0 22px">We occasionally list items online, so you can shop from home too.</p>
           <a class="btn btn-ink" href={s.ebayUrl}>Shop our eBay store</a>
         </div>
       )}
       {s?.loyaltyUrl && (
         <div class="card pad lift reveal" style="background:var(--red);color:#fff;transition-delay:80ms">
-          <h2 class="h3" style="margin-bottom:12px">Loyalty cards</h2>
+          <p class="label" style="margin:0 0 10px;color:#ffd9cc">Loyalty cards</p>
+          <h2 class="h3" style="margin-bottom:12px">Join our loyalty program.</h2>
           <p style="margin:0 0 22px;color:#fbe9ec">5% back on every purchase, birthday bucks and exclusive email deals.</p>
-          <a class="btn btn-light" href="/loyalty">Learn more</a>
+          <a class="btn btn-light" href="/loyalty">About the loyalty program</a>
         </div>
       )}
     </div>

@@ -10,7 +10,7 @@ const focusLabel: Record<string, string> = { recovery: 'Recovery and housing', y
 const focuses = Object.keys(focusLabel).filter((k) => items.some((i) => i.focus === k));
 ---
 <Layout title="Partners" description="Ministries Hidden Treasures walks alongside in vision, mission and values: recovery, youth and education, global mission and prayer.">
-  <PageHero eyebrow="Partner ministries" title="Partners in the mission" lead={p?.intro} image={hero || undefined}>
+  <PageHero eyebrow="Partner ministries" title="Partners in the mission." lead={p?.intro} image={hero || undefined}>
     <div class="logo-wall pop" style="animation-delay:.24s">
       {items.map((it, i) => <PartnerMark tile name={it.name} logo={it.logo} dark={it.logoOnDark} size={56} index={i} />)}
     </div>
