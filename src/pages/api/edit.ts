@@ -1,6 +1,7 @@
 import type { APIRoute } from 'astro';
 import { createHmac, timingSafeEqual } from 'node:crypto';
 import { parse, stringify } from 'yaml';
+import { env, EDIT_COOKIE as COOKIE, makeSession as newSession, validSession } from '../../lib/edit-session';
 
 // Quick edits for store staff (/edit). One shared password, no personal accounts.
 // Each save is committed to GitHub, and Vercel republishes the site in about a minute.
@@ -12,14 +13,11 @@ import { parse, stringify } from 'yaml';
 //   EDIT_SECRET         optional, any long random text (falls back to KEYSTATIC_SECRET)
 export const prerender = false;
 
-const env = (k: string) => (import.meta.env[k] as string | undefined) || process.env[k] || '';
 const PASSWORD = () => env('EDIT_PASSWORD');
 const TOKEN = () => env('GITHUB_TOKEN');
 const REPO = () => env('PUBLIC_GITHUB_REPO');
 const BRANCH = () => env('EDIT_BRANCH') || 'main';
 const API = () => env('GITHUB_API_URL') || 'https://api.github.com';
-const SECRET = () => env('EDIT_SECRET') || env('KEYSTATIC_SECRET') || 'ht:' + PASSWORD();
-const COOKIE = 'ht_edit';
 const SESSION_DAYS = 7;
 
 const json = (data: unknown, status = 200, headers: Record<string, string> = {}) =>
@@ -27,18 +25,7 @@ const json = (data: unknown, status = 200, headers: Record<string, string> = {})
 const fail = (error: string, status = 400) => json({ ok: false, error }, status);
 
 // ---------------------------------------------------------------- sessions
-const sign = (v: string) => createHmac('sha256', SECRET()).update(v).digest('base64url');
-const makeSession = () => {
-  const v = String(Date.now() + SESSION_DAYS * 86400000);
-  return `${v}.${sign(v)}`;
-};
-const validSession = (cookie?: string) => {
-  if (!cookie) return false;
-  const [v, s] = cookie.split('.');
-  if (!v || !s) return false;
-  const a = Buffer.from(sign(v)), b = Buffer.from(s);
-  return a.length === b.length && timingSafeEqual(a, b) && Number(v) > Date.now();
-};
+const makeSession = () => newSession(SESSION_DAYS);
 const sameText = (a: string, b: string) => {
   const ha = createHmac('sha256', 'cmp').update(a).digest(), hb = createHmac('sha256', 'cmp').update(b).digest();
   return timingSafeEqual(ha, hb);
@@ -101,6 +88,11 @@ const link = (v: unknown) => {
   const s = str(v, 500);
   return /^(https?:\/\/|\/|mailto:|tel:|#)/i.test(s) ? s : s ? '/' + s.replace(/^\/+/, '') : '';
 };
+// Uploaded videos live in /public/videos (older ones) or in Vercel Blob storage
+const videoPath = (v: unknown) => {
+  const s = str(v, 400);
+  return /^\/videos\/[\w\-.]+$/.test(s) || /^https:\/\/[\w-]+\.public\.blob\.vercel-storage\.com\/[\w\-./%]+$/.test(s) ? s : null;
+};
 const imagePath = (v: unknown) => {
   const s = str(v, 300);
   return /^\/images\/[\w\-./]+$/.test(s) ? s : null;
@@ -123,6 +115,7 @@ const FILES = {
   homeVideo: 'content/home-video.yaml',
   tagSale: 'content/tag-sale.yaml',
   settings: 'content/settings.yaml',
+  gallery: 'content/gallery.yaml',
 };
 const EVENTS = 'content/events';
 
@@ -162,7 +155,7 @@ export const POST: APIRoute = async ({ request, cookies, clientAddress }) => {
   try {
     // ---- load everything
     if (action === 'load') {
-      const [announcement, homeVideo, tagSale, settings] = await Promise.all(Object.values(FILES).map((p) => readYaml(p).then((r) => r.data)));
+      const [announcement, homeVideo, tagSale, settings, gallery] = await Promise.all(Object.values(FILES).map((p) => readYaml(p).then((r) => r.data)));
       const dir = await gh(`contents/${EVENTS}?ref=${BRANCH()}`);
       const list: { name: string }[] = dir.ok ? await dir.json() : [];
       const events = await Promise.all(
@@ -172,7 +165,7 @@ export const POST: APIRoute = async ({ request, cookies, clientAddress }) => {
         })
       );
       events.sort((a: any, b: any) => String(a.startDate ?? '').localeCompare(String(b.startDate ?? '')));
-      return json({ ok: true, announcement, homeVideo, tagSale, settings, events });
+      return json({ ok: true, announcement, homeVideo, tagSale, settings, gallery, events });
     }
 
     // ---- top ribbon
@@ -190,6 +183,7 @@ export const POST: APIRoute = async ({ request, cookies, clientAddress }) => {
       const cur = await readYaml(FILES.homeVideo);
       const next = { ...cur.data, show: bool(d.show), youtube: url(d.youtube), title: str(d.title, 120), text: str(d.text, 600), cover: imagePath(d.cover), buttonText: str(d.buttonText, 40), buttonLink: link(d.buttonLink) };
       if (d.removeUpload) next.video = null;
+      if (videoPath(d.video)) next.video = videoPath(d.video);
       await writeYaml(FILES.homeVideo, next, 'Quick edit: homepage video', cur.sha);
       return json({ ok: true });
     }
@@ -222,6 +216,29 @@ export const POST: APIRoute = async ({ request, cookies, clientAddress }) => {
         closeHour: hour(d.closeHour, 19),
       };
       await writeYaml(FILES.settings, next, 'Quick edit: hours and contact', cur.sha);
+      return json({ ok: true });
+    }
+
+    // ---- photo and video gallery
+    if (action === 'saveGallery') {
+      const d = body.data ?? {};
+      const cur = await readYaml(FILES.gallery);
+      const items = (Array.isArray(d.items) ? d.items : [])
+        .map((i: any) => {
+          const videoUrl = url(i?.videoUrl), videoUpload = videoPath(i?.videoUpload);
+          return {
+            kind: videoUrl || videoUpload ? 'video' : 'photo',
+            image: imagePath(i?.image),
+            videoUrl,
+            videoUpload,
+            caption: str(i?.caption, 140),
+            altText: str(i?.altText, 300) || str(i?.caption, 140),
+            featured: bool(i?.featured) && !!imagePath(i?.image),
+          };
+        })
+        .filter((i: any) => i.image || i.videoUrl || i.videoUpload)
+        .slice(0, 200);
+      await writeYaml(FILES.gallery, { ...cur.data, items }, 'Quick edit: photo and video gallery', cur.sha);
       return json({ ok: true });
     }
 
@@ -278,7 +295,7 @@ export const POST: APIRoute = async ({ request, cookies, clientAddress }) => {
       const buf = Buffer.from(m[2], 'base64');
       if (buf.length > 3_000_000) return fail('That photo is too large. Please try a smaller one.');
       const name = `${slugify(str(body.name, 60).replace(/\.\w+$/, '')) || 'photo'}-${Date.now().toString(36)}.${m[1] === 'jpeg' ? 'jpg' : m[1]}`;
-      await putFile(`public/images/uploads/${name}`, buf, `Quick edit: upload photo ${name}`);
+      await putFile(`public/images/uploads/${name}`, buf, `Quick edit: upload photo ${name} [photo upload]`);
       return json({ ok: true, path: `/images/uploads/${name}` });
     }
 

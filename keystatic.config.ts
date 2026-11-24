@@ -46,8 +46,8 @@ export default config({
   storage,
   ui: {
     brand: {
-      name: 'Hidden Treasures',
-      mark: () => createElement('img', { src: '/images/brand/compass-badge-red.png', alt: '', width: 34, height: 24, style: { display: 'block', width: 34, height: 'auto' } }),
+      name: 'Editor',
+      mark: () => createElement('img', { src: '/images/brand/wordmark-red.png', alt: '', width: 120, height: 24, style: { display: 'block', width: 120, height: 'auto' } }),
     },
     navigation: {
       'Everyday edits': ['events', 'announcement', 'homeVideo', 'tagSale', 'settings'],

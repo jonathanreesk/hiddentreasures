@@ -18,7 +18,7 @@ import '../styles/global.css';
 <body class="qe">
   <header class="qe-top">
     <div class="qe-wrap qe-top-in">
-      <a href="/" class="qe-brand"><img src="/images/brand/compass-badge-red.png" alt="" width="46" height="33" /> <span>Hidden Treasures <em>Quick edits</em></span></a>
+      <a href="/" class="qe-brand"><img src="/images/brand/wordmark-red.png" alt="Hidden Treasures Thrift Store" width="284" height="56" /> <em>Quick edits</em></a>
       <div class="qe-top-links" data-when-in hidden>
         <a href="/" target="_blank" rel="noopener">View the site ↗</a>
         <button type="button" data-logout>Log out</button>
@@ -44,7 +44,7 @@ import '../styles/global.css';
       <h1>What would you like to update?</h1>
       <p class="muted">Changes go live on hiddentreasuresmn.org about a minute after you save.</p>
       <nav class="qe-jump">
-        <a href="#events">📅 Events and sales</a><a href="#ribbon">📣 Top ribbon</a><a href="#tags">🏷️ Tag sale</a><a href="#video">🎬 Homepage video</a><a href="#hours">🕘 Hours</a>
+        <a href="#events">📅 Events and sales</a><a href="#ribbon">📣 Top ribbon</a><a href="#tags">🏷️ Tag sale</a><a href="#gallery">🖼️ Photos and videos</a><a href="#video">🎬 Homepage video</a><a href="#hours">🕘 Hours</a>
       </nav>
     </div>
     <p class="qe-loading" data-loading>Loading what's on the site…</p>
@@ -104,15 +104,30 @@ import '../styles/global.css';
       </form>
     </section>
 
+    <!-- GALLERY -->
+    <section class="qe-card" id="gallery" hidden data-section>
+      <header><h2>🖼️ Photos and videos</h2><span class="now-pill" data-gallery-status></span></header>
+      <p class="muted">Everything here shows on the Gallery page. Tick <strong>⭐ Homepage</strong> on up to 5 photos to show them on the homepage and Shop page too.</p>
+      <div class="qe-actions" style="margin-top:0">
+        <label class="btn btn-red">📷 Add photos<input type="file" accept="image/*" multiple hidden data-add-photos /></label>
+        <label class="btn btn-outline">🎬 Upload a video<input type="file" accept="video/*" hidden data-upload-video /></label>
+        <button type="button" class="btn btn-outline" data-add-video>🔗 Paste a YouTube link</button>
+      </div>
+      <p class="qe-note" data-gallery-progress hidden></p>
+      <div class="qe-tiles" data-tiles></div>
+      <div class="qe-actions qe-sticky-save"><button type="button" class="btn btn-red" data-save-gallery>Save photos and videos</button><span class="muted qe-small" data-gallery-dirty hidden>You have unsaved changes.</span></div>
+    </section>
+
     <!-- VIDEO -->
     <section class="qe-card" id="video" hidden data-section>
       <header><h2>🎬 Homepage video</h2><span class="now-pill" data-video-status></span></header>
-      <p class="muted">A video band on the homepage. Upload the video to YouTube first, then paste the link here.</p>
+      <p class="muted">A video band on the homepage. Upload a video file from your phone or computer, or paste a YouTube link.</p>
       <form data-video-form>
         <label class="qe-check"><input type="checkbox" name="show" /> <strong>Show the video on the homepage</strong></label>
         <p class="qe-note" data-upload-note hidden></p>
         <div class="qe-grid">
-          <label class="qe-field qe-span"><span>YouTube or Vimeo link</span><input name="youtube" type="url" placeholder="https://www.youtube.com/watch?v=…" /></label>
+          <div class="qe-field qe-span"><span>Video</span><div class="qe-photo"><label class="btn btn-outline qe-sm">🎬 Upload a video file<input type="file" accept="video/*" hidden data-home-video /></label><span class="muted qe-small" data-home-video-name></span></div></div>
+          <label class="qe-field qe-span"><span>Or paste a YouTube or Vimeo link instead</span><input name="youtube" type="url" placeholder="https://www.youtube.com/watch?v=…" /></label>
           <label class="qe-field qe-span"><span>Headline</span><input name="title" maxlength="120" /></label>
           <label class="qe-field qe-span"><span>A sentence or two (optional)</span><textarea name="text" rows="2" maxlength="600"></textarea></label>
           <div class="qe-field qe-span"><span>Cover photo (optional)</span><div class="qe-photo" data-photo="cover"></div></div>
@@ -149,6 +164,7 @@ import '../styles/global.css';
   <div class="qe-toast" data-toast hidden></div>
 
   <script>
+    import { upload } from '@vercel/blob/client';
     type Any = any;
     const $ = <T extends Element = HTMLElement>(s: string, el: ParentNode = document) => el.querySelector(s) as T;
     const $$ = <T extends Element = HTMLElement>(s: string, el: ParentNode = document) => [...el.querySelectorAll(s)] as T[];
@@ -229,6 +245,43 @@ import '../styles/global.css';
         const rm = $('[data-remove]', box); if (rm) rm.onclick = () => { (box as Any).value = null; draw(); };
       };
       draw();
+    }
+
+    // ---------------------------------------------------------------- videos (straight to Vercel Blob storage)
+    async function uploadVideo(file: File, onPct: (p: number) => void): Promise<string | null> {
+      if (!file.type.startsWith('video/')) { toast('Please choose a video file (MP4 or MOV).', true); return null; }
+      if (file.size > 500 * 1024 * 1024) { toast('That video is over 500 MB. Please trim it or upload it to YouTube instead.', true); return null; }
+      const ready = await fetch('/api/edit-upload').then((r) => r.json()).catch(() => ({ ready: false }));
+      if (!ready.ready) { toast('Video file uploads are not switched on yet. For now, upload it to YouTube and paste the link.', true); return null; }
+      try {
+        const safe = file.name.toLowerCase().replace(/[^a-z0-9.]+/g, '-');
+        const blob = await upload(`videos/${safe}`, file, { access: 'public', handleUploadUrl: '/api/edit-upload', multipart: file.size > 20 * 1024 * 1024, onUploadProgress: (e) => onPct(Math.round(e.percentage)) });
+        return blob.url;
+      } catch (e: Any) {
+        toast(/switched on|log in/i.test(e?.message || '') ? e.message : 'The video could not be uploaded. Please check your connection and try again.', true);
+        return null;
+      }
+    }
+    // Grab a still frame from a video to use as its cover photo
+    function videoFrame(file: File): Promise<string | null> {
+      return new Promise((ok) => {
+        const v = document.createElement('video'); v.muted = true; v.playsInline = true; v.preload = 'auto';
+        v.src = URL.createObjectURL(file);
+        const done = (r: string | null) => { URL.revokeObjectURL(v.src); ok(r); };
+        v.onloadeddata = () => { v.currentTime = Math.min(1.5, (v.duration || 2) / 3); };
+        v.onseeked = () => {
+          const s = Math.min(1, 1600 / Math.max(v.videoWidth, v.videoHeight));
+          const c = document.createElement('canvas'); c.width = Math.round(v.videoWidth * s); c.height = Math.round(v.videoHeight * s);
+          try { c.getContext('2d')!.drawImage(v, 0, 0, c.width, c.height); done(c.toDataURL('image/jpeg', 0.85)); } catch { done(null); }
+        };
+        v.onerror = () => done(null);
+        setTimeout(() => done(null), 15000);
+      });
+    }
+    async function coverFromVideo(file: File) {
+      const data = await videoFrame(file); if (!data) return null;
+      const j = await api('upload', { name: file.name.replace(/\.\w+$/, '') + '-cover', data });
+      return j.ok ? { path: j.path as string, data } : null;
     }
 
     // ---------------------------------------------------------------- events
@@ -355,6 +408,90 @@ import '../styles/global.css';
       await busy($('button[type=submit]', f) as HTMLButtonElement, async () => { saved(await api('saveTagSale', { data: { enabled: (f.elements.namedItem('enabled') as HTMLInputElement).checked, weeks } })); });
     });
 
+    // ---------------------------------------------------------------- gallery
+    let gallery: Any[] = [];
+    const MAX_FEATURED = 5;
+    const markDirty = (on = true) => { $('[data-gallery-dirty]').hidden = !on; };
+    function galleryStatus() {
+      const n = gallery.filter((g) => g.featured).length;
+      const s = $('[data-gallery-status]'); s.textContent = `${gallery.length} items · ${n} on homepage`; s.className = 'now-pill ' + (n ? 'on' : 'warn');
+    }
+    function renderGallery() {
+      const box = $('[data-tiles]');
+      box.innerHTML = gallery.map((g, i) => {
+        const isVideo = !!(g.videoUrl || g.videoUpload);
+        return `<div class="qe-tile ${g.featured ? 'feat' : ''}" data-g="${i}">
+          <div class="qe-thumb">${g.image ? `<img src="${esc(g._preview || g.image)}" alt="" loading="lazy" />` : '<span>No cover photo</span>'}${isVideo ? '<b class="qe-play">▶ Video</b>' : ''}</div>
+          <label class="qe-field"><span>Caption</span><input data-gk="caption" value="${esc(g.caption)}" maxlength="140" placeholder="A few words about it" /></label>
+          ${isVideo ? `<label class="qe-field"><span>Video link</span><input data-gk="videoUrl" value="${esc(g.videoUrl || '')}" placeholder="${g.videoUpload ? 'Uploaded video file' : 'https://youtube.com/…'}" /></label>` : ''}
+          <label class="qe-star ${g.image && !isVideo ? '' : 'disabled'}"><input type="checkbox" data-gk="featured" ${g.featured ? 'checked' : ''} ${g.image && !isVideo ? '' : 'disabled'} /> ⭐ Homepage</label>
+          <div class="qe-tile-tools">
+            <button type="button" data-move="-1" ${i === 0 ? 'disabled' : ''} aria-label="Move earlier">←</button>
+            <button type="button" data-move="1" ${i === gallery.length - 1 ? 'disabled' : ''} aria-label="Move later">→</button>
+            <label class="qe-mini">${g.image ? 'Change photo' : 'Add cover'}<input type="file" accept="image/*" hidden data-cover /></label>
+            <button type="button" class="qe-del" data-gdel aria-label="Remove">Remove</button>
+          </div></div>`;
+      }).join('') || '<p class="muted">No photos yet. Tap "Add photos" to start.</p>';
+      galleryStatus();
+      $$('[data-g]').forEach((tile) => {
+        const i = +tile.dataset.g!, g = gallery[i];
+        $$('[data-gk]', tile).forEach((inp) => (inp.oninput = inp.onchange = () => {
+          const k = (inp as HTMLElement).dataset.gk!;
+          if (k === 'featured') {
+            const on = (inp as HTMLInputElement).checked;
+            if (on && gallery.filter((x) => x.featured).length >= MAX_FEATURED) { (inp as HTMLInputElement).checked = false; return toast(`Only ${MAX_FEATURED} photos fit on the homepage. Untick one first.`, true); }
+            g.featured = on; tile.classList.toggle('feat', on); galleryStatus();
+          } else g[k] = (inp as HTMLInputElement).value;
+          markDirty();
+        }));
+        $$('[data-move]', tile).forEach((b) => (b.onclick = () => { const j = i + +b.dataset.move!; [gallery[i], gallery[j]] = [gallery[j], gallery[i]]; renderGallery(); markDirty(); }));
+        ($('[data-gdel]', tile) as HTMLElement).onclick = () => { if (confirm('Remove this from the gallery?')) { gallery.splice(i, 1); renderGallery(); markDirty(); } };
+        const cover = $('[data-cover]', tile) as HTMLInputElement;
+        cover.onchange = async () => { const f = cover.files?.[0]; if (!f) return; tile.classList.add('loading'); const r = await uploadPhoto(f); tile.classList.remove('loading'); if (r) { g.image = r.path; g._preview = r.data; renderGallery(); markDirty(); } };
+      });
+    }
+    async function uploadPhoto(file: File) {
+      try { const data = await resize(file); const j = await api('upload', { name: file.name, data }); if (j.ok) return { path: j.path, data }; toast(j.error, true); }
+      catch (e: Any) { toast(e.message, true); }
+      return null;
+    }
+    ($('[data-add-photos]') as HTMLInputElement).addEventListener('change', async (e) => {
+      const input = e.currentTarget as HTMLInputElement, files = [...(input.files || [])]; input.value = '';
+      const prog = $('[data-gallery-progress]'); prog.hidden = false;
+      let n = 0;
+      for (const f of files) {
+        prog.textContent = `Uploading photo ${n + 1} of ${files.length}…`;
+        const r = await uploadPhoto(f);
+        if (r) { gallery.unshift({ kind: 'photo', image: r.path, _preview: r.data, caption: '', altText: '', featured: false, videoUrl: null, videoUpload: null }); n++; renderGallery(); }
+      }
+      prog.hidden = true; markDirty(n > 0);
+      if (n) toast(`${n} photo${n > 1 ? 's' : ''} added. Add captions, then tap "Save photos and videos".`);
+    });
+    ($('[data-upload-video]') as HTMLInputElement).addEventListener('change', async (e) => {
+      const input = e.currentTarget as HTMLInputElement, file = input.files?.[0]; input.value = '';
+      if (!file) return;
+      const prog = $('[data-gallery-progress]'); prog.hidden = false; prog.textContent = 'Uploading video… 0%';
+      const url = await uploadVideo(file, (p) => (prog.textContent = `Uploading video… ${p}%  (keep this page open)`));
+      if (url) {
+        prog.textContent = 'Making a cover photo…';
+        const cover = await coverFromVideo(file);
+        gallery.unshift({ kind: 'video', image: cover?.path || null, _preview: cover?.data, videoUrl: null, videoUpload: url, caption: '', altText: '', featured: false });
+        renderGallery(); markDirty(); toast('Video added. Add a caption, then tap "Save photos and videos".');
+      }
+      prog.hidden = true;
+    });
+    $('[data-add-video]').addEventListener('click', () => {
+      const link = prompt('Paste the YouTube or Vimeo link:');
+      if (!link) return;
+      if (!/^https?:\/\/(www\.)?(youtube\.com|youtu\.be|vimeo\.com)\//i.test(link.trim())) return toast('That does not look like a YouTube or Vimeo link.', true);
+      gallery.unshift({ kind: 'video', image: null, videoUrl: link.trim(), videoUpload: null, caption: '', altText: '', featured: false });
+      renderGallery(); markDirty(); toast('Video added. Add a cover photo and caption, then save.');
+    });
+    $('[data-save-gallery]').addEventListener('click', async (e) => {
+      const items = gallery.map(({ _preview, ...g }) => g);
+      await busy(e.currentTarget as HTMLButtonElement, async () => { if (saved(await api('saveGallery', { data: { items } }))) markDirty(false); });
+    });
+
     // ---------------------------------------------------------------- video
     function renderVideo() {
       const f = $('[data-video-form]') as HTMLFormElement, v = state.homeVideo || {};
@@ -363,17 +500,30 @@ import '../styles/global.css';
       photoField($('[data-photo="cover"]', f), v.cover || null);
       const note = $('[data-upload-note]');
       note.hidden = !(v.video && !v.youtube);
-      note.innerHTML = `Right now it plays an uploaded video file. Paste a YouTube link to replace it, or <button type="button" class="qe-link" data-rm-upload>remove the uploaded video</button>.`;
+      note.innerHTML = `Right now it plays an uploaded video file. Upload a new one or paste a YouTube link to replace it, or <button type="button" class="qe-link" data-rm-upload>remove the uploaded video</button>.`;
       const rm = $('[data-rm-upload]'); if (rm) rm.onclick = () => { (f as Any)._removeUpload = true; note.textContent = 'The uploaded video will be removed when you save.'; };
       const live = v.show && (v.video || v.youtube);
       const s = $('[data-video-status]'); s.textContent = live ? 'Showing now' : 'Hidden'; s.className = 'now-pill ' + (live ? 'on' : 'off');
     }
+    ($('[data-home-video]') as HTMLInputElement).addEventListener('change', async (e) => {
+      const input = e.currentTarget as HTMLInputElement, file = input.files?.[0]; input.value = '';
+      if (!file) return;
+      const f = $('[data-video-form]') as HTMLFormElement, label = $('[data-home-video-name]');
+      label.textContent = 'Uploading… 0% (keep this page open)';
+      const url = await uploadVideo(file, (p) => (label.textContent = `Uploading… ${p}% (keep this page open)`));
+      if (!url) { label.textContent = ''; return; }
+      (f as Any)._video = url; (f as Any)._removeUpload = false;
+      (f.elements.namedItem('youtube') as HTMLInputElement).value = '';
+      const box = $('[data-photo="cover"]', f) as Any;
+      if (!box.value) { label.textContent = 'Making a cover photo…'; const c = await coverFromVideo(file); if (c) { photoField(box, c.path); const im = $('img', box) as HTMLImageElement; if (im) im.src = c.data; } }
+      label.textContent = `✓ ${file.name} uploaded. Tap "Save video" to put it on the homepage.`;
+    });
     $('[data-video-form]').addEventListener('submit', async (e) => {
       e.preventDefault(); const f = e.currentTarget as HTMLFormElement;
       const data: Any = Object.fromEntries(new FormData(f).entries());
-      data.show = (f.elements.namedItem('show') as HTMLInputElement).checked; data.cover = ($('[data-photo="cover"]', f) as Any).value; data.removeUpload = !!(f as Any)._removeUpload;
-      if (data.show && !data.youtube && (!state.homeVideo?.video || data.removeUpload)) return toast('To show the video, paste a YouTube or Vimeo link first.', true);
-      await busy($('button[type=submit]', f) as HTMLButtonElement, async () => { if (saved(await api('saveVideo', { data }))) (f as Any)._removeUpload = false; });
+      data.show = (f.elements.namedItem('show') as HTMLInputElement).checked; data.cover = ($('[data-photo="cover"]', f) as Any).value; data.removeUpload = !!(f as Any)._removeUpload; data.video = (f as Any)._video || null;
+      if (data.show && !data.youtube && !data.video && (!state.homeVideo?.video || data.removeUpload)) return toast('To show the video, upload a video file or paste a YouTube link first.', true);
+      await busy($('button[type=submit]', f) as HTMLButtonElement, async () => { if (saved(await api('saveVideo', { data }))) { (f as Any)._removeUpload = false; (f as Any)._video = null; $('[data-home-video-name]').textContent = ''; } });
     });
 
     // ---------------------------------------------------------------- hours
@@ -407,7 +557,8 @@ import '../styles/global.css';
       state = j;
       weeks = (j.tagSale?.weeks || []).map((w: Any) => ({ ...w }));
       (($('[data-tag-form]') as HTMLFormElement).elements.namedItem('enabled') as HTMLInputElement).checked = !!j.tagSale?.enabled;
-      renderEvents(); renderRibbon(); renderWeeks(); renderVideo(); renderHours();
+      gallery = (j.gallery?.items || []).map((g: Any) => ({ ...g }));
+      renderEvents(); renderRibbon(); renderWeeks(); renderGallery(); renderVideo(); renderHours(); markDirty(false);
       $('[data-loading]').hidden = true; $$('[data-section]').forEach((s) => (s.hidden = false));
     }
 
@@ -423,6 +574,7 @@ import '../styles/global.css';
     .qe-top { background: #fffdf9; border-bottom: 1px solid var(--sand); position: sticky; top: 0; z-index: 10; }
     .qe-top-in { display: flex; align-items: center; justify-content: space-between; min-height: 68px; gap: 16px; }
     .qe-brand { display: flex; align-items: center; gap: 12px; text-decoration: none; color: var(--ink); font-family: var(--serif); font-size: 20px; }
+    .qe-brand img { width: 170px; height: auto; display: block; }
     .qe-brand em { font-style: normal; font-family: var(--mono); font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--red); margin-left: 8px; }
     .qe-top-links { display: flex; gap: 18px; align-items: center; font-weight: 600; font-size: 15px; }
     .qe-top-links[hidden] { display: none; }
@@ -484,6 +636,21 @@ import '../styles/global.css';
     .qe-days { display: flex; flex-wrap: wrap; gap: 8px; }
     .qe-day { display: inline-flex; align-items: center; gap: 6px; padding: 8px 12px; border-radius: 999px; background: var(--cream); font-weight: 600; cursor: pointer; }
     .qe-day input { accent-color: var(--red); width: 18px; height: 18px; }
+    .qe-tiles { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 16px; margin-top: 20px; }
+    .qe-tile { display: flex; flex-direction: column; gap: 10px; padding: 12px; border-radius: 16px; background: var(--cream); box-shadow: inset 0 0 0 2px transparent; }
+    .qe-tile.feat { box-shadow: inset 0 0 0 2px #c9a227; }
+    .qe-tile.loading { opacity: .5; pointer-events: none; }
+    .qe-thumb { position: relative; aspect-ratio: 4 / 3; border-radius: 12px; overflow: hidden; background: var(--sand); display: grid; place-items: center; color: var(--muted); font-size: 14px; }
+    .qe-thumb img { width: 100%; height: 100%; object-fit: cover; }
+    .qe-play { position: absolute; left: 10px; bottom: 10px; padding: 4px 10px; border-radius: 999px; background: rgba(35,31,27,.8); color: #fff; font-size: 12.5px; }
+    .qe-star { display: flex; align-items: center; gap: 8px; font-weight: 700; cursor: pointer; }
+    .qe-star input { width: 20px; height: 20px; accent-color: #c9a227; }
+    .qe-star.disabled { opacity: .45; cursor: default; }
+    .qe-tile-tools { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+    .qe-tile-tools button:not(.qe-del), .qe-mini { min-height: 36px; padding: 0 12px; border-radius: 999px; border: 0; background: #fff; font: inherit; font-size: 13.5px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; }
+    .qe-tile-tools button:disabled { opacity: .35; cursor: default; }
+    .qe-tile-tools .qe-del { margin-left: auto; min-height: 36px; }
+    .qe-sticky-save { position: sticky; bottom: 0; margin: 20px -28px -28px; padding: 16px 28px; background: #fffdf9; border-top: 1px solid var(--sand); border-radius: 0 0 22px 22px; align-items: center; }
     .qe-toast { position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%); z-index: 50; max-width: calc(100% - 32px); padding: 14px 22px; border-radius: 14px; background: #205a33; color: #fff; font-weight: 600; box-shadow: 0 14px 40px rgba(0,0,0,.25); }
     .qe-toast.bad { background: #8a1f2b; }
     .now-pill { display: inline-block; padding: 3px 10px; border-radius: 999px; font-family: var(--mono); font-size: 11.5px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; white-space: nowrap; background: var(--sand); color: var(--muted); }
@@ -498,7 +665,7 @@ import '../styles/global.css';
       .qe-brand em { display: none; }
       .qe-week > .now-pill { grid-column: 1 / -1; }
       .qe-list li { flex-wrap: wrap; }
-      .qe-brand span { font-size: 17px; }
+      .qe-brand img { width: 140px; }
       .qe-top-links a { display: none; }
     }
   </style>

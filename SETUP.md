@@ -218,6 +218,10 @@ To turn it on, add two settings in Vercel (**Settings → Environment Variables*
 - `EDIT_PASSWORD`: the staff password. At least 8 characters; a short phrase like `blue-tag-tuesday` is easy to remember and hard to guess.
 - `GITHUB_TOKEN`: a GitHub token that lets the site save changes. On github.com: **Settings → Developer settings → Personal access tokens → Fine-grained tokens → Generate new token**. Repository access: **Only select repositories → hiddentreasures**. Permissions: **Contents → Read and write**. Pick the longest expiry offered and set a calendar reminder to renew it.
 
+To let staff upload video files (not just YouTube links), connect a Vercel Blob store: in Vercel open the project, then **Storage → Create → Blob**, and connect it to this project. That adds `BLOB_READ_WRITE_TOKEN` automatically; redeploy afterwards. Videos up to 500 MB upload straight from the phone or computer.
+
+Photo uploads on their own do not trigger a rebuild (see `vercel.json`); the site republishes once staff tap Save.
+
 To change the password (for example when someone leaves), update `EDIT_PASSWORD` in Vercel and redeploy. Five wrong tries lock that device out for 15 minutes.
 
 ## Quick guide for staff (in the editor)

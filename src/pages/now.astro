@@ -21,6 +21,9 @@ const tag = await reader.singletons.tagSale.read();
 const settings = await reader.singletons.settings.read();
 const posts = (await getPosts()).sort((a, b) => (a.startDate ?? '').localeCompare(b.startDate ?? ''));
 const weeks = (tag?.weeks ?? []).filter((w) => w.start && w.end);
+const galleryData = await reader.singletons.gallery.read();
+const galleryCount = galleryData?.items?.length ?? 0;
+const featured = (galleryData?.items ?? []).filter((g) => g.featured && g.image).slice(0, 5);
 const tagHex: Record<string, string> = { blue: '#3e5f9e', green: '#3f8f4f', red: '#a33749', yellow: '#f2c94c', orange: '#c45d3b', purple: '#6b4c9a', pink: '#e58fb2', white: '#ffffff' };
 ---
 <Layout title="What's on the site right now" noindex>
@@ -77,6 +80,13 @@ const tagHex: Record<string, string> = { blue: '#3e5f9e', green: '#3f8f4f', red:
             <li data-none hidden><span class="now-pill warn">Missing</span><div class="now-main"><strong>No tag color set for this week</strong><span class="muted">Add this week's color so the banner shows.</span></div></li>
           </ul>
         )}
+      </article>
+
+      <!-- Gallery -->
+      <article class="now-card">
+        <header><h2>🖼️ Photos on the homepage</h2><a class="now-edit" href="/edit#gallery">Edit</a></header>
+        <div class="now-photos">{featured.map((g) => <img src={img(g.image)} alt={g.altText || ''} loading="lazy" />)}</div>
+        <p class="muted" style="margin-top:12px">{galleryCount} photos and videos in the gallery, {featured.length} shown on the homepage.</p>
       </article>
 
       <!-- Homepage video -->
@@ -153,6 +163,9 @@ const tagHex: Record<string, string> = { blue: '#3e5f9e', green: '#3f8f4f', red:
   .now-more { margin-top: 12px; background: none; border: 0; color: var(--red); font-weight: 700; cursor: pointer; padding: 6px 0; }
   .now-video { display: flex; gap: 18px; align-items: center; }
   .now-video img { width: 200px; height: auto; border-radius: 12px; object-fit: cover; }
+  .now-photos { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; }
+  .now-photos img { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; border-radius: 12px; }
+  @media (max-width: 700px) { .now-photos { grid-template-columns: repeat(3, 1fr); } }
   .now-hours { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
   .now-hours .label { margin-bottom: 6px !important; color: var(--ink-2); }
   @media (max-width: 700px) {
