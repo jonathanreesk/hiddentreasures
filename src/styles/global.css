@@ -754,3 +754,7 @@ details.faq p { margin: 0 0 22px; font-size: 16px; line-height: 1.65; color: var
 /* Hero label in the body font instead of the typewriter font */
 .slide .copy .eyebrow { font-family: var(--sans); font-weight: 700; letter-spacing: .1em; font-size: 13px; }
 @media (max-width: 600px) { .hero > .slide:first-of-type .copy .eyebrow { font-size: 11.5px; letter-spacing: .08em; white-space: nowrap; } }
+
+/* Hero label sits under the buttons */
+.slide .copy .eyebrow.eyebrow-bottom { margin: 26px 0 0; opacity: .9; }
+@media (max-width: 600px) { .hero > .slide:first-of-type .copy .eyebrow.eyebrow-bottom { margin: 16px 0 0; } }

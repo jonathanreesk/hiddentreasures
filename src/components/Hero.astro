@@ -12,13 +12,13 @@ const { slides } = Astro.props;
       <div class={`scrim ${s.tint === 'red' ? 'red' : ''}`}></div>
       <div class="wrap inner">
         <div class="copy">
-          {s.eyebrow && <p class="eyebrow">{s.eyebrow}</p>}
           {i === 0 ? <h1 class={`h1 ${s.title.length <= 22 ? 'one-line' : ''}`}>{s.title}</h1> : <h2 class={`h1 ${s.title.length <= 22 ? 'one-line' : ''}`}>{s.title}</h2>}
           {s.body && <p class="body">{s.body}</p>}
           <div class="btn-row">
             {s.primary?.label && <a class={`btn ${s.tint === 'red' ? 'btn-light' : 'btn-red'}`} href={s.primary.href} tabindex={i === 0 ? undefined : -1}>{s.primary.label}</a>}
             {s.secondary?.label && <a class="btn btn-ghost" href={s.secondary.href} tabindex={i === 0 ? undefined : -1}>{s.secondary.label}</a>}
           </div>
+          {s.eyebrow && <p class="eyebrow eyebrow-bottom">{s.eyebrow}</p>}
         </div>
       </div>
     </div>
