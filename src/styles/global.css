@@ -704,6 +704,7 @@ details.faq p { margin: 0 0 22px; font-size: 16px; line-height: 1.65; color: var
 
 /* Full store badge in the "What your donation makes possible" section */
 .engine-head { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 48px; align-items: center; }
-.store-badge { width: clamp(220px, 24vw, 340px); height: auto; transform: rotate(-4deg); filter: drop-shadow(0 18px 30px rgba(0,0,0,.35)); transition: transform .5s cubic-bezier(.2,.8,.2,1); }
-.store-badge:hover { transform: rotate(0deg) scale(1.03); }
+.store-badge { width: clamp(200px, 20vw, 280px); height: auto; opacity: .5; transform: rotate(-4deg); transition: transform .5s cubic-bezier(.2,.8,.2,1); }
+.store-badge.reveal.in { opacity: .5; transform: rotate(-4deg); }
+.store-badge.reveal.in:hover { opacity: .65; transform: rotate(0deg) scale(1.03); }
 @media (max-width: 860px) { .engine-head { grid-template-columns: 1fr; gap: 32px; } .store-badge { order: -1; width: 200px; justify-self: start; } }
