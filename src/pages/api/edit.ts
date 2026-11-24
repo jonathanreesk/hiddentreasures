@@ -116,6 +116,7 @@ const FILES = {
   tagSale: 'content/tag-sale.yaml',
   settings: 'content/settings.yaml',
   gallery: 'content/gallery.yaml',
+  home: 'content/home.yaml',
 };
 const EVENTS = 'content/events';
 
@@ -155,7 +156,7 @@ export const POST: APIRoute = async ({ request, cookies, clientAddress }) => {
   try {
     // ---- load everything
     if (action === 'load') {
-      const [announcement, homeVideo, tagSale, settings, gallery] = await Promise.all(Object.values(FILES).map((p) => readYaml(p).then((r) => r.data)));
+      const [announcement, homeVideo, tagSale, settings, gallery, home] = await Promise.all(Object.values(FILES).map((p) => readYaml(p).then((r) => r.data)));
       const dir = await gh(`contents/${EVENTS}?ref=${BRANCH()}`);
       const list: { name: string }[] = dir.ok ? await dir.json() : [];
       const events = await Promise.all(
@@ -165,14 +166,14 @@ export const POST: APIRoute = async ({ request, cookies, clientAddress }) => {
         })
       );
       events.sort((a: any, b: any) => String(a.startDate ?? '').localeCompare(String(b.startDate ?? '')));
-      return json({ ok: true, announcement, homeVideo, tagSale, settings, gallery, events });
+      return json({ ok: true, announcement, homeVideo, tagSale, settings, gallery, slides: home?.slides ?? [], events });
     }
 
     // ---- top ribbon
     if (action === 'saveAnnouncement') {
       const d = body.data ?? {};
       const cur = await readYaml(FILES.announcement);
-      const next = { ...cur.data, enabled: bool(d.enabled), label: str(d.label, 40), message: str(d.message, 300), linkText: str(d.linkText, 40), linkUrl: link(d.linkUrl) };
+      const next = { ...cur.data, enabled: bool(d.enabled), label: str(d.label, 40), message: str(d.message, 300), linkText: str(d.linkText, 40), linkUrl: link(d.linkUrl), hideAfter: date(d.hideAfter) };
       await writeYaml(FILES.announcement, next, 'Quick edit: top ribbon', cur.sha);
       return json({ ok: true });
     }
@@ -181,7 +182,7 @@ export const POST: APIRoute = async ({ request, cookies, clientAddress }) => {
     if (action === 'saveVideo') {
       const d = body.data ?? {};
       const cur = await readYaml(FILES.homeVideo);
-      const next = { ...cur.data, show: bool(d.show), youtube: url(d.youtube), title: str(d.title, 120), text: str(d.text, 600), cover: imagePath(d.cover), buttonText: str(d.buttonText, 40), buttonLink: link(d.buttonLink) };
+      const next = { ...cur.data, show: bool(d.show), youtube: url(d.youtube), title: str(d.title, 120), text: str(d.text, 600), cover: imagePath(d.cover), buttonText: str(d.buttonText, 40), buttonLink: link(d.buttonLink), hideAfter: date(d.hideAfter) };
       if (d.removeUpload) next.video = null;
       if (videoPath(d.video)) next.video = videoPath(d.video);
       await writeYaml(FILES.homeVideo, next, 'Quick edit: homepage video', cur.sha);
@@ -216,6 +217,29 @@ export const POST: APIRoute = async ({ request, cookies, clientAddress }) => {
         closeHour: hour(d.closeHour, 19),
       };
       await writeYaml(FILES.settings, next, 'Quick edit: hours and contact', cur.sha);
+      return json({ ok: true });
+    }
+
+    // ---- homepage slideshow
+    if (action === 'saveSlides') {
+      const d = body.data ?? {};
+      const cur = await readYaml(FILES.home);
+      const btn = (b: any) => ({ label: str(b?.label, 40), href: link(b?.href) });
+      const slides = (Array.isArray(d.slides) ? d.slides : [])
+        .map((x: any) => ({
+          hideAfter: date(x?.hideAfter),
+          eyebrow: str(x?.eyebrow, 60),
+          title: str(x?.title, 120),
+          body: str(x?.body, 400),
+          image: imagePath(x?.image),
+          tint: x?.tint === 'red' ? 'red' : 'dark',
+          primary: btn(x?.primary),
+          secondary: btn(x?.secondary),
+        }))
+        .filter((x: any) => x.title)
+        .slice(0, 8);
+      if (!slides.length) return fail('Keep at least one slide on the homepage.');
+      await writeYaml(FILES.home, { ...cur.data, slides }, 'Quick edit: homepage slides', cur.sha);
       return json({ ok: true });
     }
 

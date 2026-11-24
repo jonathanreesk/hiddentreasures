@@ -1,19 +1,18 @@
 headline: You're welcome here.
-intro: At Hidden Treasures we are passionate about holding the employment door open for our brothers and sisters in recovery from substance use disorder. You do not need to be in recovery to work here, but a majority of our paid hours are reserved for our friends in addiction recovery and re-entry. That's our mission!
+intro: We hold the employment door open for our brothers and sisters in recovery. You don't need to be in recovery to work here, but most of our paid hours go to friends in addiction recovery and re-entry.
 whatToExpect:
 - A paid job in the store
 - Training on the job
-- Coworkers in recovery, and coworkers who are not
-- Team meetings with Bible reading and prayer. Belief is never required.
+- Coworkers in recovery, and coworkers who aren't
 hiring: true
-applyHeading: Interested in joining our team?
-applyText: Fill out our expression of interest form. Hidden Treasures is not always hiring, and not always hiring for all positions. If something opens up (and you seem like a good fit!), someone from management will reach out.
+applyHeading: Apply for a job
+applyText: We aren't always hiring, or hiring for every role. If something opens up and you seem like a good fit, someone from management will reach out.
 applyButton: Fill out the expression of interest form
 applyFormUrl: https://docs.google.com/forms/d/e/1FAIpQLSd37RWhZi4Yk1YGQRrzWWAAPQ77Dtji8OTSJcZTgL6gXkY05g/viewform?usp=sharing&ouid=115577003530998612772
 questionsEmail: hello@htmn.org
-referText: Pastors, case workers, treatment programs and family members can refer someone directly. Share their details and the best way to reach them, and we will follow up.
-volunteerText: Looking for volunteer work and community? Schedules are flexible, and tasks range from taking fabrics home to measure to deep cleaning the sales floor. Have a unique talent? Email us and tell us about it.
-serviceHoursText: Have court-mandated community service hours you need to complete? Hidden Treasures may have an opening. Fill out our application, or email our volunteer coordinator at hello@htmn.org. Let us know how many hours you need to complete, and by when. Positions are not guaranteed. We are a community of folks in progress, looking to Christ to better our lives and to grow together.
+referText: Pastors, case workers, treatment programs and family members can refer someone directly. Share their details and the best way to reach them, and we'll follow up.
+volunteerText: Schedules are flexible, and tasks range from taking fabrics home to measure to deep-cleaning the sales floor. Have a unique talent? Email us and tell us about it.
+serviceHoursText: Need to complete court-ordered community service hours? We may have an opening. Fill out the volunteer application or email our volunteer coordinator at hello@htmn.org, and tell us how many hours you need and by when. Spots aren't guaranteed.
 volunteerFormUrl: https://docs.google.com/forms/d/e/1FAIpQLSc8IQqWdysDf5Cvz0mGsd9OiAQXZM7v4keV46QTZxk2lYoRsA/viewform?usp=header
 roles:
 - title: Retail (Host Team)
@@ -22,16 +21,16 @@ roles:
   text: Sorting, hanging, and pricing clothing and textiles.
 - title: Production (Hardgoods)
   text: Receiving, sorting, cleaning, and pricing household items.
-faithText: You do not need to be a Christian to work here, but faith is central to our culture. We hold regular team meetings that include Bible readings and prayer. Team members are asked to participate respectfully in discussions, though belief is never required.
+faithText: You don't need to be a Christian to work here, but faith is central to our culture. Team meetings include Bible reading and prayer, and we ask everyone to take part respectfully. Belief is never required.
 nextSteps:
 - title: Fill out the form
-  text: Tell us about yourself, the kind of work you are looking for, and your availability. If you have a resume, send it to hello@hiddentreasuresmn.org.
+  text: Tell us about yourself, the work you're looking for and when you're available. If you have a resume, email it to hello@hiddentreasuresmn.org.
 - title: Short phone interview
-  text: We read every form. If there is an opening that fits, someone from management will call to go over the details and answer your questions.
+  text: If there's an opening that fits, someone from management will call to go over the details and answer your questions.
 - title: In-person interview
   text: After the call, we may ask you to come in so we can meet you and hear more of your story.
-nextStepsNote: We get more applications than we can answer one by one, but we do read every one.
-volunteerNote: Hidden Treasures is a diverse community of people growing together. We are a Christian organization, but you do not need to be Christian to join us. You just need to be comfortable around lots of folks in addiction recovery and all walks of life, prayer, and corny jokes.
+nextStepsNote: We get more applications than we can answer one by one, but we read every one.
+volunteerNote: We're a Christian community, but you don't need to be Christian to join us. You just need to be comfortable around lots of folks in recovery and from all walks of life, prayer, and corny jokes.
 volunteerTasks:
 - Cleaning the store
 - Hauling furniture

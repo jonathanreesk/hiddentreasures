@@ -1,13 +1,13 @@
 ---
 import Icon from './Icon.astro';
 import { img } from '../lib/content';
-interface Slide { eyebrow: string; title: string; body: string; image: string | null; tint: string; primary: { label: string; href: string }; secondary: { label: string; href: string } }
+interface Slide { hideAfter?: string | null; eyebrow: string; title: string; body: string; image: string | null; tint: string; primary: { label: string; href: string }; secondary: { label: string; href: string } }
 interface Props { slides: readonly Slide[] }
 const { slides } = Astro.props;
 ---
 <section class="hero" aria-roledescription="carousel" aria-label="Featured" data-hero style="--slide-ms:6500ms">
   {slides.map((s, i) => (
-    <div class={`slide ${s.tint === 'red' ? 'red' : ''} ${i === 0 ? 'on' : ''}`} aria-roledescription="slide" aria-label={`${i + 1} of ${slides.length}`} aria-hidden={i === 0 ? 'false' : 'true'} data-slide>
+    <div class={`slide ${s.tint === 'red' ? 'red' : ''} ${i === 0 ? 'on' : ''}`} aria-roledescription="slide" aria-label={`${i + 1} of ${slides.length}`} aria-hidden={i === 0 ? 'false' : 'true'} data-slide data-hide-after={s.hideAfter || undefined}>
       {s.image && <img class="bg" src={img(s.image)} alt="" loading={i === 0 ? 'eager' : 'lazy'} fetchpriority={i === 0 ? 'high' : 'auto'} />}
       <div class={`scrim ${s.tint === 'red' ? 'red' : ''}`}></div>
       <div class="wrap inner">
@@ -44,8 +44,12 @@ const { slides } = Astro.props;
 <script>
   const hero = document.querySelector<HTMLElement>('[data-hero]');
   if (hero) {
+    // Slides past their "Hide after" date were hidden by the page; drop them and their dots
+    const allDots = [...hero.querySelectorAll<HTMLElement>('[data-dot]')];
+    [...hero.querySelectorAll<HTMLElement>('[data-slide]')].forEach((s, i) => { if (s.hasAttribute('data-expired')) { s.remove(); allDots[i]?.remove(); } });
     const slides = [...hero.querySelectorAll<HTMLElement>('[data-slide]')];
     const dots = [...hero.querySelectorAll<HTMLElement>('[data-dot]')];
+    if (slides.length < 2) hero.querySelector<HTMLElement>('.hero-ctrl')?.setAttribute('hidden', '');
     const pauseBtn = hero.querySelector<HTMLButtonElement>('[data-pause]');
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     let idx = 0;
@@ -78,7 +82,7 @@ const { slides } = Astro.props;
       pauseBtn?.setAttribute('aria-label', p ? 'Play slideshow' : 'Pause slideshow');
       restart();
     };
-    dots.forEach((d) => d.addEventListener('click', () => show(Number(d.dataset.dot))));
+    dots.forEach((d, i) => d.addEventListener('click', () => show(i)));
     hero.querySelector('[data-prev]')?.addEventListener('click', () => show(idx - 1));
     hero.querySelector('[data-next]')?.addEventListener('click', () => show(idx + 1));
     pauseBtn?.addEventListener('click', () => setPaused(!paused));
@@ -91,6 +95,8 @@ const { slides } = Astro.props;
       if (Math.abs(dx) > 50) show(idx + (dx < 0 ? 1 : -1));
       x0 = null;
     });
+    paused = paused || slides.length < 2;
+    show(0);
     setPaused(paused);
   }
 </script>

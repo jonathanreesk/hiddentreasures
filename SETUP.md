@@ -211,7 +211,7 @@ These spots still have placeholder text in [brackets]. Fill them in through the 
 
 ## Quick edits for staff (one shared password)
 
-Staff update the everyday things at **hiddentreasuresmn.org/edit** (also /admin and /staff). No accounts: everyone uses one shared password. They can change the top ribbon, add, edit or delete events, sales and closures (with a photo), set the color tag weeks, change the homepage video link and the hours.
+Staff update the everyday things at **hiddentreasuresmn.org/edit** (also /admin and /staff). No accounts: everyone uses one shared password. They can change the top ribbon, add, edit or delete events, sales and closures (with a photo), set the color tag weeks, manage photos and videos, the homepage slides and video, and the hours. The ribbon, slides and video each have an end date, after which they hide by themselves; when the video is hidden, a gallery photo takes its place.
 
 To turn it on, add two settings in Vercel (**Settings → Environment Variables**, Production and Preview), then redeploy:
 
@@ -226,7 +226,7 @@ To change the password (for example when someone leaves), update `EDIT_PASSWORD`
 
 ## Quick guide for staff (in the editor)
 
-**Start here: hiddentreasuresmn.org/now** shows everything that is live on the site right now (top ribbon, upcoming events, this week's tag color, homepage video, hours), with an **Edit** button next to each one. Bookmark it on the store computer and phones.
+**Start here: hiddentreasuresmn.org/edit.** The first screen shows a tile for each everyday task (events, top ribbon, tag sale, photos and videos, homepage slides, homepage video, hours) with what's live right now. Bookmark it on the store computer and phones.
 
 | I want to... | Go to |
 |---|---|

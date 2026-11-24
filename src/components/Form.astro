@@ -3,7 +3,7 @@
 // which emails them via SendGrid (see SETUP.md).
 interface Field { name: string; label: string; type?: 'text' | 'email' | 'tel' | 'textarea' | 'date' | 'select' | 'checkboxes'; help?: string; required?: boolean; full?: boolean; options?: string[]; autocomplete?: string }
 interface Props { form: string; fields: Field[]; submit?: string; thanks?: string }
-const { form, fields, submit = 'Send', thanks = 'Thank you! We will be in touch soon.' } = Astro.props;
+const { form, fields, submit = 'Send', thanks = 'Thanks. We\'ll be in touch soon.' } = Astro.props;
 const id = (n: string) => `${form}-${n}`;
 ---
 <div style="position:relative">
@@ -39,5 +39,5 @@ const id = (n: string) => `${form}-${n}`;
     <p class="serif" style="margin:0 0 8px;font-size:clamp(24px,6.1vw,30px)">Thank you!</p>
     <p class="muted" style="margin:0">{thanks}</p>
   </div>
-  <p data-err hidden role="alert" style="margin:14px 0 0;color:var(--red);font-weight:600">Sorry, that did not go through. Please try again, or call the store.</p>
+  <p data-err hidden role="alert" style="margin:14px 0 0;color:var(--red);font-weight:600">Sorry, that didn't go through. Please try again, or call the store.</p>
 </div>

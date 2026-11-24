@@ -708,3 +708,26 @@ details.faq p { margin: 0 0 22px; font-size: 16px; line-height: 1.65; color: var
 .store-badge.reveal.in { opacity: .5; transform: rotate(-4deg); }
 .store-badge.reveal.in:hover { opacity: .65; transform: rotate(0deg) scale(1.03); }
 @media (max-width: 860px) { .engine-head { grid-template-columns: 1fr; gap: 32px; } .store-badge { order: -1; width: 200px; justify-self: start; } }
+
+/* Things past their "Hide after" date */
+[data-expired], .hero-ctrl[hidden] { display: none !important; }
+
+/* Hours box: donate-only version, and a compact version on phones */
+.info.info-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.visit-compact { display: none; }
+@media (max-width: 600px) {
+  .visit-box .info { display: none; }
+  .visit-compact { display: block; padding: 16px 18px 14px; background: #fffdf9; }
+  .vc-line { margin: 0; font-size: 15.5px; color: var(--ink-2); display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .vc-line strong { color: var(--ink); }
+  .vc-line.status.open strong { color: #23693f; }
+  .vc-sub { margin-top: 4px; color: var(--muted); font-size: 14.5px; }
+  .vc-actions { display: flex; gap: 8px; margin-top: 12px; }
+  .vc-actions a { flex: 1; display: inline-flex; align-items: center; justify-content: center; gap: 6px; min-height: 42px; border-radius: 999px; background: var(--cream); color: var(--ink); font-weight: 700; font-size: 14px; text-decoration: none; }
+}
+
+/* Photo that fills the video spot when there's no video */
+#photo-fill[hidden] { display: none; }
+.vf-photo { display: block; border-radius: var(--radius); overflow: hidden; aspect-ratio: 16 / 9; }
+.vf-photo img { width: 100%; height: 100%; object-fit: cover; transition: transform .6s ease; }
+.vf-photo:hover img { transform: scale(1.03); }

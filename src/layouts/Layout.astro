@@ -17,7 +17,6 @@ const announcement = await reader.singletons.announcement.read();
 const pageTitle = title ? `${title} | Hidden Treasures Thrift Store` : 'Hidden Treasures Thrift Store | Find a treasure. Change a life.';
 const path = Astro.url.pathname.replace(/\/$/, '') || '/';
 const nav = [
-  { href: '/donate', label: 'Donate goods' },
   { href: '/visit', label: 'Shop' },
   { href: '/work-with-us', label: 'Work with us' },
   { href: '/our-story', label: 'Our story' },
@@ -61,7 +60,7 @@ const annKey = announcement?.message ? announcement.message.length + ':' + annou
   <a class="skip" href="#main">Skip to content</a>
 
   {announcement?.enabled && announcement.message && (
-    <div class="announce" data-announce={annKey}>
+    <div class="announce" data-announce={annKey} data-hide-after={announcement.hideAfter || undefined}>
       <div class="wrap">
         {announcement.label && <span class="pill">{announcement.label}</span>}
         <p>{announcement.message}</p>
@@ -157,6 +156,20 @@ const annKey = announcement?.message ? announcement.message.length + ':' + annou
 
   <button type="button" class="to-top" aria-label="Back to top" data-top><Icon name="left" size={20} /></button>
 
+  <script is:inline>
+    // Hide anything with a "Hide after" date that has passed (Minneapolis time), so nothing goes stale
+    (function () {
+      var t = new Date().toLocaleDateString('en-CA', { timeZone: 'America/Chicago' });
+      document.querySelectorAll('[data-hide-after]').forEach(function (el) {
+        if (el.getAttribute('data-hide-after') < t) {
+          el.hidden = true; el.setAttribute('data-expired', '');
+          // Show its stand-in, if it has one (for example a photo where the video was)
+          var f = el.getAttribute('data-fallback'); var fe = f && document.querySelector(f);
+          if (fe) fe.hidden = false;
+        }
+      });
+    })();
+  </script>
   <script>
     // Back to top: appears after scrolling down a couple of screens
     const topBtn = document.querySelector<HTMLButtonElement>('[data-top]');

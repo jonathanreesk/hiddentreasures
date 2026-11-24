@@ -1,14 +1,20 @@
 ---
 // Homepage video band. Staff manage it under "Everyday edits > Homepage video".
-import { reader, img, videoEmbed } from '../lib/content';
+import { reader, img, videoEmbed, getGallery } from '../lib/content';
 const v = await reader.singletons.homeVideo.read();
 const embed = videoEmbed(v?.youtube);
 const file = img(v?.video);
 const cover = img(v?.cover);
 const show = v?.show && (embed || file);
+// When there's no video (or it has passed its end date), a photo fills the spot instead.
+// It uses a gallery photo that isn't already in the homepage photo strip.
+const gallery = await getGallery();
+const photos = gallery.filter((m) => m.kind === 'photo' && m.image);
+const fill = photos.find((m) => !m.featured) ?? photos[0];
+const galleryIntro = (await reader.singletons.gallery.read())?.intro;
 ---
 {show && (
-  <section class="section-tight video-band" aria-label="Video">
+  <section class="section-tight video-band" aria-label="Video" data-hide-after={v?.hideAfter || undefined} data-fallback="#photo-fill">
     <div class="wrap video-feature">
       <div class="vf-player reveal" data-vf>
         {embed ? (
@@ -26,10 +32,21 @@ const show = v?.show && (embed || file);
         )}
       </div>
       <div class="vf-text reveal">
-        <p class="eyebrow">Watch</p>
         {v?.title && <h2 class="h2" style="margin-bottom:16px">{v.title}</h2>}
         {v?.text && <p class="lead" style="margin:0 0 26px">{v.text}</p>}
         {v?.buttonText && v?.buttonLink && <a class="btn btn-red" href={v.buttonLink}>{v.buttonText}</a>}
+      </div>
+    </div>
+  </section>
+)}
+{fill && (
+  <section class="section-tight video-band" aria-label="Inside the store" id="photo-fill" hidden={!!show}>
+    <div class="wrap video-feature">
+      <a class="vf-player vf-photo" href="/gallery"><img src={fill.image} alt={fill.alt} loading="lazy" /></a>
+      <div class="vf-text">
+        <h2 class="h2" style="margin-bottom:16px">Take a look inside</h2>
+        {galleryIntro && <p class="lead" style="margin:0 0 26px">{galleryIntro}</p>}
+        <a class="btn btn-red" href="/gallery">See the gallery</a>
       </div>
     </div>
   </section>

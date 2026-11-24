@@ -1,22 +1,48 @@
 ---
+// Hours and location box under page heroes. mode="donate" shows drop-off hours only.
 import { reader } from '../lib/content';
 import TagSale from './TagSale.astro';
 import Icon from './Icon.astro';
+interface Props { mode?: 'all' | 'donate' }
+const { mode = 'all' } = Astro.props;
+const donateOnly = mode === 'donate';
 const s = await reader.singletons.settings.read();
 const tel = s?.phone?.replace(/\D/g, '');
+const openLine = (rows?: readonly { days: string; hours: string }[]) => rows?.find((h) => !/closed/i.test(h.hours));
+const shop = openLine(s?.shopHours);
+const drop = openLine(s?.donateHours);
+const statusAttrs = { 'data-status': '', 'data-days': (s?.openDays ?? []).join(','), 'data-open': s?.openHour ?? 10, 'data-close': s?.closeHour ?? 19 };
 ---
 <section class="wrap visit" aria-label="Hours and location">
   <div class="visit-box">
-  <div class="card info">
-    <div>
-      <div class="status" data-status data-days={(s?.openDays ?? []).join(',')} data-open={s?.openHour ?? 10} data-close={s?.closeHour ?? 19}>
-        <span class="dotc"></span><span class="label" data-status-label style="color:var(--ink-2)">Store hours</span>
-      </div>
-      <p class="t">Shop</p>
-      {s?.shopHours.map((h) => <p>{h.days}: {h.hours}</p>)}
+  <!-- Phones: one compact block -->
+  <div class="visit-compact">
+    {donateOnly ? (
+      <p class="vc-line"><strong>Drop-off</strong> {drop ? `${drop.days}, ${drop.hours}` : ''}</p>
+    ) : (
+      <>
+        <p class="vc-line status" {...statusAttrs}><span class="dotc"></span><strong data-status-label>Store hours</strong> {shop ? `· ${shop.days}, ${shop.hours}` : ''}</p>
+        {drop && <p class="vc-line vc-sub">Donations {drop.days}, {drop.hours}</p>}
+      </>
+    )}
+    <div class="vc-actions">
+      {s?.mapsUrl && <a href={s.mapsUrl}><Icon name="pin" size={16} /> Directions</a>}
+      <a href={`tel:${tel}`}><Icon name="phone" size={16} /> Call</a>
+      <a href={`mailto:${s?.email}`}>Email</a>
     </div>
+  </div>
+  <div class={`card info ${donateOnly ? 'info-3' : ''}`}>
+    {!donateOnly && (
+      <div>
+        <div class="status" {...statusAttrs}>
+          <span class="dotc"></span><span class="label" data-status-label style="color:var(--ink-2)">Store hours</span>
+        </div>
+        <p class="t">Shop</p>
+        {s?.shopHours.map((h) => <p>{h.days}: {h.hours}</p>)}
+      </div>
+    )}
     <div>
-      <span class="label" style="color:var(--ink-2)">Drop off</span>
+      <span class="label" style="color:var(--ink-2)">Drop-off</span>
       <p class="t">Donations</p>
       {s?.donateHours.map((h) => <p>{h.days}: {h.hours}</p>)}
     </div>
@@ -32,6 +58,6 @@ const tel = s?.phone?.replace(/\D/g, '');
       <p><a href={`mailto:${s?.email}`} aria-label={`Email ${s?.email}`}><span class="email-full">{s?.email}</span><span class="email-short">Email us</span></a></p>
     </div>
   </div>
-  <TagSale />
+  {!donateOnly && <TagSale />}
   </div>
 </section>

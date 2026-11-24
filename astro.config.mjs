@@ -15,6 +15,7 @@ export default defineConfig({
   redirects: {
     '/admin': '/edit',
     '/staff': '/edit',
+    '/now': '/edit',
     '/work': '/work-with-us',
     '/volunteer': '/work-with-us#volunteer',
     '/pickup': '/donate#pickup',

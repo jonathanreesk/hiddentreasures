@@ -156,6 +156,7 @@ export default config({
         message: fields.text({ label: '3. Message', description: 'Keep it to one short sentence' }),
         linkText: fields.text({ label: 'Link text', defaultValue: 'Details' }),
         linkUrl: fields.text({ label: 'Link', defaultValue: '/news' }),
+        hideAfter: fields.date({ label: 'Hide after (optional)', description: 'The ribbon disappears by itself after this day' }),
       },
     }),
 
@@ -167,6 +168,7 @@ export default config({
       schema: {
         slides: fields.array(
           fields.object({
+            hideAfter: fields.date({ label: 'Hide after (optional)', description: 'The slide disappears by itself after this day. Good for seasonal slides.' }),
             eyebrow: fields.text({ label: 'Small text above the headline' }),
             title: fields.text({ label: 'Headline' }),
             body: fields.text({ label: 'Text', multiline: true }),
@@ -298,6 +300,7 @@ export default config({
         cover: image('Cover photo (optional)', 'The still image people see before pressing play. Leave empty to use the first frame.'),
         buttonText: fields.text({ label: 'Button text (optional)', description: 'For example: See market details' }),
         buttonLink: fields.text({ label: 'Button link (optional)', description: 'For example: /news/christmas-market' }),
+        hideAfter: fields.date({ label: 'Hide after (optional)', description: 'The video disappears from the homepage by itself after this day' }),
       },
     }),
 

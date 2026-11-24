@@ -7,17 +7,12 @@ const hero = await pageImage('loyalty', '/images/uploads/wall-art.jpg');
 const l = await reader.singletons.loyalty.read();
 ---
 <Layout title="Loyalty program" description="The Hidden Treasures loyalty program: 5% back on every purchase, birthday bucks and exclusive email deals.">
-  <PageHero eyebrow="Loyalty program" title="Loyalty cards." lead={l?.intro} image={hero} />
+  <PageHero eyebrow="Loyalty program" title="Loyalty cards" lead={l?.intro} image={hero} />
   <section class="section">
     <div class="wrap split">
       <div class="reveal">
-        <p class="eyebrow">Perks include</p>
-        <h2 class="h2" style="margin-bottom:28px">Thrift more, get more.</h2>
+        <h2 class="h2" style="margin-bottom:28px">What you get</h2>
         <ul class="checks">{l?.perks.map((p) => <li>{p}</li>)}</ul>
-        <div class="card pad" style="margin-top:32px;background:#f6e27a">
-          <p class="serif" style="margin:0 0 6px;font-size:clamp(20px,5.3vw,26px)">Sign up in-store</p>
-          <p style="margin:0">Ask at the register next time you stop by. It takes a minute.</p>
-        </div>
       </div>
       <div class="card pad reveal" id="profile" style="box-shadow:0 24px 50px rgba(35,31,27,.12)">
         <p class="eyebrow">Complete your profile</p>
@@ -25,7 +20,7 @@ const l = await reader.singletons.loyalty.read();
         <Form
           form="loyalty"
           submit="Save my profile"
-          thanks="Your profile is on its way to our team. Thanks for shopping with us!"
+          thanks="Thanks. Your profile is on its way to our team."
           fields={[
             { name: 'first_name', label: 'First name', required: true, autocomplete: 'given-name' },
             { name: 'last_name', label: 'Last name', required: true, autocomplete: 'family-name' },

@@ -1,7 +1,16 @@
 ---
-// Quick edits for store staff: one shared password, simple forms.
-// The server side is src/pages/api/edit.ts.
+// Quick edits for store staff: one shared password, one task at a time.
+// The server side is src/pages/api/edit.ts (saves) and src/pages/api/edit-upload.ts (video files).
 import '../styles/global.css';
+const sections = [
+  { id: 'events', icon: '📅', name: 'Events and sales' },
+  { id: 'ribbon', icon: '📣', name: 'Top ribbon' },
+  { id: 'tags', icon: '🏷️', name: 'Tag sale' },
+  { id: 'gallery', icon: '🖼️', name: 'Photos and videos' },
+  { id: 'slides', icon: '🎞️', name: 'Homepage slides' },
+  { id: 'video', icon: '🎬', name: 'Homepage video' },
+  { id: 'hours', icon: '🕘', name: 'Hours' },
+];
 ---
 <!doctype html>
 <html lang="en">
@@ -18,7 +27,7 @@ import '../styles/global.css';
 <body class="qe">
   <header class="qe-top">
     <div class="qe-wrap qe-top-in">
-      <a href="/" class="qe-brand"><img src="/images/brand/wordmark-red.png" alt="Hidden Treasures Thrift Store" width="284" height="56" /> <em>Quick edits</em></a>
+      <a href="/edit" class="qe-brand" data-go-home><img src="/images/brand/wordmark-red.png" alt="Hidden Treasures Thrift Store" width="284" height="56" /> <em>Quick edits</em></a>
       <div class="qe-top-links" data-when-in hidden>
         <a href="/" target="_blank" rel="noopener">View the site ↗</a>
         <button type="button" data-logout>Log out</button>
@@ -38,66 +47,79 @@ import '../styles/global.css';
     </form>
   </main>
 
-  <!-- Dashboard -->
   <main class="qe-wrap" data-app hidden>
-    <div class="qe-intro">
-      <h1>What would you like to update?</h1>
-      <p class="muted">Changes go live on hiddentreasuresmn.org about a minute after you save.</p>
-      <nav class="qe-jump">
-        <a href="#events">📅 Events and sales</a><a href="#ribbon">📣 Top ribbon</a><a href="#tags">🏷️ Tag sale</a><a href="#gallery">🖼️ Photos and videos</a><a href="#video">🎬 Homepage video</a><a href="#hours">🕘 Hours</a>
-      </nav>
+    <!-- Home: one tile per task -->
+    <div data-home>
+      <h1 class="qe-title">What would you like to update?</h1>
+      <p class="qe-loading" data-loading>Loading what's on the site…</p>
+      <div class="qe-home-grid" data-tiles-home hidden>
+        {sections.map((s) => (
+          <a class="qe-home-tile" href={`#${s.id}`}>
+            <span class="qe-home-icon" aria-hidden="true">{s.icon}</span>
+            <span class="qe-home-name">{s.name}</span>
+            <span class="qe-home-status" data-status-for={s.id}></span>
+          </a>
+        ))}
+      </div>
+      <p class="muted qe-small qe-foot">For changes to page text or partners, ask Jonathan.</p>
     </div>
-    <p class="qe-loading" data-loading>Loading what's on the site…</p>
+
+    <!-- Back bar shown inside a section -->
+    <div class="qe-back" data-back hidden><button type="button" data-back-btn>← All updates</button></div>
 
     <!-- EVENTS -->
     <section class="qe-card" id="events" hidden data-section>
-      <header><h2>📅 Events, sales and closures</h2><button class="btn btn-red qe-sm" type="button" data-new-event>+ Add new</button></header>
-      <p class="muted">Old events disappear from the site 2 days after they end. No need to delete them.</p>
+      <header><h2>📅 Events and sales</h2><button class="btn btn-red qe-sm" type="button" data-new-event>+ Add an event or sale</button></header>
+      <p class="muted">Events drop off the site 2 days after they end, so there's no need to delete old ones.</p>
+      <ul class="qe-list" data-events></ul>
+      <button type="button" class="qe-link" data-show-old hidden></button>
       <form class="qe-sub" data-event-form hidden>
-        <h3 data-event-heading>New event or sale</h3>
+        <div class="qe-sub-head"><h3 data-event-heading>New event or sale</h3><button type="button" class="qe-x" data-cancel aria-label="Close">✕</button></div>
         <div class="qe-grid">
-          <label class="qe-field qe-span"><span>1. What is it called? *</span><input name="title" required maxlength="140" placeholder="For example: 50% off all books" /></label>
-          <label class="qe-field"><span>2. What kind?</span>
+          <label class="qe-field qe-span"><span>Name *</span><input name="title" required maxlength="140" placeholder="For example: Half off all books" /></label>
+          <label class="qe-field"><span>Kind</span>
             <select name="kind"><option value="sale">Sale</option><option value="event">Event</option><option value="closed">Store closed</option><option value="news">News update</option></select></label>
-          <label class="qe-field"><span>3. Date *</span><input type="date" name="startDate" required /></label>
-          <label class="qe-field"><span>Last day (only if it runs several days)</span><input type="date" name="endDate" /></label>
-          <label class="qe-field"><span>Time</span><input name="timeText" maxlength="120" placeholder="For example: 10am to 7pm, or All day" /></label>
-          <label class="qe-field qe-span"><span>4. One-line summary</span><input name="summary" maxlength="300" placeholder="Shown in lists and on the homepage" /></label>
-          <label class="qe-field qe-span"><span>More details (optional)</span><textarea name="body" rows="4" maxlength="5000" placeholder="Leave a blank line between paragraphs"></textarea></label>
-          <div class="qe-field qe-span"><span>Photo or flyer (optional)</span><div class="qe-photo" data-photo="image"></div></div>
+          <label class="qe-field"><span>Date *</span><input type="date" name="startDate" required /></label>
+          <label class="qe-field"><span>Last day, if it runs several days</span><input type="date" name="endDate" /></label>
+          <label class="qe-field"><span>Time</span><input name="timeText" maxlength="120" placeholder="10am to 7pm, or All day" /></label>
+          <label class="qe-field qe-span"><span>Summary</span><input name="summary" maxlength="300" placeholder="One line for lists and the homepage" /></label>
+          <label class="qe-field qe-span"><span>More details</span><textarea name="body" rows="4" maxlength="5000" placeholder="Anything the summary doesn't cover. Leave a blank line between paragraphs."></textarea></label>
+          <div class="qe-field qe-span"><span>Photo or flyer</span><div class="qe-photo" data-photo="image"></div></div>
           <label class="qe-field"><span>Where</span><input name="location" maxlength="120" placeholder="Main store" /></label>
-          <label class="qe-field"><span>YouTube or Vimeo link (optional)</span><input name="videoUrl" type="url" placeholder="https://" /></label>
+          <label class="qe-field"><span>YouTube link</span><input name="videoUrl" type="url" placeholder="https://" /></label>
           <label class="qe-check qe-span"><input type="checkbox" name="pinned" /> Feature it as the big card on the homepage</label>
         </div>
         <div class="qe-actions"><button class="btn btn-red" type="submit">Save</button><button class="btn btn-outline" type="button" data-cancel>Cancel</button></div>
       </form>
-      <ul class="qe-list" data-events></ul>
-      <button type="button" class="qe-link" data-show-old hidden></button>
     </section>
 
     <!-- RIBBON -->
     <section class="qe-card" id="ribbon" hidden data-section>
-      <header><h2>📣 Top ribbon</h2><span class="now-pill" data-ribbon-status></span></header>
-      <p class="muted">The red bar across the top of every page. Good for "Closed today", a big sale, or the Christmas Market.</p>
+      <header><h2>📣 Top ribbon</h2><span class="qe-pill" data-ribbon-status></span></header>
+      <p class="muted">The red bar across the top of every page. Good for "Closed today" or a big sale.</p>
       <form data-ribbon-form>
-        <label class="qe-check"><input type="checkbox" name="enabled" /> <strong>Show the ribbon on the site</strong></label>
+        <label class="qe-check"><input type="checkbox" name="enabled" /> <strong>Show the ribbon</strong></label>
         <div class="qe-grid">
-          <label class="qe-field"><span>Small label</span><input name="label" maxlength="40" placeholder="For example: Now open" /></label>
-          <label class="qe-field qe-span"><span>Message</span><input name="message" maxlength="300" placeholder="One short sentence" /></label>
-          <label class="qe-field"><span>Link text (optional)</span><input name="linkText" maxlength="40" placeholder="Details" /></label>
-          <label class="qe-field"><span>Link goes to (optional)</span><input name="linkUrl" maxlength="500" placeholder="/news" /></label>
+          <label class="qe-field"><span>Label</span><input name="label" maxlength="40" placeholder="Now open" /></label>
+          <label class="qe-field"><span>End date</span><input type="date" name="hideAfter" /><small class="muted">It disappears by itself after this day.</small></label>
+          <label class="qe-field qe-span"><span>Message <em class="qe-count" data-count></em></span><input name="message" maxlength="300" placeholder="One short sentence" /></label>
+          <label class="qe-field"><span>Link text</span><input name="linkText" maxlength="40" placeholder="Details" /></label>
+          <label class="qe-field"><span>Link goes to</span><input name="linkUrl" maxlength="500" placeholder="/news" /></label>
         </div>
+        <p class="label qe-prev-label">On a computer</p>
         <p class="qe-preview" data-ribbon-preview></p>
+        <p class="label qe-prev-label">On a phone</p>
+        <p class="qe-preview qe-preview-phone" data-ribbon-phone></p>
         <div class="qe-actions"><button class="btn btn-red" type="submit">Save ribbon</button></div>
       </form>
     </section>
 
     <!-- TAG SALE -->
     <section class="qe-card" id="tags" hidden data-section>
-      <header><h2>🏷️ Color tag sale</h2><span class="now-pill" data-tag-status></span></header>
+      <header><h2>🏷️ Tag sale</h2><span class="qe-pill" data-tag-status></span></header>
       <p class="muted">One row per week. Only the current week shows on the site.</p>
       <form data-tag-form>
-        <label class="qe-check"><input type="checkbox" name="enabled" /> <strong>Show "This week's tag sale" on the site</strong></label>
+        <label class="qe-check"><input type="checkbox" name="enabled" /> <strong>Show this week's tag sale on the site</strong></label>
         <div class="qe-weeks" data-weeks></div>
         <button type="button" class="qe-link" data-show-past-weeks hidden></button>
         <div class="qe-actions"><button type="button" class="btn btn-outline" data-add-week>+ Add the next week</button><button class="btn btn-red" type="submit">Save tag sale</button></div>
@@ -106,8 +128,8 @@ import '../styles/global.css';
 
     <!-- GALLERY -->
     <section class="qe-card" id="gallery" hidden data-section>
-      <header><h2>🖼️ Photos and videos</h2><span class="now-pill" data-gallery-status></span></header>
-      <p class="muted">Everything here shows on the Gallery page. Tick <strong>⭐ Homepage</strong> on up to 5 photos to show them on the homepage and Shop page too.</p>
+      <header><h2>🖼️ Photos and videos</h2><span class="qe-pill" data-gallery-status></span></header>
+      <p class="muted">Everything here shows on the Gallery page. Tick <strong>⭐ Homepage</strong> on up to 5 photos to show them on the homepage too.</p>
       <div class="qe-actions" style="margin-top:0">
         <label class="btn btn-red">📷 Add photos<input type="file" accept="image/*" multiple hidden data-add-photos /></label>
         <label class="btn btn-outline">🎬 Upload a video<input type="file" accept="video/*" hidden data-upload-video /></label>
@@ -115,24 +137,33 @@ import '../styles/global.css';
       </div>
       <p class="qe-note" data-gallery-progress hidden></p>
       <div class="qe-tiles" data-tiles></div>
-      <div class="qe-actions qe-sticky-save"><button type="button" class="btn btn-red" data-save-gallery>Save photos and videos</button><span class="muted qe-small" data-gallery-dirty hidden>You have unsaved changes.</span></div>
+      <div class="qe-actions"><button type="button" class="btn btn-red" data-save-gallery>Save photos and videos</button></div>
+    </section>
+
+    <!-- SLIDES -->
+    <section class="qe-card" id="slides" hidden data-section>
+      <header><h2>🎞️ Homepage slides</h2><span class="qe-pill" data-slides-status></span></header>
+      <p class="muted">The big rotating pictures at the top of the homepage. Give seasonal slides an end date and they'll disappear by themselves.</p>
+      <div data-slides></div>
+      <div class="qe-actions"><button type="button" class="btn btn-outline" data-add-slide>+ Add a slide</button><button type="button" class="btn btn-red" data-save-slides>Save slides</button></div>
     </section>
 
     <!-- VIDEO -->
     <section class="qe-card" id="video" hidden data-section>
-      <header><h2>🎬 Homepage video</h2><span class="now-pill" data-video-status></span></header>
-      <p class="muted">A video band on the homepage. Upload a video file from your phone or computer, or paste a YouTube link.</p>
+      <header><h2>🎬 Homepage video</h2><span class="qe-pill" data-video-status></span></header>
+      <p class="muted">A video below the homepage slides. When there's no video, a gallery photo shows in its place.</p>
       <form data-video-form>
-        <label class="qe-check"><input type="checkbox" name="show" /> <strong>Show the video on the homepage</strong></label>
+        <label class="qe-check"><input type="checkbox" name="show" /> <strong>Show the video</strong></label>
         <p class="qe-note" data-upload-note hidden></p>
         <div class="qe-grid">
-          <div class="qe-field qe-span"><span>Video</span><div class="qe-photo"><label class="btn btn-outline qe-sm">🎬 Upload a video file<input type="file" accept="video/*" hidden data-home-video /></label><span class="muted qe-small" data-home-video-name></span></div></div>
-          <label class="qe-field qe-span"><span>Or paste a YouTube or Vimeo link instead</span><input name="youtube" type="url" placeholder="https://www.youtube.com/watch?v=…" /></label>
+          <div class="qe-field qe-span"><span>Video</span><div class="qe-photo"><label class="btn btn-outline qe-sm">🎬 Upload a video<input type="file" accept="video/*" hidden data-home-video /></label><span class="muted qe-small" data-home-video-name></span></div></div>
+          <label class="qe-field qe-span"><span>Or paste a YouTube link</span><input name="youtube" type="url" placeholder="https://www.youtube.com/watch?v=…" /></label>
           <label class="qe-field qe-span"><span>Headline</span><input name="title" maxlength="120" /></label>
-          <label class="qe-field qe-span"><span>A sentence or two (optional)</span><textarea name="text" rows="2" maxlength="600"></textarea></label>
-          <div class="qe-field qe-span"><span>Cover photo (optional)</span><div class="qe-photo" data-photo="cover"></div></div>
-          <label class="qe-field"><span>Button text (optional)</span><input name="buttonText" maxlength="40" /></label>
-          <label class="qe-field"><span>Button link (optional)</span><input name="buttonLink" maxlength="500" placeholder="/news" /></label>
+          <label class="qe-field qe-span"><span>A sentence or two</span><textarea name="text" rows="2" maxlength="600"></textarea></label>
+          <div class="qe-field qe-span"><span>Cover photo</span><div class="qe-photo" data-photo="cover"></div></div>
+          <label class="qe-field"><span>Button text</span><input name="buttonText" maxlength="40" /></label>
+          <label class="qe-field"><span>Button link</span><input name="buttonLink" maxlength="500" placeholder="/news" /></label>
+          <label class="qe-field"><span>End date</span><input type="date" name="hideAfter" /><small class="muted">The photo takes its place after this day.</small></label>
         </div>
         <div class="qe-actions"><button class="btn btn-red" type="submit">Save video</button></div>
       </form>
@@ -140,25 +171,29 @@ import '../styles/global.css';
 
     <!-- HOURS -->
     <section class="qe-card" id="hours" hidden data-section>
-      <header><h2>🕘 Hours and contact</h2></header>
+      <header><h2>🕘 Hours</h2></header>
       <form data-hours-form>
         <div class="qe-two">
-          <div><p class="label">Shop hours</p><div data-rows="shopHours"></div><button type="button" class="qe-link" data-add-row="shopHours">+ Add a line</button></div>
-          <div><p class="label">Donation drop-off hours</p><div data-rows="donateHours"></div><button type="button" class="qe-link" data-add-row="donateHours">+ Add a line</button></div>
+          <fieldset class="qe-hours" data-hours="shop">
+            <legend>Shop</legend>
+            <div class="qe-days" data-days></div>
+            <div class="qe-grid qe-grid-2"><label class="qe-field"><span>Opens</span><select data-open></select></label><label class="qe-field"><span>Closes</span><select data-close></select></label></div>
+            <p class="qe-says" data-says></p>
+          </fieldset>
+          <fieldset class="qe-hours" data-hours="drop">
+            <legend>Donation drop-off</legend>
+            <div class="qe-days" data-days></div>
+            <div class="qe-grid qe-grid-2"><label class="qe-field"><span>Opens</span><select data-open></select></label><label class="qe-field"><span>Closes</span><select data-close></select></label></div>
+            <p class="qe-says" data-says></p>
+          </fieldset>
         </div>
-        <p class="label" style="margin-top:24px">"Open now" badge</p>
-        <div class="qe-days" data-days></div>
         <div class="qe-grid">
-          <label class="qe-field"><span>Opens at</span><select name="openHour" data-hour></select></label>
-          <label class="qe-field"><span>Closes at</span><select name="closeHour" data-hour></select></label>
           <label class="qe-field"><span>Phone</span><input name="phone" maxlength="40" /></label>
           <label class="qe-field"><span>Email</span><input name="email" type="email" maxlength="120" /></label>
         </div>
         <div class="qe-actions"><button class="btn btn-red" type="submit">Save hours</button></div>
       </form>
     </section>
-
-    <p class="muted qe-small" style="text-align:center;margin:40px 0 60px">For bigger changes (page text, photos, partners), ask Jonathan.</p>
   </main>
 
   <div class="qe-toast" data-toast hidden></div>
@@ -168,6 +203,7 @@ import '../styles/global.css';
     type Any = any;
     const $ = <T extends Element = HTMLElement>(s: string, el: ParentNode = document) => el.querySelector(s) as T;
     const $$ = <T extends Element = HTMLElement>(s: string, el: ParentNode = document) => [...el.querySelectorAll(s)] as T[];
+    const field = (f: HTMLFormElement, n: string) => f.elements.namedItem(n) as HTMLInputElement;
     const esc = (s: unknown) => String(s ?? '').replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]!));
     const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
     const nice = (d?: string) => (d ? `${MONTHS[+d.slice(5, 7) - 1]} ${+d.slice(8, 10)}` : '');
@@ -176,6 +212,8 @@ import '../styles/global.css';
     const addDays = (d: string, n: number) => new Date(Date.parse(d + 'T12:00:00Z') + n * 86400000).toISOString().slice(0, 10);
     const daysBetween = (a: string, b: string) => Math.round((Date.parse(a + 'T00:00:00Z') - Date.parse(b + 'T00:00:00Z')) / 86400000);
     const TAGS: Record<string, string> = { blue: '#3e5f9e', green: '#3f8f4f', red: '#a33749', yellow: '#f2c94c', orange: '#c45d3b', purple: '#6b4c9a', pink: '#e58fb2', white: '#ffffff' };
+    const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
+    const pill = (el: HTMLElement, text: string, cls: string) => { el.textContent = text; el.className = 'qe-pill ' + cls; };
     let state: Any = {};
 
     async function api(action: string, payload: Any = {}) {
@@ -193,21 +231,51 @@ import '../styles/global.css';
       if (btn) { btn.disabled = true; (btn as Any)._l = btn.textContent; btn.textContent = 'Saving…'; }
       try { await fn(); } finally { if (btn) { btn.disabled = false; btn.textContent = (btn as Any)._l; } }
     }
-    const saved = (j: Any) => { if (j.ok) { toast('Saved! It will be live on the site in about a minute.'); load(); } else toast(j.error || 'Could not save.', true); return j.ok; };
+    // After a save: say when it goes live, clear the unsaved flag and refresh
+    const saved = (j: Any) => { if (j.ok) { toast('Saved. It will be live on the site in about a minute.'); dirty = false; load(); } else toast(j.error || 'Could not save.', true); return j.ok; };
+
+    // ---------------------------------------------------------------- unsaved changes
+    let dirty = false;
+    document.addEventListener('input', (e) => { if ((e.target as HTMLElement).closest('[data-section], [data-event-form]')) dirty = true; });
+    window.addEventListener('beforeunload', (e) => { if (dirty) { e.preventDefault(); e.returnValue = ''; } });
+    const okToLeave = () => !dirty || confirm('You have changes that are not saved. Leave without saving?');
+
+    // ---------------------------------------------------------------- one section at a time
+    let current = '';
+    function route() {
+      const id = location.hash.slice(1);
+      const sec = id && document.getElementById(id);
+      const inSection = !!(sec && sec.hasAttribute('data-section'));
+      $('[data-home]').hidden = inSection;
+      $('[data-back]').hidden = !inSection;
+      $$('[data-section]').forEach((s) => (s.hidden = s !== sec));
+      current = inSection ? id : '';
+      window.scrollTo(0, 0);
+    }
+    window.addEventListener('hashchange', () => {
+      if (dirty && current && location.hash.slice(1) !== current) {
+        if (!okToLeave()) { history.replaceState(null, '', '#' + current); return; }
+        dirty = false; load();
+      }
+      route();
+    });
+    const goHome = () => { if (!okToLeave()) return; dirty = false; closeEvent(); history.pushState(null, '', '/edit'); route(); load(); };
+    $('[data-back-btn]').addEventListener('click', goHome);
+    $('[data-go-home]').addEventListener('click', (e) => { if ($('[data-app]').hidden) return; e.preventDefault(); goHome(); });
 
     // ---------------------------------------------------------------- login
     function showLogin() { $('[data-login]').hidden = false; $('[data-app]').hidden = true; $('[data-when-in]').hidden = true; }
-    async function showApp() { $('[data-login]').hidden = true; $('[data-app]').hidden = false; $('[data-when-in]').hidden = false; await load(); }
+    async function showApp() { $('[data-login]').hidden = true; $('[data-app]').hidden = false; $('[data-when-in]').hidden = false; route(); await load(); }
     $('[data-login-form]').addEventListener('submit', async (e) => {
       e.preventDefault();
       const f = e.currentTarget as HTMLFormElement, err = $('[data-login-error]');
       err.hidden = true;
       await busy($('button[type=submit]', f) as HTMLButtonElement, async () => {
-        const j = await api('login', { password: (f.elements.namedItem('password') as HTMLInputElement).value });
+        const j = await api('login', { password: field(f, 'password').value });
         if (j.ok) { f.reset(); showApp(); } else { err.textContent = j.error; err.hidden = false; }
       });
     });
-    $('[data-logout]').addEventListener('click', async () => { await api('logout'); showLogin(); });
+    $('[data-logout]').addEventListener('click', async () => { if (!okToLeave()) return; dirty = false; await api('logout'); showLogin(); });
 
     // ---------------------------------------------------------------- photos
     function resize(file: File): Promise<string> {
@@ -219,63 +287,65 @@ import '../styles/global.css';
           c.getContext('2d')!.drawImage(im, 0, 0, c.width, c.height);
           ok(c.toDataURL('image/jpeg', 0.85)); URL.revokeObjectURL(im.src);
         };
-        im.onerror = () => bad(new Error('That file is not a photo we can read.'));
+        im.onerror = () => bad(new Error("That file isn't a photo we can read."));
         im.src = URL.createObjectURL(file);
       });
     }
-    function photoField(box: HTMLElement, value: string | null) {
+    async function uploadPhoto(file: File) {
+      try { const data = await resize(file); const j = await api('upload', { name: file.name, data }); if (j.ok) return { path: j.path as string, data }; toast(j.error, true); }
+      catch (e: Any) { toast(e.message, true); }
+      return null;
+    }
+    // A photo picker. onChange runs whenever the photo is added, replaced or removed.
+    function photoField(box: HTMLElement, value: string | null, preview?: string, onChange?: (v: string | null, pv?: string) => void) {
       (box as Any).value = value || null;
-      const draw = () => {
+      const draw = (pv?: string) => {
         const v = (box as Any).value;
         box.innerHTML = v
-          ? `<img src="${esc(v)}" alt="" /><div><label class="btn btn-outline qe-sm">Replace<input type="file" accept="image/*" hidden /></label> <button type="button" class="qe-link" data-remove>Remove</button></div>`
+          ? `<img src="${esc(pv || v)}" alt="" /><div><label class="btn btn-outline qe-sm">Replace<input type="file" accept="image/*" hidden /></label> <button type="button" class="qe-link" data-remove>Remove</button></div>`
           : `<label class="qe-drop">📷 Choose a photo<input type="file" accept="image/*" hidden /></label>`;
         const input = $('input[type=file]', box) as HTMLInputElement;
         input.onchange = async () => {
           const file = input.files?.[0]; if (!file) return;
           box.classList.add('loading');
-          try {
-            const data = await resize(file);
-            const j = await api('upload', { name: file.name, data });
-            if (j.ok) { (box as Any).value = j.path; (box as Any).preview = data; draw(); const im = $('img', box) as HTMLImageElement; if (im) im.src = data; }
-            else toast(j.error, true);
-          } catch (e: Any) { toast(e.message, true); }
+          const r = await uploadPhoto(file);
           box.classList.remove('loading');
+          if (r) { (box as Any).value = r.path; dirty = true; onChange?.(r.path, r.data); draw(r.data); }
         };
-        const rm = $('[data-remove]', box); if (rm) rm.onclick = () => { (box as Any).value = null; draw(); };
+        const rm = $('[data-remove]', box); if (rm) rm.onclick = () => { (box as Any).value = null; dirty = true; onChange?.(null); draw(); };
       };
-      draw();
+      draw(preview);
     }
 
     // ---------------------------------------------------------------- videos (straight to Vercel Blob storage)
     async function uploadVideo(file: File, onPct: (p: number) => void): Promise<string | null> {
       if (!file.type.startsWith('video/')) { toast('Please choose a video file (MP4 or MOV).', true); return null; }
-      if (file.size > 500 * 1024 * 1024) { toast('That video is over 500 MB. Please trim it or upload it to YouTube instead.', true); return null; }
+      if (file.size > 500 * 1024 * 1024) { toast('That video is over 500 MB. Please trim it, or put it on YouTube and paste the link.', true); return null; }
       const ready = await fetch('/api/edit-upload').then((r) => r.json()).catch(() => ({ ready: false }));
-      if (!ready.ready) { toast('Video file uploads are not switched on yet. For now, upload it to YouTube and paste the link.', true); return null; }
+      if (!ready.ready) { toast("Video uploads aren't switched on yet. For now, put it on YouTube and paste the link.", true); return null; }
       try {
         const safe = file.name.toLowerCase().replace(/[^a-z0-9.]+/g, '-');
         const blob = await upload(`videos/${safe}`, file, { access: 'public', handleUploadUrl: '/api/edit-upload', multipart: file.size > 20 * 1024 * 1024, onUploadProgress: (e) => onPct(Math.round(e.percentage)) });
         return blob.url;
       } catch (e: Any) {
-        toast(/switched on|log in/i.test(e?.message || '') ? e.message : 'The video could not be uploaded. Please check your connection and try again.', true);
+        toast(/log in/i.test(e?.message || '') ? e.message : "The video didn't upload. Check your connection and try again.", true);
         return null;
       }
     }
-    // Grab a still frame from a video to use as its cover photo
+    // A still from the video becomes its cover photo
     function videoFrame(file: File): Promise<string | null> {
       return new Promise((ok) => {
         const v = document.createElement('video'); v.muted = true; v.playsInline = true; v.preload = 'auto';
         v.src = URL.createObjectURL(file);
-        const done = (r: string | null) => { URL.revokeObjectURL(v.src); ok(r); };
+        let done = false; const end = (r: string | null) => { if (done) return; done = true; URL.revokeObjectURL(v.src); ok(r); };
         v.onloadeddata = () => { v.currentTime = Math.min(1.5, (v.duration || 2) / 3); };
         v.onseeked = () => {
           const s = Math.min(1, 1600 / Math.max(v.videoWidth, v.videoHeight));
           const c = document.createElement('canvas'); c.width = Math.round(v.videoWidth * s); c.height = Math.round(v.videoHeight * s);
-          try { c.getContext('2d')!.drawImage(v, 0, 0, c.width, c.height); done(c.toDataURL('image/jpeg', 0.85)); } catch { done(null); }
+          try { c.getContext('2d')!.drawImage(v, 0, 0, c.width, c.height); end(c.toDataURL('image/jpeg', 0.85)); } catch { end(null); }
         };
-        v.onerror = () => done(null);
-        setTimeout(() => done(null), 15000);
+        v.onerror = () => end(null);
+        setTimeout(() => end(null), 15000);
       });
     }
     async function coverFromVideo(file: File) {
@@ -287,152 +357,175 @@ import '../styles/global.css';
     // ---------------------------------------------------------------- events
     const kindOf = (e: Any) => (e.badge === 'Closed' ? 'closed' : e.type || 'event');
     const kindLabel: Record<string, string> = { sale: 'Sale', event: 'Event', closed: 'Store closed', news: 'News' };
-    function statusOf(start: string, end: string) {
+    function statusOf(start: string, end: string): [string, string] {
       if (start <= today && today <= end) return [start === end ? 'Today' : 'Happening now', 'on'];
       if (start > today) return [daysBetween(start, today) === 1 ? 'Tomorrow' : 'Coming up', 'soon'];
       if (daysBetween(today, end) <= 2) return ['Just ended', 'ended'];
       return ['Ended', 'off'];
     }
     let editing: string | null = null;
+    const isPhone = () => window.matchMedia('(max-width: 720px)').matches;
     function renderEvents() {
       const ul = $('[data-events]'); let old = 0;
+      closeEvent();
       ul.innerHTML = (state.events || []).map((e: Any) => {
         const start = e.startDate || '', end = e.endDate || start;
         const [s, cls] = statusOf(start, end);
         const isOld = cls === 'off'; if (isOld) old++;
-        return `<li class="${isOld ? 'old' : ''}" ${isOld ? 'hidden' : ''}>
-          <span class="now-pill ${cls}">${s}</span>
-          <div class="qe-main"><strong>${esc(e.title)}</strong><span class="muted">${kindLabel[kindOf(e)]} · ${range(start, e.endDate)}${e.pinned ? ' · ⭐ Featured' : ''}</span></div>
-          <button type="button" class="qe-edit" data-edit="${esc(e.slug)}">Edit</button>
-          <button type="button" class="qe-del" data-del="${esc(e.slug)}" aria-label="Delete ${esc(e.title)}">Delete</button></li>`;
-      }).join('') || '<li><span class="muted">No events yet. Tap "+ Add new" to post one.</span></li>';
+        return `<li class="${isOld ? 'old' : ''}" ${isOld ? 'hidden' : ''} data-slug="${esc(e.slug)}">
+          <span class="qe-pill ${cls}">${s}</span>
+          <div class="qe-main"><strong>${esc(e.title)}</strong><span class="muted">${kindLabel[kindOf(e)]} · ${range(start, e.endDate)}${e.pinned ? ' · ⭐ On the homepage' : ''}</span></div>
+          <div class="qe-row-btns"><button type="button" class="qe-edit" data-edit>Edit</button><button type="button" class="qe-del" data-del aria-label="Delete ${esc(e.title)}">Delete</button></div></li>`;
+      }).join('') || '<li><span class="muted">No events yet. Tap "+ Add an event or sale" to post one.</span></li>';
       const more = $('[data-show-old]');
       more.hidden = !old; more.textContent = `Show ${old} older event${old === 1 ? '' : 's'}`;
       more.onclick = () => { $$('[data-events] li.old').forEach((li) => (li.hidden = false)); more.hidden = true; };
-      $$('[data-edit]').forEach((b) => (b.onclick = () => openEvent(b.dataset.edit!)));
-      $$('[data-del]').forEach((b) => (b.onclick = async () => {
-        const ev = state.events.find((x: Any) => x.slug === b.dataset.del);
-        if (!confirm(`Delete "${ev?.title}"? This removes it from the website.`)) return;
-        await busy(b as HTMLButtonElement, async () => { const j = await api('deleteEvent', { slug: b.dataset.del }); if (j.ok) { toast('Deleted. The site updates in about a minute.'); load(); } else toast(j.error, true); });
+      $$('[data-events] [data-edit]').forEach((b) => (b.onclick = () => openEvent((b.closest('li') as HTMLElement).dataset.slug!)));
+      $$('[data-events] [data-del]').forEach((b) => (b.onclick = async () => {
+        const slug = (b.closest('li') as HTMLElement).dataset.slug!, ev = state.events.find((x: Any) => x.slug === slug);
+        if (!confirm(`Delete "${ev?.title}"? It will be removed from the website.`)) return;
+        await busy(b as HTMLButtonElement, async () => { const j = await api('deleteEvent', { slug }); if (j.ok) { toast('Deleted. The site updates in about a minute.'); load(); } else toast(j.error, true); });
       }));
     }
     function openEvent(slug: string | null) {
+      if (dirty && !okToLeave()) return;
       editing = slug;
       const f = $('[data-event-form]') as HTMLFormElement, e: Any = slug ? state.events.find((x: Any) => x.slug === slug) : {};
       f.reset();
       $('[data-event-heading]').textContent = slug ? `Editing: ${e.title}` : 'New event or sale';
-      (f.elements.namedItem('title') as Any).value = e.title || '';
+      field(f, 'title').value = e.title || '';
       (f.elements.namedItem('kind') as HTMLSelectElement).value = slug ? kindOf(e) : 'sale';
-      (f.elements.namedItem('startDate') as HTMLInputElement).value = e.startDate || today;
-      (f.elements.namedItem('endDate') as HTMLInputElement).value = e.endDate || '';
-      for (const k of ['timeText', 'summary', 'body', 'location', 'videoUrl']) (f.elements.namedItem(k) as HTMLInputElement).value = e[k] || '';
-      (f.elements.namedItem('pinned') as HTMLInputElement).checked = !!e.pinned;
+      field(f, 'startDate').value = e.startDate || today;
+      field(f, 'endDate').value = e.endDate || '';
+      for (const k of ['timeText', 'summary', 'body', 'location', 'videoUrl']) field(f, k).value = e[k] || '';
+      field(f, 'pinned').checked = !!e.pinned;
       photoField($('[data-photo="image"]', f), e.image || null);
-      f.hidden = false; f.scrollIntoView({ behavior: 'smooth', block: 'start' }); (f.elements.namedItem('title') as Any).focus?.();
+      // Phones: a full-screen panel. Computers: right under the row that was tapped.
+      const phone = isPhone();
+      f.classList.toggle('qe-sheet', phone);
+      document.body.classList.toggle('qe-locked', phone);
+      const li = slug ? $(`[data-events] li[data-slug="${CSS.escape(slug)}"]`) : null;
+      if (phone) document.body.appendChild(f);
+      else if (li) li.after(f);
+      else $('[data-events]').before(f);
+      f.hidden = false; dirty = false;
+      if (!phone) f.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      field(f, 'title').focus({ preventScroll: true });
+    }
+    function closeEvent() {
+      const f = $('[data-event-form]') as HTMLFormElement;
+      f.hidden = true; f.classList.remove('qe-sheet'); document.body.classList.remove('qe-locked'); $('#events').appendChild(f); editing = null;
     }
     $('[data-new-event]').addEventListener('click', () => openEvent(null));
-    $('[data-event-form] [data-cancel]').addEventListener('click', () => { ($('[data-event-form]') as HTMLElement).hidden = true; });
+    $$('[data-event-form] [data-cancel]').forEach((b) => b.addEventListener('click', () => { if (!okToLeave()) return; dirty = false; closeEvent(); }));
     $('[data-event-form]').addEventListener('submit', async (ev) => {
       ev.preventDefault();
-      const f = ev.currentTarget as HTMLFormElement, fd = new FormData(f);
-      const data: Any = Object.fromEntries(fd.entries());
-      data.pinned = (f.elements.namedItem('pinned') as HTMLInputElement).checked;
+      const f = ev.currentTarget as HTMLFormElement;
+      const data: Any = Object.fromEntries(new FormData(f).entries());
+      data.pinned = field(f, 'pinned').checked;
       data.image = ($('[data-photo="image"]', f) as Any).value;
       if (data.endDate && data.endDate < data.startDate) return toast('The last day is before the first day. Please check the dates.', true);
-      await busy($('button[type=submit]', f) as HTMLButtonElement, async () => { if (saved(await api('saveEvent', { slug: editing, data }))) f.hidden = true; });
+      await busy($('button[type=submit]', f) as HTMLButtonElement, async () => { if (saved(await api('saveEvent', { slug: editing, data }))) closeEvent(); });
     });
 
     // ---------------------------------------------------------------- ribbon
+    const PHONE_FIT = 38;
     function ribbonPreview() {
       const f = $('[data-ribbon-form]') as HTMLFormElement;
-      const on = (f.elements.namedItem('enabled') as HTMLInputElement).checked;
-      const p = $('[data-ribbon-preview]');
-      p.innerHTML = on ? `<strong>${esc((f.elements.namedItem('label') as Any).value)}</strong> ${esc((f.elements.namedItem('message') as Any).value)} <u>${esc((f.elements.namedItem('linkText') as Any).value)}</u>` : 'The ribbon is turned off.';
-      p.classList.toggle('off', !on);
-      const s = $('[data-ribbon-status]'); s.textContent = state.announcement?.enabled ? 'Showing now' : 'Hidden'; s.className = 'now-pill ' + (state.announcement?.enabled ? 'on' : 'off');
+      const on = field(f, 'enabled').checked, end = field(f, 'hideAfter').value;
+      const label = field(f, 'label').value, msg = field(f, 'message').value, link = field(f, 'linkText').value;
+      const html = `${label ? `<b class="qe-rb-pill">${esc(label)}</b> ` : ''}<span>${esc(msg)}</span>${link ? ` <u>${esc(link)}</u>` : ''}`;
+      const live = on && (!end || end >= today);
+      for (const el of [$('[data-ribbon-preview]'), $('[data-ribbon-phone]')]) { el.innerHTML = live ? html : on ? 'Past its end date, so it is hidden.' : 'The ribbon is turned off.'; el.classList.toggle('off', !live); }
+      const n = msg.length, c = $('[data-count]');
+      c.textContent = n ? `${n} characters${n > PHONE_FIT ? `. Phones show about the first ${PHONE_FIT}.` : ''}` : '';
+      c.classList.toggle('warn', n > PHONE_FIT);
+    }
+    function ribbonStatus(): [string, string] {
+      const a = state.announcement || {};
+      const live = a.enabled && a.message && (!a.hideAfter || a.hideAfter >= today);
+      if (live) return [a.hideAfter ? `Showing until ${nice(a.hideAfter)}` : 'Showing', 'on'];
+      return [a.enabled && a.hideAfter && a.hideAfter < today ? `Ended ${nice(a.hideAfter)}` : 'Hidden', 'off'];
     }
     function renderRibbon() {
       const f = $('[data-ribbon-form]') as HTMLFormElement, a = state.announcement || {};
-      (f.elements.namedItem('enabled') as HTMLInputElement).checked = !!a.enabled;
-      for (const k of ['label', 'message', 'linkText', 'linkUrl']) (f.elements.namedItem(k) as HTMLInputElement).value = a[k] || '';
+      field(f, 'enabled').checked = !!a.enabled;
+      for (const k of ['label', 'message', 'linkText', 'linkUrl', 'hideAfter']) field(f, k).value = a[k] || '';
+      const [t, c] = ribbonStatus(); pill($('[data-ribbon-status]'), t, c);
       ribbonPreview();
     }
     $('[data-ribbon-form]').addEventListener('input', ribbonPreview);
     $('[data-ribbon-form]').addEventListener('submit', async (e) => {
       e.preventDefault(); const f = e.currentTarget as HTMLFormElement;
-      const data: Any = Object.fromEntries(new FormData(f).entries()); data.enabled = (f.elements.namedItem('enabled') as HTMLInputElement).checked;
+      const data: Any = Object.fromEntries(new FormData(f).entries()); data.enabled = field(f, 'enabled').checked;
+      if (data.enabled && !String(data.message).trim()) return toast('Add a message, or untick "Show the ribbon".', true);
       await busy($('button[type=submit]', f) as HTMLButtonElement, async () => { saved(await api('saveAnnouncement', { data })); });
     });
 
     // ---------------------------------------------------------------- tag sale
     let weeks: Any[] = [];
+    const thisWeek = () => weeks.find((w) => w.start <= today && today <= w.end);
+    function tagStatus(): [string, string] {
+      if (!state.tagSale?.enabled) return ['Hidden', 'off'];
+      const w = (state.tagSale?.weeks || []).find((w: Any) => w.start <= today && today <= w.end);
+      return w ? [`This week: ${cap(w.color)} tags ${w.discount}`, 'on'] : ['No color set for this week', 'warn'];
+    }
     function renderWeeks(showPast = false) {
       const box = $('[data-weeks]'); let past = 0;
       box.innerHTML = weeks.map((w, i) => {
         const isPast = w.end && w.end < today, isNow = w.start <= today && today <= w.end;
         if (isPast) past++;
         return `<div class="qe-week ${isNow ? 'now' : ''}" ${isPast && !showPast ? 'hidden' : ''} data-i="${i}">
-          <span class="now-pill ${isNow ? 'on' : isPast ? 'off' : 'soon'}">${isNow ? 'This week' : isPast ? 'Past' : 'Coming up'}</span>
+          <span class="qe-pill ${isNow ? 'on' : isPast ? 'off' : 'soon'}">${isNow ? 'This week' : isPast ? 'Past' : 'Coming up'}</span>
           <label class="qe-field"><span>From</span><input type="date" data-k="start" value="${esc(w.start)}" /></label>
           <label class="qe-field"><span>To</span><input type="date" data-k="end" value="${esc(w.end)}" /></label>
-          <label class="qe-field"><span>Tag color</span><span class="qe-color"><i style="background:${TAGS[w.color] || '#ccc'}"></i><select data-k="color">${Object.keys(TAGS).map((c) => `<option value="${c}" ${c === w.color ? 'selected' : ''}>${c[0].toUpperCase() + c.slice(1)}</option>`).join('')}</select></span></label>
+          <label class="qe-field"><span>Tag color</span><span class="qe-color"><i style="background:${TAGS[w.color] || '#ccc'}"></i><select data-k="color">${Object.keys(TAGS).map((c) => `<option value="${c}" ${c === w.color ? 'selected' : ''}>${cap(c)}</option>`).join('')}</select></span></label>
           <label class="qe-field"><span>Discount</span><input data-k="discount" value="${esc(w.discount)}" placeholder="50% off" /></label>
           <button type="button" class="qe-del" data-rm-week="${i}" aria-label="Remove week">✕</button></div>`;
       }).join('');
       const more = $('[data-show-past-weeks]'); more.hidden = !past || showPast; more.textContent = `Show ${past} past week${past === 1 ? '' : 's'}`; more.onclick = () => renderWeeks(true);
-      const cur = weeks.find((w) => w.start <= today && today <= w.end);
-      const s = $('[data-tag-status]');
-      if (!state.tagSale?.enabled) { s.textContent = 'Hidden'; s.className = 'now-pill off'; }
-      else if (cur) { s.textContent = `This week: ${cur.color} ${cur.discount}`; s.className = 'now-pill on'; }
-      else { s.textContent = 'No color set for this week'; s.className = 'now-pill warn'; }
+      const [t, c] = tagStatus(); pill($('[data-tag-status]'), t, c);
       $$('[data-weeks] [data-k]').forEach((inp) => (inp.oninput = () => {
         const row = inp.closest('[data-i]') as HTMLElement; const w = weeks[+row.dataset.i!];
         w[(inp as HTMLElement).dataset.k!] = (inp as HTMLInputElement).value;
         if ((inp as HTMLElement).dataset.k === 'color') ($('i', row) as HTMLElement).style.background = TAGS[w.color];
       }));
-      $$('[data-rm-week]').forEach((b) => (b.onclick = () => { weeks.splice(+b.dataset.rmWeek!, 1); renderWeeks(showPast); }));
+      $$('[data-rm-week]').forEach((b) => (b.onclick = () => { weeks.splice(+b.dataset.rmWeek!, 1); dirty = true; renderWeeks(showPast); }));
     }
     $('[data-add-week]').addEventListener('click', () => {
       const last = weeks[weeks.length - 1];
       let start = last?.end ? addDays(last.end, 1) : today;
-      if (start < today && !weeks.some((w) => w.start <= today && today <= w.end)) {
-        // start this week on the most recent Sunday
-        const d = new Date(Date.parse(today + 'T12:00:00Z')); start = addDays(today, -d.getUTCDay());
-      }
+      if (start < today && !thisWeek()) { const d = new Date(Date.parse(today + 'T12:00:00Z')); start = addDays(today, -d.getUTCDay()); }
       weeks.push({ start, end: addDays(start, 6), color: last?.color || 'blue', discount: last?.discount || '50% off' });
-      renderWeeks(); toast('Week added. Pick the color, then tap "Save tag sale".');
+      dirty = true; renderWeeks(); toast('Week added. Pick the color, then tap "Save tag sale".');
     });
     $('[data-tag-form]').addEventListener('submit', async (e) => {
       e.preventDefault(); const f = e.currentTarget as HTMLFormElement;
-      if (weeks.some((w) => !w.start || !w.end || w.end < w.start)) return toast('Please check the dates: each week needs a "From" and a "To".', true);
-      await busy($('button[type=submit]', f) as HTMLButtonElement, async () => { saved(await api('saveTagSale', { data: { enabled: (f.elements.namedItem('enabled') as HTMLInputElement).checked, weeks } })); });
+      if (weeks.some((w) => !w.start || !w.end || w.end < w.start)) return toast('Please check the dates. Each week needs a "From" and a "To".', true);
+      await busy($('button[type=submit]', f) as HTMLButtonElement, async () => { saved(await api('saveTagSale', { data: { enabled: field(f, 'enabled').checked, weeks } })); });
     });
 
-    // ---------------------------------------------------------------- gallery
+    // ---------------------------------------------------------------- photos and videos
     let gallery: Any[] = [];
     const MAX_FEATURED = 5;
-    const markDirty = (on = true) => { $('[data-gallery-dirty]').hidden = !on; };
-    function galleryStatus() {
-      const n = gallery.filter((g) => g.featured).length;
-      const s = $('[data-gallery-status]'); s.textContent = `${gallery.length} items · ${n} on homepage`; s.className = 'now-pill ' + (n ? 'on' : 'warn');
-    }
+    const galleryStatus = (): [string, string] => { const n = gallery.filter((g) => g.featured).length; return [`${gallery.length} items, ${n} on the homepage`, n ? 'on' : 'warn']; };
     function renderGallery() {
       const box = $('[data-tiles]');
       box.innerHTML = gallery.map((g, i) => {
         const isVideo = !!(g.videoUrl || g.videoUpload);
         return `<div class="qe-tile ${g.featured ? 'feat' : ''}" data-g="${i}">
           <div class="qe-thumb">${g.image ? `<img src="${esc(g._preview || g.image)}" alt="" loading="lazy" />` : '<span>No cover photo</span>'}${isVideo ? '<b class="qe-play">▶ Video</b>' : ''}</div>
-          <label class="qe-field"><span>Caption</span><input data-gk="caption" value="${esc(g.caption)}" maxlength="140" placeholder="A few words about it" /></label>
-          ${isVideo ? `<label class="qe-field"><span>Video link</span><input data-gk="videoUrl" value="${esc(g.videoUrl || '')}" placeholder="${g.videoUpload ? 'Uploaded video file' : 'https://youtube.com/…'}" /></label>` : ''}
-          <label class="qe-star ${g.image && !isVideo ? '' : 'disabled'}"><input type="checkbox" data-gk="featured" ${g.featured ? 'checked' : ''} ${g.image && !isVideo ? '' : 'disabled'} /> ⭐ Homepage</label>
+          <input class="qe-caption" data-gk="caption" value="${esc(g.caption)}" maxlength="140" placeholder="Add a caption" aria-label="Caption" />
+          ${isVideo && !g.videoUpload ? `<input class="qe-caption" data-gk="videoUrl" value="${esc(g.videoUrl || '')}" placeholder="YouTube link" aria-label="YouTube link" />` : ''}
+          ${!isVideo && g.image ? `<label class="qe-star"><input type="checkbox" data-gk="featured" ${g.featured ? 'checked' : ''} /> ⭐ Homepage</label>` : ''}
           <div class="qe-tile-tools">
             <button type="button" data-move="-1" ${i === 0 ? 'disabled' : ''} aria-label="Move earlier">←</button>
             <button type="button" data-move="1" ${i === gallery.length - 1 ? 'disabled' : ''} aria-label="Move later">→</button>
-            <label class="qe-mini">${g.image ? 'Change photo' : 'Add cover'}<input type="file" accept="image/*" hidden data-cover /></label>
-            <button type="button" class="qe-del" data-gdel aria-label="Remove">Remove</button>
+            <label class="qe-mini">${g.image ? 'Photo' : 'Add cover'}<input type="file" accept="image/*" hidden data-cover /></label>
+            <button type="button" class="qe-del" data-gdel aria-label="Remove">✕</button>
           </div></div>`;
       }).join('') || '<p class="muted">No photos yet. Tap "Add photos" to start.</p>';
-      galleryStatus();
+      const [t, c] = galleryStatus(); pill($('[data-gallery-status]'), t, c);
       $$('[data-g]').forEach((tile) => {
         const i = +tile.dataset.g!, g = gallery[i];
         $$('[data-gk]', tile).forEach((inp) => (inp.oninput = inp.onchange = () => {
@@ -440,20 +533,15 @@ import '../styles/global.css';
           if (k === 'featured') {
             const on = (inp as HTMLInputElement).checked;
             if (on && gallery.filter((x) => x.featured).length >= MAX_FEATURED) { (inp as HTMLInputElement).checked = false; return toast(`Only ${MAX_FEATURED} photos fit on the homepage. Untick one first.`, true); }
-            g.featured = on; tile.classList.toggle('feat', on); galleryStatus();
+            g.featured = on; tile.classList.toggle('feat', on); const [t2, c2] = galleryStatus(); pill($('[data-gallery-status]'), t2, c2);
           } else g[k] = (inp as HTMLInputElement).value;
-          markDirty();
+          dirty = true;
         }));
-        $$('[data-move]', tile).forEach((b) => (b.onclick = () => { const j = i + +b.dataset.move!; [gallery[i], gallery[j]] = [gallery[j], gallery[i]]; renderGallery(); markDirty(); }));
-        ($('[data-gdel]', tile) as HTMLElement).onclick = () => { if (confirm('Remove this from the gallery?')) { gallery.splice(i, 1); renderGallery(); markDirty(); } };
+        $$('[data-move]', tile).forEach((b) => (b.onclick = () => { const j = i + +b.dataset.move!; [gallery[i], gallery[j]] = [gallery[j], gallery[i]]; dirty = true; renderGallery(); }));
+        ($('[data-gdel]', tile) as HTMLElement).onclick = () => { if (confirm('Remove this from the gallery?')) { gallery.splice(i, 1); dirty = true; renderGallery(); } };
         const cover = $('[data-cover]', tile) as HTMLInputElement;
-        cover.onchange = async () => { const f = cover.files?.[0]; if (!f) return; tile.classList.add('loading'); const r = await uploadPhoto(f); tile.classList.remove('loading'); if (r) { g.image = r.path; g._preview = r.data; renderGallery(); markDirty(); } };
+        cover.onchange = async () => { const f = cover.files?.[0]; if (!f) return; tile.classList.add('loading'); const r = await uploadPhoto(f); tile.classList.remove('loading'); if (r) { g.image = r.path; g._preview = r.data; dirty = true; renderGallery(); } };
       });
-    }
-    async function uploadPhoto(file: File) {
-      try { const data = await resize(file); const j = await api('upload', { name: file.name, data }); if (j.ok) return { path: j.path, data }; toast(j.error, true); }
-      catch (e: Any) { toast(e.message, true); }
-      return null;
     }
     ($('[data-add-photos]') as HTMLInputElement).addEventListener('change', async (e) => {
       const input = e.currentTarget as HTMLInputElement, files = [...(input.files || [])]; input.value = '';
@@ -464,166 +552,299 @@ import '../styles/global.css';
         const r = await uploadPhoto(f);
         if (r) { gallery.unshift({ kind: 'photo', image: r.path, _preview: r.data, caption: '', altText: '', featured: false, videoUrl: null, videoUpload: null }); n++; renderGallery(); }
       }
-      prog.hidden = true; markDirty(n > 0);
-      if (n) toast(`${n} photo${n > 1 ? 's' : ''} added. Add captions, then tap "Save photos and videos".`);
+      prog.hidden = true;
+      if (n) { dirty = true; toast(`${n} photo${n > 1 ? 's' : ''} added. Add captions, then tap "Save photos and videos".`); }
     });
     ($('[data-upload-video]') as HTMLInputElement).addEventListener('change', async (e) => {
       const input = e.currentTarget as HTMLInputElement, file = input.files?.[0]; input.value = '';
       if (!file) return;
       const prog = $('[data-gallery-progress]'); prog.hidden = false; prog.textContent = 'Uploading video… 0%';
-      const url = await uploadVideo(file, (p) => (prog.textContent = `Uploading video… ${p}%  (keep this page open)`));
+      const url = await uploadVideo(file, (p) => (prog.textContent = `Uploading video… ${p}%. Keep this page open.`));
       if (url) {
         prog.textContent = 'Making a cover photo…';
         const cover = await coverFromVideo(file);
         gallery.unshift({ kind: 'video', image: cover?.path || null, _preview: cover?.data, videoUrl: null, videoUpload: url, caption: '', altText: '', featured: false });
-        renderGallery(); markDirty(); toast('Video added. Add a caption, then tap "Save photos and videos".');
+        dirty = true; renderGallery(); toast('Video added. Add a caption, then tap "Save photos and videos".');
       }
       prog.hidden = true;
     });
     $('[data-add-video]').addEventListener('click', () => {
-      const link = prompt('Paste the YouTube or Vimeo link:');
+      const link = prompt('Paste the YouTube link:');
       if (!link) return;
-      if (!/^https?:\/\/(www\.)?(youtube\.com|youtu\.be|vimeo\.com)\//i.test(link.trim())) return toast('That does not look like a YouTube or Vimeo link.', true);
+      if (!/^https?:\/\/(www\.)?(youtube\.com|youtu\.be|vimeo\.com)\//i.test(link.trim())) return toast("That doesn't look like a YouTube link.", true);
       gallery.unshift({ kind: 'video', image: null, videoUrl: link.trim(), videoUpload: null, caption: '', altText: '', featured: false });
-      renderGallery(); markDirty(); toast('Video added. Add a cover photo and caption, then save.');
+      dirty = true; renderGallery(); toast('Video added. Add a cover photo and a caption, then save.');
     });
     $('[data-save-gallery]').addEventListener('click', async (e) => {
       const items = gallery.map(({ _preview, ...g }) => g);
-      await busy(e.currentTarget as HTMLButtonElement, async () => { if (saved(await api('saveGallery', { data: { items } }))) markDirty(false); });
+      await busy(e.currentTarget as HTMLButtonElement, async () => { saved(await api('saveGallery', { data: { items } })); });
     });
 
-    // ---------------------------------------------------------------- video
+    // ---------------------------------------------------------------- homepage slides
+    let slides: Any[] = [];
+    const slideLive = (s: Any) => !s.hideAfter || s.hideAfter >= today;
+    const slidesStatus = (list: Any[]): [string, string] => { const n = list.filter(slideLive).length; return [`${n} showing${list.length > n ? `, ${list.length - n} ended` : ''}`, n ? 'on' : 'warn']; };
+    function renderSlides() {
+      const box = $('[data-slides]');
+      box.innerHTML = slides.map((s, i) => `<div class="qe-slide ${slideLive(s) ? '' : 'ended'}" data-s="${i}">
+        <div class="qe-slide-head"><strong>Slide ${i + 1}</strong><span class="qe-pill ${slideLive(s) ? 'on' : 'off'}">${slideLive(s) ? (s.hideAfter ? `Showing until ${nice(s.hideAfter)}` : 'Showing') : `Ended ${nice(s.hideAfter)}`}</span>
+          <span class="qe-slide-tools"><button type="button" data-smove="-1" ${i === 0 ? 'disabled' : ''} aria-label="Move up">↑</button><button type="button" data-smove="1" ${i === slides.length - 1 ? 'disabled' : ''} aria-label="Move down">↓</button><button type="button" class="qe-del" data-sdel>Remove</button></span></div>
+        <div class="qe-grid">
+          <div class="qe-field qe-span"><span>Photo</span><div class="qe-photo" data-sphoto></div></div>
+          <label class="qe-field qe-span"><span>Headline *</span><input data-sk="title" value="${esc(s.title)}" maxlength="120" /></label>
+          <label class="qe-field"><span>Small text above the headline</span><input data-sk="eyebrow" value="${esc(s.eyebrow)}" maxlength="60" /></label>
+          <label class="qe-field"><span>End date</span><input type="date" data-sk="hideAfter" value="${esc(s.hideAfter || '')}" /></label>
+          <label class="qe-field qe-span"><span>Text</span><textarea data-sk="body" rows="2" maxlength="400">${esc(s.body)}</textarea></label>
+          <label class="qe-field"><span>Main button text</span><input data-sk="primary.label" value="${esc(s.primary?.label)}" maxlength="40" /></label>
+          <label class="qe-field"><span>Main button link</span><input data-sk="primary.href" value="${esc(s.primary?.href)}" placeholder="/donate" /></label>
+          <label class="qe-field"><span>Second button text</span><input data-sk="secondary.label" value="${esc(s.secondary?.label)}" maxlength="40" /></label>
+          <label class="qe-field"><span>Second button link</span><input data-sk="secondary.href" value="${esc(s.secondary?.href)}" placeholder="/visit" /></label>
+          <label class="qe-field"><span>Color over the photo</span><select data-sk="tint"><option value="dark" ${s.tint !== 'red' ? 'selected' : ''}>Dark</option><option value="red" ${s.tint === 'red' ? 'selected' : ''}>Brick red</option></select></label>
+        </div></div>`).join('');
+      const [t, c] = slidesStatus(slides); pill($('[data-slides-status]'), t, c);
+      $$('[data-s]').forEach((row) => {
+        const i = +row.dataset.s!, s = slides[i];
+        photoField($('[data-sphoto]', row), s.image || null, s._preview, (v, pv) => { s.image = v; s._preview = pv; });
+        $$('[data-sk]', row).forEach((inp) => (inp.oninput = inp.onchange = () => {
+          const [a, b] = (inp as HTMLElement).dataset.sk!.split('.');
+          if (b) s[a] = { ...(s[a] || {}), [b]: (inp as HTMLInputElement).value }; else s[a] = (inp as HTMLInputElement).value;
+          dirty = true;
+        }));
+        $$('[data-smove]', row).forEach((b) => (b.onclick = () => { const j = i + +b.dataset.smove!; [slides[i], slides[j]] = [slides[j], slides[i]]; dirty = true; renderSlides(); }));
+        ($('[data-sdel]', row) as HTMLElement).onclick = () => { if (slides.length < 2) return toast('Keep at least one slide on the homepage.', true); if (confirm(`Remove slide ${i + 1}?`)) { slides.splice(i, 1); dirty = true; renderSlides(); } };
+      });
+    }
+    $('[data-add-slide]').addEventListener('click', () => {
+      slides.push({ title: '', eyebrow: '', body: '', image: null, tint: 'dark', primary: { label: '', href: '' }, secondary: { label: '', href: '' }, hideAfter: '' });
+      dirty = true; renderSlides(); ($('[data-s]:last-child [data-sk="title"]') as HTMLInputElement)?.focus();
+    });
+    $('[data-save-slides]').addEventListener('click', async (e) => {
+      if (slides.some((s) => !String(s.title || '').trim())) return toast('Every slide needs a headline.', true);
+      const data = { slides: slides.map(({ _preview, ...s }) => s) };
+      await busy(e.currentTarget as HTMLButtonElement, async () => { saved(await api('saveSlides', { data })); });
+    });
+
+    // ---------------------------------------------------------------- homepage video
+    function videoStatus(): [string, string] {
+      const v = state.homeVideo || {};
+      if (!(v.show && (v.video || v.youtube))) return ['Hidden. A photo shows instead.', 'off'];
+      if (v.hideAfter && v.hideAfter < today) return [`Ended ${nice(v.hideAfter)}. A photo shows instead.`, 'off'];
+      return [v.hideAfter ? `Showing until ${nice(v.hideAfter)}` : 'Showing', 'on'];
+    }
     function renderVideo() {
       const f = $('[data-video-form]') as HTMLFormElement, v = state.homeVideo || {};
-      (f.elements.namedItem('show') as HTMLInputElement).checked = !!v.show;
-      for (const k of ['youtube', 'title', 'text', 'buttonText', 'buttonLink']) (f.elements.namedItem(k) as HTMLInputElement).value = v[k] || '';
+      field(f, 'show').checked = !!v.show;
+      for (const k of ['youtube', 'title', 'text', 'buttonText', 'buttonLink', 'hideAfter']) field(f, k).value = v[k] || '';
       photoField($('[data-photo="cover"]', f), v.cover || null);
+      (f as Any)._video = null; (f as Any)._removeUpload = false; $('[data-home-video-name]').textContent = '';
       const note = $('[data-upload-note]');
       note.hidden = !(v.video && !v.youtube);
-      note.innerHTML = `Right now it plays an uploaded video file. Upload a new one or paste a YouTube link to replace it, or <button type="button" class="qe-link" data-rm-upload>remove the uploaded video</button>.`;
-      const rm = $('[data-rm-upload]'); if (rm) rm.onclick = () => { (f as Any)._removeUpload = true; note.textContent = 'The uploaded video will be removed when you save.'; };
-      const live = v.show && (v.video || v.youtube);
-      const s = $('[data-video-status]'); s.textContent = live ? 'Showing now' : 'Hidden'; s.className = 'now-pill ' + (live ? 'on' : 'off');
+      note.innerHTML = 'It plays an uploaded video now. Upload a new one or paste a YouTube link to replace it, or <button type="button" class="qe-link" data-rm-upload>remove it</button>.';
+      const rm = $('[data-rm-upload]'); if (rm) rm.onclick = () => { (f as Any)._removeUpload = true; dirty = true; note.textContent = 'The uploaded video will be removed when you save.'; };
+      const [t, c] = videoStatus(); pill($('[data-video-status]'), t, c);
     }
     ($('[data-home-video]') as HTMLInputElement).addEventListener('change', async (e) => {
       const input = e.currentTarget as HTMLInputElement, file = input.files?.[0]; input.value = '';
       if (!file) return;
       const f = $('[data-video-form]') as HTMLFormElement, label = $('[data-home-video-name]');
-      label.textContent = 'Uploading… 0% (keep this page open)';
-      const url = await uploadVideo(file, (p) => (label.textContent = `Uploading… ${p}% (keep this page open)`));
+      label.textContent = 'Uploading… 0%. Keep this page open.';
+      const url = await uploadVideo(file, (p) => (label.textContent = `Uploading… ${p}%. Keep this page open.`));
       if (!url) { label.textContent = ''; return; }
-      (f as Any)._video = url; (f as Any)._removeUpload = false;
-      (f.elements.namedItem('youtube') as HTMLInputElement).value = '';
+      (f as Any)._video = url; (f as Any)._removeUpload = false; dirty = true;
+      field(f, 'youtube').value = '';
       const box = $('[data-photo="cover"]', f) as Any;
-      if (!box.value) { label.textContent = 'Making a cover photo…'; const c = await coverFromVideo(file); if (c) { photoField(box, c.path); const im = $('img', box) as HTMLImageElement; if (im) im.src = c.data; } }
-      label.textContent = `✓ ${file.name} uploaded. Tap "Save video" to put it on the homepage.`;
+      if (!box.value) { label.textContent = 'Making a cover photo…'; const c = await coverFromVideo(file); if (c) photoField(box, c.path, c.data); }
+      label.textContent = `✓ ${file.name} is uploaded. Tap "Save video" to put it on the homepage.`;
     });
     $('[data-video-form]').addEventListener('submit', async (e) => {
       e.preventDefault(); const f = e.currentTarget as HTMLFormElement;
       const data: Any = Object.fromEntries(new FormData(f).entries());
-      data.show = (f.elements.namedItem('show') as HTMLInputElement).checked; data.cover = ($('[data-photo="cover"]', f) as Any).value; data.removeUpload = !!(f as Any)._removeUpload; data.video = (f as Any)._video || null;
-      if (data.show && !data.youtube && !data.video && (!state.homeVideo?.video || data.removeUpload)) return toast('To show the video, upload a video file or paste a YouTube link first.', true);
-      await busy($('button[type=submit]', f) as HTMLButtonElement, async () => { if (saved(await api('saveVideo', { data }))) { (f as Any)._removeUpload = false; (f as Any)._video = null; $('[data-home-video-name]').textContent = ''; } });
+      data.show = field(f, 'show').checked; data.cover = ($('[data-photo="cover"]', f) as Any).value; data.removeUpload = !!(f as Any)._removeUpload; data.video = (f as Any)._video || null;
+      if (data.show && !data.youtube && !data.video && (!state.homeVideo?.video || data.removeUpload)) return toast('To show a video, upload one or paste a YouTube link first.', true);
+      await busy($('button[type=submit]', f) as HTMLButtonElement, async () => { saved(await api('saveVideo', { data })); });
     });
 
-    // ---------------------------------------------------------------- hours
-    const hourLabel = (h: number) => (h === 0 || h === 24 ? 'Midnight' : h === 12 ? 'Noon' : h < 12 ? `${h}am` : `${h - 12}pm`);
-    $$('[data-hour]').forEach((s) => (s.innerHTML = Array.from({ length: 19 }, (_, i) => i + 5).map((h) => `<option value="${h}">${hourLabel(h)}</option>`).join('')));
+    // ---------------------------------------------------------------- hours (one set of controls; the text writes itself)
     const DAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-    function rowHtml(r: Any = {}) { return `<div class="qe-row"><input data-days-in value="${esc(r.days)}" placeholder="Mon to Sat" /><input data-hours-in value="${esc(r.hours)}" placeholder="10am to 7pm" /><button type="button" class="qe-del" data-rm-row aria-label="Remove line">✕</button></div>`; }
-    function wireRows() { $$('[data-rm-row]').forEach((b) => (b.onclick = () => b.parentElement!.remove())); }
-    function renderHours() {
-      const f = $('[data-hours-form]') as HTMLFormElement, s = state.settings || {};
-      for (const k of ['shopHours', 'donateHours']) $(`[data-rows="${k}"]`).innerHTML = (s[k] || []).map(rowHtml).join('');
-      $('[data-days]').innerHTML = DAYS.map((d) => `<label class="qe-day"><input type="checkbox" value="${d}" ${(s.openDays || []).includes(d) ? 'checked' : ''} /> ${d}</label>`).join('');
-      (f.elements.namedItem('openHour') as HTMLSelectElement).value = String(s.openHour ?? 10);
-      (f.elements.namedItem('closeHour') as HTMLSelectElement).value = String(s.closeHour ?? 19);
-      (f.elements.namedItem('phone') as HTMLInputElement).value = s.phone || ''; (f.elements.namedItem('email') as HTMLInputElement).value = s.email || '';
-      wireRows();
+    const FULL: Record<string, string> = { Mon: 'Monday', Tue: 'Tuesday', Wed: 'Wednesday', Thu: 'Thursday', Fri: 'Friday', Sat: 'Saturday', Sun: 'Sunday' };
+    const hourLabel = (h: number) => (h === 0 || h === 24 ? 'midnight' : h === 12 ? 'noon' : h < 12 ? `${h}am` : `${h - 12}pm`);
+    const runs = (set: string[]) => {
+      const out: string[][] = []; let cur: string[] = [];
+      DAYS.forEach((d) => { if (set.includes(d)) cur.push(d); else if (cur.length) { out.push(cur); cur = []; } });
+      if (cur.length) out.push(cur);
+      return out.map((r) => (r.length === 1 ? FULL[r[0]] : r.length === 2 ? `${r[0]} and ${r[1]}` : `${r[0]} to ${r[r.length - 1]}`));
+    };
+    const linesFor = (open: string[], o: number, c: number) => [
+      ...runs(open).map((d) => ({ days: d, hours: `${hourLabel(o)} to ${hourLabel(c)}` })),
+      ...runs(DAYS.filter((d) => !open.includes(d))).map((d) => ({ days: d, hours: 'Closed' })),
+    ];
+    // Read days and times back out of lines like "Mon to Sat: 10am to 4pm"
+    function parseLines(rows: Any[]): { days: string[]; open: number; close: number } | null {
+      const toH = (t: string) => { const m = /(\d{1,2})(?::\d\d)?\s*(am|pm)|noon|midnight/i.exec(t); if (!m) return NaN; if (/noon/i.test(m[0])) return 12; if (/midnight/i.test(m[0])) return 24; let h = +m[1] % 12; if (/pm/i.test(m[2])) h += 12; return h; };
+      const dayIdx = (w: string) => DAYS.findIndex((d) => w.trim().toLowerCase().startsWith(d.toLowerCase()));
+      const days: string[] = []; let open = NaN, close = NaN;
+      for (const r of rows || []) {
+        if (/closed/i.test(r.hours)) continue;
+        const isRange = /\s(to|-|through)\s/i.test(r.days);
+        const parts = String(r.days).split(/\s+(?:to|-|through)\s+|\s*,\s*|\s+and\s+/i).map(dayIdx);
+        if (isRange && parts.length === 2 && parts[0] >= 0 && parts[1] >= 0) for (let i = parts[0]; i <= parts[1]; i++) days.push(DAYS[i]);
+        else parts.forEach((i) => i >= 0 && days.push(DAYS[i]));
+        const [a, b] = String(r.hours).split(/\s+(?:to|-)\s+/i);
+        open = toH(a || ''); close = toH(b || '');
+      }
+      return days.length && !isNaN(open) && !isNaN(close) ? { days, open, close } : null;
     }
-    $$('[data-add-row]').forEach((b) => (b.onclick = () => { $(`[data-rows="${b.dataset.addRow}"]`).insertAdjacentHTML('beforeend', rowHtml()); wireRows(); }));
+    const readBlock = (key: string) => {
+      const box = $(`[data-hours="${key}"]`);
+      return { days: $$<HTMLInputElement>('[data-days] input:checked', box).map((i) => i.value), open: +($('[data-open]', box) as HTMLSelectElement).value, close: +($('[data-close]', box) as HTMLSelectElement).value };
+    };
+    function hoursBlock(key: 'shop' | 'drop', v: { days: string[]; open: number; close: number }) {
+      const box = $(`[data-hours="${key}"]`);
+      $('[data-days]', box).innerHTML = DAYS.map((d) => `<label class="qe-day"><input type="checkbox" value="${d}" ${v.days.includes(d) ? 'checked' : ''} /> ${d}</label>`).join('');
+      for (const [sel, val] of [['[data-open]', v.open], ['[data-close]', v.close]] as const) {
+        const s = $(sel, box) as HTMLSelectElement;
+        s.innerHTML = Array.from({ length: 19 }, (_, i) => i + 5).map((h) => `<option value="${h}">${hourLabel(h)}</option>`).join('');
+        s.value = String(val);
+      }
+      const say = () => { const r = readBlock(key); $('[data-says]', box).textContent = 'On the site: ' + linesFor(r.days, r.open, r.close).map((l) => `${l.days}: ${l.hours}`).join(' · '); };
+      box.oninput = box.onchange = say; say();
+    }
+    function renderHours() {
+      const s = state.settings || {}, f = $('[data-hours-form]') as HTMLFormElement;
+      hoursBlock('shop', { days: s.openDays?.length ? s.openDays : ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'], open: s.openHour ?? 10, close: s.closeHour ?? 19 });
+      hoursBlock('drop', parseLines(s.donateHours) || { days: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'], open: 10, close: 16 });
+      field(f, 'phone').value = s.phone || ''; field(f, 'email').value = s.email || '';
+    }
+    const hoursSummary = () => { const l = (state.settings?.shopHours || []).find((h: Any) => !/closed/i.test(h.hours)); return l ? `Shop: ${l.days}, ${l.hours}` : ''; };
     $('[data-hours-form]').addEventListener('submit', async (e) => {
       e.preventDefault(); const f = e.currentTarget as HTMLFormElement;
-      const read = (k: string) => $$(`[data-rows="${k}"] .qe-row`).map((r) => ({ days: ($('[data-days-in]', r) as HTMLInputElement).value, hours: ($('[data-hours-in]', r) as HTMLInputElement).value }));
-      const data = { shopHours: read('shopHours'), donateHours: read('donateHours'), openDays: $$<HTMLInputElement>('[data-days] input:checked').map((i) => i.value), openHour: +(f.elements.namedItem('openHour') as HTMLSelectElement).value, closeHour: +(f.elements.namedItem('closeHour') as HTMLSelectElement).value, phone: (f.elements.namedItem('phone') as HTMLInputElement).value, email: (f.elements.namedItem('email') as HTMLInputElement).value };
-      if (data.closeHour <= data.openHour) return toast('Closing time must be after opening time.', true);
+      const shop = readBlock('shop'), drop = readBlock('drop');
+      if (shop.close <= shop.open || drop.close <= drop.open) return toast('Closing time needs to be after opening time.', true);
+      if (!shop.days.length) return toast('Tick at least one day the shop is open.', true);
+      const data = { shopHours: linesFor(shop.days, shop.open, shop.close), donateHours: linesFor(drop.days, drop.open, drop.close), openDays: shop.days, openHour: shop.open, closeHour: shop.close, phone: field(f, 'phone').value, email: field(f, 'email').value };
       await busy($('button[type=submit]', f) as HTMLButtonElement, async () => { saved(await api('saveHours', { data })); });
     });
+
+    // ---------------------------------------------------------------- home tiles
+    function renderTiles() {
+      const live = (state.events || []).filter((e: Any) => statusOf(e.startDate || '', e.endDate || e.startDate || '')[1] !== 'off');
+      const now = live.filter((e: Any) => statusOf(e.startDate, e.endDate || e.startDate)[1] === 'on').length;
+      const status: Record<string, [string, string]> = {
+        events: [now ? `${now} happening now, ${live.length - now} more coming` : `${live.length} coming up`, live.length ? 'on' : 'warn'],
+        ribbon: ribbonStatus(),
+        tags: tagStatus(),
+        gallery: galleryStatus(),
+        slides: slidesStatus(state.slides || []),
+        video: videoStatus(),
+        hours: [hoursSummary(), ''],
+      };
+      $$('[data-status-for]').forEach((el) => { const [t, c] = status[el.dataset.statusFor!] || ['', '']; el.textContent = t; el.className = 'qe-home-status ' + c; });
+      $('[data-tiles-home]').hidden = false; $('[data-loading]').hidden = true;
+    }
 
     // ---------------------------------------------------------------- load
     async function load() {
       const j = await api('load');
-      if (!j.ok) { if (j.error && !/log in/i.test(j.error)) { $('[data-loading]').textContent = j.error; } return; }
+      if (!j.ok) { if (j.error && !/log in/i.test(j.error)) $('[data-loading]').textContent = j.error; return; }
       state = j;
       weeks = (j.tagSale?.weeks || []).map((w: Any) => ({ ...w }));
-      (($('[data-tag-form]') as HTMLFormElement).elements.namedItem('enabled') as HTMLInputElement).checked = !!j.tagSale?.enabled;
       gallery = (j.gallery?.items || []).map((g: Any) => ({ ...g }));
-      renderEvents(); renderRibbon(); renderWeeks(); renderGallery(); renderVideo(); renderHours(); markDirty(false);
-      $('[data-loading]').hidden = true; $$('[data-section]').forEach((s) => (s.hidden = false));
+      slides = (j.slides || []).map((s: Any) => ({ ...s, primary: { ...(s.primary || {}) }, secondary: { ...(s.secondary || {}) } }));
+      field($('[data-tag-form]') as HTMLFormElement, 'enabled').checked = !!j.tagSale?.enabled;
+      renderEvents(); renderRibbon(); renderWeeks(); renderGallery(); renderSlides(); renderVideo(); renderHours(); renderTiles();
+      dirty = false;
     }
 
     (async () => {
       const j = await api('check');
-      if (j.ok) showApp(); else if (j.error) { showLogin(); const err = $('[data-login-error]'); err.textContent = j.error; err.hidden = false; } else showLogin();
+      if (j.ok) showApp(); else { showLogin(); if (j.error) { const err = $('[data-login-error]'); err.textContent = j.error; err.hidden = false; } }
     })();
   </script>
 
   <style is:global>
     body.qe { background: var(--cream); }
+    body.qe-locked { overflow: hidden; }
     .qe-wrap { width: min(980px, calc(100% - 32px)); margin: 0 auto; }
     .qe-top { background: #fffdf9; border-bottom: 1px solid var(--sand); position: sticky; top: 0; z-index: 10; }
     .qe-top-in { display: flex; align-items: center; justify-content: space-between; min-height: 68px; gap: 16px; }
-    .qe-brand { display: flex; align-items: center; gap: 12px; text-decoration: none; color: var(--ink); font-family: var(--serif); font-size: 20px; }
+    .qe-brand { display: flex; align-items: center; gap: 12px; text-decoration: none; color: var(--ink); }
     .qe-brand img { width: 170px; height: auto; display: block; }
-    .qe-brand em { font-style: normal; font-family: var(--mono); font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--red); margin-left: 8px; }
+    .qe-brand em { font-style: normal; font-family: var(--mono); font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--red); }
     .qe-top-links { display: flex; gap: 18px; align-items: center; font-weight: 600; font-size: 15px; }
     .qe-top-links[hidden] { display: none; }
     .qe-top-links a { color: var(--ink); }
     .qe-top-links button, .qe-link { background: none; border: 0; padding: 4px 0; color: var(--red); font: inherit; font-weight: 700; cursor: pointer; text-decoration: underline; text-underline-offset: 3px; }
     .qe-login { max-width: 440px; margin: 72px auto; }
-    .qe-login h1, .qe-intro h1 { font-family: var(--serif); font-weight: 400; font-size: clamp(28px, 4vw, 40px); margin: 0 0 8px; }
-    .qe-intro { margin: 40px 0 8px; }
-    .qe-jump { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 18px; }
-    .qe-jump a { padding: 10px 16px; border-radius: 999px; background: #fffdf9; color: var(--ink); text-decoration: none; font-weight: 600; font-size: 15px; box-shadow: 0 1px 0 rgba(35,31,27,.08); }
-    .qe-jump a:hover { background: var(--ink); color: #fff; }
-    .qe-loading { margin: 40px 0; color: var(--muted); }
-    .qe-card { margin-top: 24px; padding: 28px; background: #fffdf9; border-radius: 22px; box-shadow: 0 1px 0 rgba(35,31,27,.06), 0 14px 36px rgba(35,31,27,.06); scroll-margin-top: 90px; }
+    .qe-login h1, .qe-title { font-family: var(--serif); font-weight: 400; font-size: clamp(28px, 4vw, 40px); margin: 0 0 8px; }
+    .qe-title { margin: 40px 0 24px; }
+    .qe-loading { color: var(--muted); }
+    .qe-home-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(270px, 1fr)); gap: 14px; }
+    .qe-home-grid[hidden] { display: none; }
+    .qe-home-tile { display: grid; grid-template-columns: auto 1fr; column-gap: 16px; row-gap: 4px; align-items: center; padding: 20px 22px; border-radius: 20px; background: #fffdf9; color: var(--ink); text-decoration: none; box-shadow: 0 1px 0 rgba(35,31,27,.06), 0 10px 28px rgba(35,31,27,.06); transition: transform .2s ease, box-shadow .2s ease; }
+    .qe-home-tile:hover { transform: translateY(-2px); box-shadow: 0 1px 0 rgba(35,31,27,.06), 0 16px 34px rgba(35,31,27,.1); }
+    .qe-home-icon { grid-row: span 2; font-size: 30px; line-height: 1; }
+    .qe-home-name { font-family: var(--serif); font-size: 22px; }
+    .qe-home-status { font-size: 14.5px; color: var(--muted); }
+    .qe-home-status.on { color: #205a33; }
+    .qe-home-status.warn { color: #8a1f2b; font-weight: 600; }
+    .qe-foot { margin: 32px 0 60px; }
+    .qe-back { margin: 22px 0 0; }
+    .qe-back[hidden] { display: none; }
+    .qe-back button { background: none; border: 0; padding: 8px 0; font: inherit; font-weight: 700; color: var(--ink); cursor: pointer; font-size: 16px; }
+    .qe-card { margin: 14px 0 60px; padding: 28px; background: #fffdf9; border-radius: 22px; box-shadow: 0 1px 0 rgba(35,31,27,.06), 0 14px 36px rgba(35,31,27,.06); }
     .qe-card > header { display: flex; align-items: center; justify-content: space-between; gap: 14px; flex-wrap: wrap; }
-    .qe-card h2 { margin: 0; font-family: var(--serif); font-weight: 400; font-size: 26px; }
+    .qe-card h2 { margin: 0; font-family: var(--serif); font-weight: 400; font-size: 28px; }
     .qe-card > p.muted { margin: 8px 0 18px; }
-    .qe-sub { margin: 18px 0 24px; padding: 22px; border-radius: 18px; background: var(--cream); box-shadow: inset 0 0 0 2px var(--toffee, #cdb68c); }
-    .qe-sub h3 { margin: 0 0 16px; font-family: var(--serif); font-weight: 400; font-size: 21px; }
+    .qe-sub { margin: 10px 0 14px; padding: 22px; border-radius: 18px; background: var(--cream); box-shadow: inset 0 0 0 2px var(--toffee, #cdb68c); }
+    .qe-sub[hidden] { display: none; }
+    .qe-sub-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+    .qe-sub h3 { margin: 0; font-family: var(--serif); font-weight: 400; font-size: 21px; }
+    .qe-x { width: 40px; height: 40px; border-radius: 50%; border: 0; background: #fff; font-size: 16px; cursor: pointer; flex: none; }
+    .qe-sheet { position: fixed; inset: 0; z-index: 40; margin: 0; border-radius: 0; overflow-y: auto; box-shadow: none; padding: 18px 16px 100px; }
     .qe-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px 18px; margin-top: 16px; }
+    .qe-grid-2 { margin-top: 12px; }
     .qe-span { grid-column: 1 / -1; }
-    .qe-field { display: flex; flex-direction: column; gap: 6px; font-weight: 600; font-size: 14.5px; }
+    .qe-field { display: flex; flex-direction: column; gap: 6px; font-weight: 600; font-size: 14.5px; min-width: 0; }
     .qe-field > span { color: var(--ink-2, #3e3534); }
-    .qe input:not([type=checkbox]):not([type=file]), .qe select, .qe textarea { width: 100%; min-height: 48px; padding: 10px 14px; border-radius: 12px; border: 2px solid var(--sand); background: #fff; font: inherit; font-weight: 400; font-size: 16px; color: var(--ink); }
+    .qe-field small { font-weight: 400; font-size: 13px; }
+    .qe input:not([type=checkbox]):not([type=file]), .qe select, .qe textarea { width: 100%; min-height: 48px; padding: 10px 14px; border-radius: 12px; border: 2px solid var(--sand); background: #fff; font: inherit; font-weight: 400; font-size: 16px; color: var(--ink); min-width: 0; }
     .qe textarea { min-height: 90px; resize: vertical; }
     .qe input:focus, .qe select:focus, .qe textarea:focus { outline: none; border-color: var(--red); }
     .qe-check { display: flex; align-items: center; gap: 12px; padding: 14px 16px; border-radius: 14px; background: var(--cream); cursor: pointer; font-size: 16px; }
-    .qe-check input { width: 22px; height: 22px; accent-color: var(--red); }
+    .qe-check input { width: 22px; height: 22px; accent-color: var(--red); flex: none; }
     .qe-actions { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 22px; }
     .qe-wide { width: 100%; margin-top: 18px; }
     .qe-sm { min-height: 40px; padding: 0 16px; font-size: 14px; }
     .qe-small { font-size: 14px; }
     .qe-error { margin: 12px 0 0; padding: 10px 14px; border-radius: 12px; background: #fde3e3; color: #8a1f2b; font-weight: 600; }
+    .qe-pill { display: inline-block; padding: 4px 12px; border-radius: 999px; font-size: 13.5px; font-weight: 700; white-space: nowrap; background: var(--sand); color: var(--muted); }
+    .qe-pill.on { background: #e4f2e8; color: #205a33; }
+    .qe-pill.soon { background: #fff4c7; color: #6b5300; }
+    .qe-pill.warn { background: #fde3e3; color: #8a1f2b; }
     .qe-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
-    .qe-list li { display: flex; align-items: center; gap: 14px; padding: 12px 14px; border-radius: 14px; background: var(--cream); }
+    .qe-list li { display: grid; grid-template-columns: 124px minmax(0, 1fr) auto; gap: 14px; align-items: center; padding: 12px 14px; border-radius: 14px; background: var(--cream); }
     .qe-list li[hidden] { display: none; }
     .qe-list li.old { opacity: .65; }
-    .qe-main { flex: 1; display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+    .qe-list li > .qe-pill { justify-self: start; }
+    .qe-main { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+    .qe-row-btns { display: flex; gap: 4px; }
     .qe-edit { min-height: 40px; padding: 0 18px; border-radius: 999px; border: 0; background: var(--ink); color: #fff; font: inherit; font-weight: 700; font-size: 14px; cursor: pointer; }
     .qe-edit:hover { background: var(--red); }
     .qe-del { min-height: 40px; padding: 0 12px; border-radius: 999px; border: 0; background: transparent; color: var(--muted); font: inherit; font-size: 14px; cursor: pointer; }
     .qe-del:hover { color: #8a1f2b; background: #fde3e3; }
-    .qe-preview { margin: 18px 0 0; padding: 12px 16px; border-radius: 12px; background: var(--red); color: #fff; }
+    .qe-count { font-style: normal; font-weight: 400; color: var(--muted); margin-left: 6px; }
+    .qe-count.warn { color: #8a1f2b; font-weight: 600; }
+    .qe-prev-label { margin: 22px 0 6px !important; color: var(--ink-2); }
+    .qe-preview { margin: 0; padding: 12px 16px; border-radius: 12px; background: var(--red); color: #fff; }
     .qe-preview.off { background: var(--sand); color: var(--muted); }
+    .qe-preview-phone { max-width: 360px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .qe-rb-pill { display: inline-block; padding: 1px 8px; margin-right: 4px; border-radius: 6px; background: rgba(255,255,255,.18); font-size: 12px; letter-spacing: .06em; text-transform: uppercase; }
     .qe-week { display: grid; grid-template-columns: 110px repeat(4, minmax(0, 1fr)) 40px; gap: 12px; align-items: end; padding: 14px; border-radius: 14px; background: var(--cream); margin-top: 10px; }
     .qe-week[hidden] { display: none; }
     .qe-week.now { box-shadow: inset 0 0 0 2px #3f8f4f; }
-    .qe-week > .now-pill { align-self: center; justify-self: start; }
+    .qe-week > .qe-pill { align-self: center; justify-self: start; }
+    .qe-week > *, .qe-week input, .qe-week select { min-width: 0; }
     .qe-color { display: flex; align-items: center; gap: 8px; min-width: 0; }
-    .qe-week > *, .qe-week input, .qe-week select, .qe-row input { min-width: 0; }
     .qe-color i { width: 24px; height: 24px; border-radius: 50%; flex: none; box-shadow: inset 0 0 0 2px rgba(0,0,0,.12); }
     .qe-photo { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
     .qe-photo img { width: 180px; height: 110px; object-fit: cover; border-radius: 12px; background: var(--sand); }
@@ -631,42 +852,57 @@ import '../styles/global.css';
     .qe-drop { display: inline-flex; align-items: center; justify-content: center; min-height: 64px; padding: 0 24px; border-radius: 14px; border: 2px dashed var(--toffee, #cdb68c); background: #fff; cursor: pointer; font-weight: 600; }
     .qe-drop:hover { border-color: var(--red); }
     .qe-note { margin: 14px 0 0; padding: 12px 16px; border-radius: 12px; background: #fff4c7; color: #6b5300; }
-    .qe-two { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
-    .qe-row { display: grid; grid-template-columns: 1fr 1fr 40px; gap: 8px; margin-top: 8px; }
+    .qe-note[hidden] { display: none; }
+    .qe-two { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    .qe-hours { margin: 0; padding: 18px; border: 0; border-radius: 16px; background: var(--cream); min-width: 0; }
+    .qe-hours legend { display: block; width: 100%; padding: 0; margin: 0 0 12px; font-family: var(--serif); font-size: 21px; }
+    .qe-hours .qe-days { clear: both; }
+    .qe-says { margin: 14px 0 0; font-size: 14.5px; color: var(--muted); }
     .qe-days { display: flex; flex-wrap: wrap; gap: 8px; }
-    .qe-day { display: inline-flex; align-items: center; gap: 6px; padding: 8px 12px; border-radius: 999px; background: var(--cream); font-weight: 600; cursor: pointer; }
+    .qe-day { display: inline-flex; align-items: center; gap: 6px; padding: 8px 12px; border-radius: 999px; background: #fff; font-weight: 600; cursor: pointer; }
     .qe-day input { accent-color: var(--red); width: 18px; height: 18px; }
-    .qe-tiles { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 16px; margin-top: 20px; }
-    .qe-tile { display: flex; flex-direction: column; gap: 10px; padding: 12px; border-radius: 16px; background: var(--cream); box-shadow: inset 0 0 0 2px transparent; }
+    .qe-tiles { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 14px; margin-top: 20px; }
+    .qe-tile { display: flex; flex-direction: column; gap: 8px; padding: 10px; border-radius: 16px; background: var(--cream); box-shadow: inset 0 0 0 2px transparent; min-width: 0; }
     .qe-tile.feat { box-shadow: inset 0 0 0 2px #c9a227; }
     .qe-tile.loading { opacity: .5; pointer-events: none; }
     .qe-thumb { position: relative; aspect-ratio: 4 / 3; border-radius: 12px; overflow: hidden; background: var(--sand); display: grid; place-items: center; color: var(--muted); font-size: 14px; }
     .qe-thumb img { width: 100%; height: 100%; object-fit: cover; }
-    .qe-play { position: absolute; left: 10px; bottom: 10px; padding: 4px 10px; border-radius: 999px; background: rgba(35,31,27,.8); color: #fff; font-size: 12.5px; }
-    .qe-star { display: flex; align-items: center; gap: 8px; font-weight: 700; cursor: pointer; }
+    .qe-play { position: absolute; left: 8px; bottom: 8px; padding: 3px 9px; border-radius: 999px; background: rgba(35,31,27,.8); color: #fff; font-size: 12px; }
+    .qe .qe-caption { min-height: 40px; padding: 6px 10px; font-size: 14.5px; border-radius: 10px; }
+    .qe-star { display: flex; align-items: center; gap: 8px; font-weight: 700; cursor: pointer; font-size: 14.5px; }
     .qe-star input { width: 20px; height: 20px; accent-color: #c9a227; }
-    .qe-star.disabled { opacity: .45; cursor: default; }
-    .qe-tile-tools { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
-    .qe-tile-tools button:not(.qe-del), .qe-mini { min-height: 36px; padding: 0 12px; border-radius: 999px; border: 0; background: #fff; font: inherit; font-size: 13.5px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; }
+    .qe-tile-tools { display: flex; gap: 4px; align-items: center; }
+    .qe-tile-tools button:not(.qe-del), .qe-mini { min-height: 34px; padding: 0 10px; border-radius: 999px; border: 0; background: #fff; font: inherit; font-size: 13px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; }
     .qe-tile-tools button:disabled { opacity: .35; cursor: default; }
-    .qe-tile-tools .qe-del { margin-left: auto; min-height: 36px; }
-    .qe-sticky-save { position: sticky; bottom: 0; margin: 20px -28px -28px; padding: 16px 28px; background: #fffdf9; border-top: 1px solid var(--sand); border-radius: 0 0 22px 22px; align-items: center; }
+    .qe-tile-tools .qe-del { margin-left: auto; min-height: 34px; }
+    .qe-slide { padding: 18px; border-radius: 16px; background: var(--cream); margin-top: 14px; }
+    .qe-slide.ended { opacity: .7; }
+    .qe-slide-head { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+    .qe-slide-tools { margin-left: auto; display: flex; gap: 4px; }
+    .qe-slide-tools button:not(.qe-del) { width: 36px; height: 36px; border-radius: 50%; border: 0; background: #fff; cursor: pointer; font-size: 15px; }
+    .qe-slide-tools button:disabled { opacity: .35; }
     .qe-toast { position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%); z-index: 50; max-width: calc(100% - 32px); padding: 14px 22px; border-radius: 14px; background: #205a33; color: #fff; font-weight: 600; box-shadow: 0 14px 40px rgba(0,0,0,.25); }
+    .qe-toast[hidden] { display: none; }
     .qe-toast.bad { background: #8a1f2b; }
-    .now-pill { display: inline-block; padding: 3px 10px; border-radius: 999px; font-family: var(--mono); font-size: 11.5px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; white-space: nowrap; background: var(--sand); color: var(--muted); }
-    .now-pill.on { background: #e4f2e8; color: #205a33; }
-    .now-pill.soon { background: #fff4c7; color: #6b5300; }
-    .now-pill.warn { background: #fde3e3; color: #8a1f2b; }
     @media (max-width: 720px) {
       .qe-card { padding: 20px 16px; }
       .qe-grid, .qe-two { grid-template-columns: 1fr; }
       .qe-week { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .qe-week > .qe-pill { grid-column: 1 / -1; }
       .qe-week > .qe-del { grid-column: 1 / -1; justify-self: end; }
-      .qe-brand em { display: none; }
-      .qe-week > .now-pill { grid-column: 1 / -1; }
-      .qe-list li { flex-wrap: wrap; }
+      .qe-list li { grid-template-columns: minmax(0, 1fr) auto; grid-template-areas: "pill pill" "main btns"; row-gap: 6px; }
+      .qe-list li > .qe-pill { grid-area: pill; }
+      .qe-list li > .qe-main { grid-area: main; }
+      .qe-list li > .qe-row-btns { grid-area: btns; }
+      .qe-tiles { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+      .qe-tile { padding: 8px; }
+      .qe-tile-tools button:not(.qe-del), .qe-mini { padding: 0 8px; }
       .qe-brand img { width: 140px; }
-      .qe-top-links a { display: none; }
+      .qe-brand em, .qe-top-links a { display: none; }
+      .qe-home-grid { grid-template-columns: 1fr; }
+      .qe-home-tile { padding: 16px 18px; }
+      .qe-photo img { width: 140px; height: 90px; }
+      .qe-sheet { padding-top: 14px; }
     }
   </style>
 </body>

@@ -20,14 +20,12 @@ const w = await reader.singletons.work.read();
   <section class="section">
     <div class="wrap split" style="align-items:center">
       <div class="reveal">
-        <p class="eyebrow">What to expect</p>
-        <h2 class="h2" style="margin-bottom:28px">What working here is like.</h2>
+        <h2 class="h2" style="margin-bottom:28px">What working here is like</h2>
         <ul class="checks">{w?.whatToExpect.map((x) => <li>{x}</li>)}</ul>
       </div>
       <div class="card pad reveal" style="background:var(--blue)">
         <p class="label" style="margin:0 0 10px">Who can apply</p>
-        <p class="serif" style="font-size:clamp(20px,5.3vw,26px);line-height:1.35;margin:0">You do not need to be in recovery to work here. A majority of our paid hours are reserved for friends in addiction recovery and re-entry.</p>
-        <p style="margin:18px 0 0">Not sure if you qualify? Apply anyway, or call us and ask.</p>
+        <p class="serif" style="font-size:clamp(20px,5.3vw,26px);line-height:1.35;margin:0">Not sure you're a fit? Apply anyway, or call us and ask.</p>
       </div>
     </div>
   </section>
@@ -36,7 +34,7 @@ const w = await reader.singletons.work.read();
     <section class="section-tight">
       <div class="wrap">
         <div class="section-head reveal" style="margin-bottom:28px">
-          <div><p class="eyebrow">Kinds of work</p><h2 class="h2">Where you might fit.</h2></div>
+          <div><h2 class="h2">Kinds of work</h2></div>
         </div>
         <div class="grid3">
           {w.roles.map((r, i) => (
@@ -60,21 +58,20 @@ const w = await reader.singletons.work.read();
   <section class="section" style="background:var(--paper)">
     <div class="wrap split">
       <div class="reveal" id="apply">
-        <p class="eyebrow">Apply for a job</p>
-        <h2 class="h2" style="margin-bottom:14px">{w?.applyHeading || 'Interested in joining our team?'}</h2>
-        <p class="muted" style="margin:0 0 24px">{w?.hiring ? w?.applyText : 'We are not hiring right now, but you can still reach out and we will keep your information.'}</p>
+        <h2 class="h2" style="margin-bottom:14px">{w?.applyHeading || 'Apply for a job'}</h2>
+        <p class="muted" style="margin:0 0 24px">{w?.hiring ? w?.applyText : 'We aren\'t hiring right now, but you can still reach out and we\'ll keep your details on file.'}</p>
         {w?.applyFormUrl ? (
           <a class="btn btn-red" href={w.applyFormUrl} target="_blank" rel="noopener">{w.applyButton || 'Fill out the expression of interest form'} <span aria-hidden="true">↗</span></a>
         ) : (
         <Form
           form="apply"
           submit="Send my information"
-          thanks="Thank you for reaching out. We will be in touch about next steps."
+          thanks="Thanks for reaching out. We'll be in touch about next steps."
           fields={[
             { name: 'name', label: 'Full name', required: true, autocomplete: 'name' },
             { name: 'phone', label: 'Phone', type: 'tel', required: true, autocomplete: 'tel' },
             { name: 'email', label: 'Email', type: 'email', full: true, autocomplete: 'email' },
-            { name: 'about', label: 'Tell us a little about yourself and what you are looking for', type: 'textarea', required: true },
+            { name: 'about', label: 'Tell us a little about yourself and what you\'re looking for', type: 'textarea', required: true },
             { name: 'referred_by', label: 'Did someone refer you? Who?', full: true },
           ]}
         />
@@ -93,13 +90,12 @@ const w = await reader.singletons.work.read();
         )}
       </div>
       <div class="reveal" id="refer">
-        <p class="eyebrow">Refer someone</p>
-        <h2 class="h2" style="margin-bottom:14px">For pastors, case workers and families.</h2>
+        <h2 class="h2" style="margin-bottom:14px">Refer someone</h2>
         <p class="muted" style="margin:0 0 24px">{w?.referText}</p>
         <Form
           form="refer"
           submit="Send referral"
-          thanks="Thank you for the referral. We will follow up soon."
+          thanks="Thanks for the referral. We'll follow up soon."
           fields={[
             { name: 'your_name', label: 'Your name', required: true, autocomplete: 'name' },
             { name: 'your_role', label: 'Your role or organization', required: true },
@@ -118,8 +114,7 @@ const w = await reader.singletons.work.read();
     <Watermark variant="rose" tone="dark" opacity={0.05} style="width:620px;right:-120px;top:20px" />
     <div class="wrap split">
       <div class="reveal">
-        <p class="eyebrow">Volunteer</p>
-        <h2 class="h2" style="margin-bottom:14px">Lend a hand.</h2>
+        <h2 class="h2" style="margin-bottom:14px">Volunteer</h2>
         <p class="lead" style="margin:0">{w?.volunteerText}</p>
         {w?.volunteerTasks && w.volunteerTasks.length > 0 && (
           <div class="pills" style="margin-top:24px">{w.volunteerTasks.map((t) => <span class="pill-item">{t}</span>)}</div>
@@ -140,7 +135,7 @@ const w = await reader.singletons.work.read();
         <Form
           form="volunteer"
           submit="Sign me up"
-          thanks="Thank you! We will reach out about volunteer times."
+          thanks="Thanks. We'll be in touch about volunteer times."
           fields={[
             { name: 'name', label: 'Name', required: true, autocomplete: 'name' },
             { name: 'email', label: 'Email', type: 'email', required: true, autocomplete: 'email' },

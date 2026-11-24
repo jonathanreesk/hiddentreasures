@@ -35,10 +35,9 @@ const others = byStart.slice(0, 12);
     <div class="wrap">
       <div class="section-head reveal">
         <div style="max-width:640px">
-          <p class="eyebrow">How you can help</p>
-          <h2 class="h2">Donate, shop, or work with us.</h2>
+          <h2 class="h2">Donate, shop or work with us</h2>
         </div>
-        <p class="muted" style="margin:0;max-width:380px;font-size:17px">Most of all, we run on donated goods. They are where the work begins.</p>
+        <p class="muted" style="margin:0;max-width:380px;font-size:17px">It all starts with donated goods.</p>
       </div>
       <div class="grid3">
         <article class="card pad lift path reveal" style="background:var(--red);color:#fff">
@@ -54,9 +53,8 @@ const others = byStart.slice(0, 12);
           </div>
         </article>
         <article class="card pad lift path outline reveal" style="transition-delay:80ms">
-          <span class="label" style="color:var(--red)">Thrift with purpose</span>
           <h3 class="h3" style="font-size:clamp(27px,7.0vw,34px)">Shop the store</h3>
-          <p class="muted" style="margin:0">New items go out on the floor every day, and what you spend supports the work.</p>
+          <p class="muted" style="margin:0">New items go out every day, and what you spend keeps the jobs going.</p>
           <div class="links">
             <a class="linkrow linkrow-ink" href="/visit">Hours and directions <span aria-hidden="true">→</span></a>
             <a class="linkrow linkrow-ink" href="/news">Sales and events <span aria-hidden="true">→</span></a>
@@ -65,9 +63,8 @@ const others = byStart.slice(0, 12);
           </div>
         </article>
         <article class="card pad lift path reveal" style="background:var(--blue);transition-delay:160ms">
-          <span class="label">Employment program</span>
           <h3 class="h3" style="font-size:clamp(27px,7.0vw,34px)">Work with us</h3>
-          <p style="margin:0">Looking for a fresh start, or know someone who is? Pastors, case workers and families can refer directly.</p>
+          <p style="margin:0">Looking for a fresh start, or know someone who is?</p>
           <div class="links">
             <a class="linkrow linkrow-ink" href="/work-with-us#apply">Apply for a job <span aria-hidden="true">→</span></a>
             <a class="linkrow linkrow-ink" href="/work-with-us#refer">Refer someone <span aria-hidden="true">→</span></a>
@@ -97,16 +94,8 @@ const others = byStart.slice(0, 12);
         </div>
         <img class="store-badge reveal" src="/images/brand/compass-badge-toffee.png" width="1400" height="993" alt="Hidden Treasures Thrift Store logo" loading="lazy" decoding="async" />
       </div>
-      <div class="steps">
-        <div class="string" aria-hidden="true"></div>
-        <div class="step reveal"><div class="num" style="background:var(--red)">01</div><h3>You donate</h3><p>The things you no longer need become the store's entire inventory.</p></div>
-        <div class="step reveal" style="transition-delay:100ms"><div class="num" style="background:var(--orange)">02</div><h3>Our team gets to work</h3><p>Our team sorts, prices and sells it. These are paid jobs, and most of the hours go to people in recovery and re-entry.</p></div>
-        <div class="step reveal" style="transition-delay:200ms"><div class="num" style="background:var(--blue);color:var(--ink)">03</div><h3>Neighbors find treasures</h3><p>Shoppers get good everyday things at low prices, and less ends up in a landfill.</p></div>
-        <div class="step reveal" style="transition-delay:300ms"><div class="num" style="background:var(--toffee);color:var(--ink)">04</div><h3>Lives are rebuilt</h3><p>A steady job and a team to show up for. For someone in recovery, that counts for a lot.</p></div>
-      </div>
-      <div class="btn-row" style="margin-top:64px;align-items:center">
-        <a class="btn btn-red" href="/donate">Donate your goods</a>
-        <a class="btn btn-ghost" href="/our-story">Read our full story</a>
+      <div class="btn-row" style="margin-top:40px;align-items:center">
+        <a class="btn btn-ghost" href="/our-story">Read our story</a>
         <p style="margin:0 0 0 8px;font-size:15px;color:#b9ae9f">Serving the Twin Cities since 2008. A ministry of Masterworks of Minneapolis, founded in 1991.</p>
       </div>
     </div>
@@ -118,10 +107,9 @@ const others = byStart.slice(0, 12);
       <div class="wrap">
         <div class="section-head reveal">
           <div>
-            <p class="eyebrow">News and events</p>
-            <h2 class="h2">What is happening at the store.</h2>
+            <h2 class="h2">News and events</h2>
           </div>
-          <div class="btn-row"><a class="btn btn-red" href="/news#calendar">Sales calendar</a><a class="btn btn-outline" href="/news">All news and events</a></div>
+          <div class="btn-row"><a class="btn btn-outline" href="/news">Calendar and all events</a></div>
         </div>
         <div class="events">
           <div class="reveal" data-when-pick>{(candidates.length ? candidates : [featured]).map((c, i) => <div data-pick-item hidden={i > 0}><FeaturedPost post={c} /></div>)}</div>
