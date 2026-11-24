@@ -21,7 +21,8 @@ const statusAttrs = { 'data-status': '', 'data-days': (s?.openDays ?? []).join('
       <p class="vc-line"><strong>Drop-off</strong> {drop ? `${drop.days}, ${drop.hours}` : ''}</p>
     ) : (
       <>
-        <p class="vc-line status" {...statusAttrs}><span class="dotc"></span><strong data-status-label>Store hours</strong> {shop ? `· ${shop.days}, ${shop.hours}` : ''}</p>
+        <p class="vc-line status" {...statusAttrs}><span class="dotc"></span><strong data-status-label>Store hours</strong></p>
+        {shop && <p class="vc-line vc-sub">Shop {shop.days}, {shop.hours}</p>}
         {drop && <p class="vc-line vc-sub">Donations {drop.days}, {drop.hours}</p>}
       </>
     )}

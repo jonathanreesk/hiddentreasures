@@ -734,3 +734,23 @@ details.faq p { margin: 0 0 22px; font-size: 16px; line-height: 1.65; color: var
 
 /* Short slide headlines stay on one line on wider screens */
 @media (min-width: 760px) { .slide .h1.one-line { white-space: nowrap; } }
+
+/* Phones: a calmer hero. Shorter, no small tagline, text held to two lines, smaller buttons */
+@media (max-width: 600px) {
+  .hero { height: clamp(400px, calc(100svh - 300px), 470px); }
+  .slide .inner { padding-top: 22px; }
+  .slide .copy .eyebrow { display: none; }
+  .hero .h1 { font-size: clamp(32px, 9vw, 38px); line-height: 1.08; }
+  .slide .copy p.body { font-size: 15.5px; line-height: 1.5; margin: 10px 0 18px; -webkit-line-clamp: 2; }
+  .slide .btn-row { gap: 10px; }
+  .slide .btn-row .btn { min-height: 44px; padding: 0 18px; font-size: 14.5px; }
+  .hero-ctrl { bottom: 70px; }
+}
+@media (max-width: 600px) { .vc-sub + .vc-sub { margin-top: 2px; } }
+
+/* Phones: keep the first slide's small label ("Nonprofit thrift store") so visitors know right away */
+@media (max-width: 600px) { .hero > .slide:first-of-type .copy .eyebrow { display: block; margin-bottom: 8px; font-size: 12px; } }
+
+/* Hero label in the body font instead of the typewriter font */
+.slide .copy .eyebrow { font-family: var(--sans); font-weight: 700; letter-spacing: .1em; font-size: 13px; }
+@media (max-width: 600px) { .hero > .slide:first-of-type .copy .eyebrow { font-size: 11.5px; letter-spacing: .08em; white-space: nowrap; } }
