@@ -211,6 +211,8 @@ These spots still have placeholder text in [brackets]. Fill them in through the 
 
 ## Quick guide for staff (in the editor)
 
+**Start here: hiddentreasuresmn.org/now** shows everything that is live on the site right now (top ribbon, upcoming events, this week's tag color, homepage video, hours), with an **Edit** button next to each one. Bookmark it on the store computer and phones.
+
 | I want to... | Go to |
 |---|---|
 | Post an event, sale or news update | **Everyday edits → Events, sales and news → +**. Fill in the title, type, date and summary. Add a photo or flyer and a YouTube or Vimeo link if you have them. Tick **Feature on the homepage** to make it the big card. |

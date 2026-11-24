@@ -1,4 +1,9 @@
+import { createElement } from 'react';
 import { config, fields, collection, singleton } from '@keystatic/core';
+
+const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+const shortDate = (d?: string | null) => (d ? `${MONTHS[Number(d.slice(5, 7)) - 1]} ${Number(d.slice(8, 10))}` : '');
+const chicagoToday = () => new Date().toLocaleDateString('en-CA', { timeZone: 'America/Chicago' });
 
 // ---------------------------------------------------------------------------
 // Where edits are saved
@@ -40,7 +45,10 @@ const link = (label: string) =>
 export default config({
   storage,
   ui: {
-    brand: { name: 'Hidden Treasures' },
+    brand: {
+      name: 'Hidden Treasures',
+      mark: () => createElement('img', { src: '/images/brand/compass-badge-red.png', alt: '', width: 34, height: 24, style: { display: 'block', width: 34, height: 'auto' } }),
+    },
     navigation: {
       'Everyday edits': ['events', 'announcement', 'homeVideo', 'tagSale', 'settings'],
       'Photos and videos': ['gallery', 'pageImages'],
@@ -51,11 +59,11 @@ export default config({
   collections: {
     // ------------------------------------------------------------- NEWS + EVENTS
     events: collection({
-      label: 'Events, sales and news',
+      label: '📅 Events, sales and news',
       slugField: 'title',
       path: 'content/events/*',
       format: { data: 'yaml' },
-      columns: ['title', 'startDate'],
+      columns: ['title', 'startDate', 'type'],
       schema: {
         title: fields.slug({ name: { label: 'Title' } }),
         type: fields.select({
@@ -67,8 +75,8 @@ export default config({
           ],
           defaultValue: 'event',
         }),
-        startDate: fields.date({ label: 'Date', description: 'For news, use the posting date', validation: { isRequired: true } }),
-        endDate: fields.date({ label: 'End date (optional)', description: 'For multi-day events like the Christmas Market' }),
+        startDate: fields.date({ label: 'Date', description: 'The day it happens (or starts). For news, the day you post it.', defaultValue: { kind: 'today' }, validation: { isRequired: true } }),
+        endDate: fields.date({ label: 'End date (optional)', description: 'Only for things that run several days, like the Christmas Market. It drops off the site 2 days after this date.' }),
         timeText: fields.text({ label: 'Time', description: 'For example: Mon to Sat, 10am to 6pm' }),
         location: fields.text({ label: 'Where', defaultValue: 'Main store' }),
         badge: fields.text({ label: 'Small label (optional)', description: 'For example: Grand opening' }),
@@ -81,13 +89,13 @@ export default config({
           fields.object({ image: image('Photo'), caption: fields.text({ label: 'Caption (optional)' }) }),
           { label: 'More photos', itemLabel: (p) => p.fields.caption.value || 'Photo' }
         ),
-        pinned: fields.checkbox({ label: 'Feature on the homepage', defaultValue: false }),
+        pinned: fields.checkbox({ label: 'Feature on the homepage', description: 'Shows it as the big card on the homepage while it is current', defaultValue: false }),
       },
     }),
 
     // ------------------------------------------------------------- STORIES
     stories: collection({
-      label: 'Stories',
+      label: '💬 Stories',
       slugField: 'name',
       path: 'content/stories/*',
       format: { data: 'yaml' },
@@ -105,7 +113,7 @@ export default config({
   singletons: {
     // ------------------------------------------------------------- SETTINGS
     settings: singleton({
-      label: 'Store info and hours',
+      label: '🕘 Store info and hours',
       path: 'content/settings',
       format: { data: 'yaml' },
       schema: {
@@ -127,8 +135,8 @@ export default config({
           options: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map((d) => ({ label: d, value: d })),
           defaultValue: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
         }),
-        openHour: fields.integer({ label: 'Opening hour (24h clock)', defaultValue: 10 }),
-        closeHour: fields.integer({ label: 'Closing hour (24h clock)', defaultValue: 19 }),
+        openHour: fields.integer({ label: 'Opening hour, for the "Open now" badge', description: 'Use the 24-hour clock: 10 means 10am, 13 means 1pm', defaultValue: 10, validation: { min: 0, max: 23 } }),
+        closeHour: fields.integer({ label: 'Closing hour, for the "Open now" badge', description: 'Use the 24-hour clock: 19 means 7pm, 18 means 6pm', defaultValue: 19, validation: { min: 1, max: 24 } }),
         instagramUrl: fields.url({ label: 'Instagram link' }),
         facebookUrl: fields.url({ label: 'Facebook link' }),
         giveUrl: fields.url({ label: 'Online giving link (optional)', description: 'Shown quietly in the footer only' }),
@@ -139,7 +147,7 @@ export default config({
     }),
 
     announcement: singleton({
-      label: 'Top ribbon (announcement)',
+      label: '📣 Top ribbon (announcement)',
       path: 'content/announcement',
       format: { data: 'yaml' },
       schema: {
@@ -241,7 +249,7 @@ export default config({
 
     // ------------------------------------------------------------- TAG SALE
     tagSale: singleton({
-      label: 'Color tag sale',
+      label: '🏷️ Color tag sale',
       path: 'content/tag-sale',
       format: { data: 'yaml' },
       schema: {
@@ -257,14 +265,23 @@ export default config({
             }),
             discount: fields.text({ label: 'Discount', description: 'For example: 50% off' }),
           }),
-          { label: 'Weeks', itemLabel: (p) => `${p.fields.start.value}: ${p.fields.color.value} tags ${p.fields.discount.value}` }
+          {
+            label: 'Weeks',
+            description: 'Add one row per week. Old weeks can stay; only the current week shows on the site.',
+            itemLabel: (p) => {
+              const s = p.fields.start.value, e = p.fields.end.value, t = chicagoToday();
+              const now = s && e && s <= t && t <= e ? '👉 THIS WEEK: ' : e && e < t ? '(past) ' : '';
+              const c = p.fields.color.value;
+              return `${now}${shortDate(s)} to ${shortDate(e)}: ${c.charAt(0).toUpperCase() + c.slice(1)} tags ${p.fields.discount.value || ''}`;
+            },
+          }
         ),
       },
     }),
 
     // ------------------------------------------------------------- HOMEPAGE VIDEO
     homeVideo: singleton({
-      label: 'Homepage video',
+      label: '🎬 Homepage video',
       path: 'content/home-video',
       format: { data: 'yaml' },
       schema: {
@@ -286,7 +303,7 @@ export default config({
 
     // ------------------------------------------------------------- GALLERY
     gallery: singleton({
-      label: 'Photo and video gallery',
+      label: '🖼️ Photo and video gallery',
       path: 'content/gallery',
       format: { data: 'yaml' },
       schema: {
@@ -308,7 +325,7 @@ export default config({
 
     // ------------------------------------------------------------- PAGE IMAGES
     pageImages: singleton({
-      label: 'Page header photos',
+      label: '🏞️ Page header photos',
       path: 'content/page-images',
       format: { data: 'yaml' },
       schema: {
