@@ -5,7 +5,7 @@ import react from '@astrojs/react';
 import keystatic from '@keystatic/astro';
 
 // Pages are pre-rendered (static) for speed. Only the editor (/keystatic)
-// and the form handler (/api/submit) run on Vercel as server functions.
+// and the API routes (/api/submit, /api/edit for staff Quick edits) run on Vercel as server functions.
 export default defineConfig({
   site: 'https://hiddentreasuresmn.org',
   output: 'static',
@@ -13,7 +13,8 @@ export default defineConfig({
   integrations: [react(), keystatic()],
   // Old Squarespace addresses, so existing links, QR codes and bookmarks keep working
   redirects: {
-    '/admin': '/keystatic',
+    '/admin': '/edit',
+    '/staff': '/edit',
     '/work': '/work-with-us',
     '/volunteer': '/work-with-us#volunteer',
     '/pickup': '/donate#pickup',

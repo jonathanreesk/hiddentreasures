@@ -209,6 +209,17 @@ These spots still have placeholder text in [brackets]. Fill them in through the 
 - **Editing a photo** (crop, brighten, straighten): do it on a phone or computer first, then upload the edited copy. To replace a photo, open it in the editor, remove it, and upload the new one. Wide photos (landscape) work best everywhere.
 - **Why links for long videos:** every upload is saved in the GitHub repo, and big video files make it slow and can hit GitHub's 100 MB limit. YouTube or Vimeo links have no limit and load faster for visitors.
 
+## Quick edits for staff (one shared password)
+
+Staff update the everyday things at **hiddentreasuresmn.org/edit** (also /admin and /staff). No accounts: everyone uses one shared password. They can change the top ribbon, add, edit or delete events, sales and closures (with a photo), set the color tag weeks, change the homepage video link and the hours.
+
+To turn it on, add two settings in Vercel (**Settings → Environment Variables**, Production and Preview), then redeploy:
+
+- `EDIT_PASSWORD`: the staff password. At least 8 characters; a short phrase like `blue-tag-tuesday` is easy to remember and hard to guess.
+- `GITHUB_TOKEN`: a GitHub token that lets the site save changes. On github.com: **Settings → Developer settings → Personal access tokens → Fine-grained tokens → Generate new token**. Repository access: **Only select repositories → hiddentreasures**. Permissions: **Contents → Read and write**. Pick the longest expiry offered and set a calendar reminder to renew it.
+
+To change the password (for example when someone leaves), update `EDIT_PASSWORD` in Vercel and redeploy. Five wrong tries lock that device out for 15 minutes.
+
 ## Quick guide for staff (in the editor)
 
 **Start here: hiddentreasuresmn.org/now** shows everything that is live on the site right now (top ribbon, upcoming events, this week's tag color, homepage video, hours), with an **Edit** button next to each one. Bookmark it on the store computer and phones.

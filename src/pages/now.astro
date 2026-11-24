@@ -4,15 +4,15 @@
 import Layout from '../layouts/Layout.astro';
 import { reader, getPosts, img, dateRange, typeLabel } from '../lib/content';
 
-const repo = import.meta.env.PUBLIC_GITHUB_REPO;
-const ed = repo ? '/keystatic/branch/main' : '/keystatic';
+// Edit buttons open the staff Quick edits page (/edit), which asks for the shared password
+const ed = '/edit';
 const edit = {
-  ribbon: `${ed}/singleton/announcement`,
-  video: `${ed}/singleton/homeVideo`,
-  tag: `${ed}/singleton/tagSale`,
-  hours: `${ed}/singleton/settings`,
-  newEvent: `${ed}/collection/events/create`,
-  event: (slug: string) => `${ed}/collection/events/item/${slug}`,
+  ribbon: '/edit#ribbon',
+  video: '/edit#video',
+  tag: '/edit#tags',
+  hours: '/edit#hours',
+  newEvent: '/edit#events',
+  event: (_slug: string) => '/edit#events',
 };
 
 const ann = await reader.singletons.announcement.read();
@@ -31,7 +31,7 @@ const tagHex: Record<string, string> = { blue: '#3e5f9e', green: '#3f8f4f', red:
       <p class="lead" style="margin:14px 0 0">Everything below is live on hiddentreasuresmn.org. Tap <strong>Edit</strong> to change it. Changes show up here and on the site about a minute after you save.</p>
       <div class="btn-row" style="margin-top:24px">
         <a class="btn btn-red" href={edit.newEvent}>+ Add an event or sale</a>
-        <a class="btn btn-outline" href={ed}>Open the full editor</a>
+        <a class="btn btn-outline" href={ed}>Open Quick edits</a>
       </div>
 
       <!-- Top ribbon -->

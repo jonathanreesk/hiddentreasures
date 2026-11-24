@@ -1,0 +1,506 @@
+---
+// Quick edits for store staff: one shared password, simple forms.
+// The server side is src/pages/api/edit.ts.
+import '../styles/global.css';
+---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>Quick edits | Hidden Treasures</title>
+  <link rel="icon" type="image/png" href="/favicon.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Courier+Prime:wght@400;700&family=Open+Sans:wght@400;600;700&family=Young+Serif&display=swap" rel="stylesheet" />
+</head>
+<body class="qe">
+  <header class="qe-top">
+    <div class="qe-wrap qe-top-in">
+      <a href="/" class="qe-brand"><img src="/images/brand/compass-badge-red.png" alt="" width="46" height="33" /> <span>Hidden Treasures <em>Quick edits</em></span></a>
+      <div class="qe-top-links" data-when-in hidden>
+        <a href="/" target="_blank" rel="noopener">View the site ↗</a>
+        <button type="button" data-logout>Log out</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Log in -->
+  <main class="qe-wrap" data-login hidden>
+    <form class="qe-card qe-login" data-login-form>
+      <h1>Welcome back</h1>
+      <p class="muted">Enter the staff password to update the website.</p>
+      <label class="qe-field"><span>Password</span><input type="password" name="password" autocomplete="current-password" required autofocus /></label>
+      <p class="qe-error" data-login-error hidden></p>
+      <button class="btn btn-red qe-wide" type="submit">Log in</button>
+      <p class="muted qe-small">You'll stay logged in on this device for a week.</p>
+    </form>
+  </main>
+
+  <!-- Dashboard -->
+  <main class="qe-wrap" data-app hidden>
+    <div class="qe-intro">
+      <h1>What would you like to update?</h1>
+      <p class="muted">Changes go live on hiddentreasuresmn.org about a minute after you save.</p>
+      <nav class="qe-jump">
+        <a href="#events">📅 Events and sales</a><a href="#ribbon">📣 Top ribbon</a><a href="#tags">🏷️ Tag sale</a><a href="#video">🎬 Homepage video</a><a href="#hours">🕘 Hours</a>
+      </nav>
+    </div>
+    <p class="qe-loading" data-loading>Loading what's on the site…</p>
+
+    <!-- EVENTS -->
+    <section class="qe-card" id="events" hidden data-section>
+      <header><h2>📅 Events, sales and closures</h2><button class="btn btn-red qe-sm" type="button" data-new-event>+ Add new</button></header>
+      <p class="muted">Old events disappear from the site 2 days after they end. No need to delete them.</p>
+      <form class="qe-sub" data-event-form hidden>
+        <h3 data-event-heading>New event or sale</h3>
+        <div class="qe-grid">
+          <label class="qe-field qe-span"><span>1. What is it called? *</span><input name="title" required maxlength="140" placeholder="For example: 50% off all books" /></label>
+          <label class="qe-field"><span>2. What kind?</span>
+            <select name="kind"><option value="sale">Sale</option><option value="event">Event</option><option value="closed">Store closed</option><option value="news">News update</option></select></label>
+          <label class="qe-field"><span>3. Date *</span><input type="date" name="startDate" required /></label>
+          <label class="qe-field"><span>Last day (only if it runs several days)</span><input type="date" name="endDate" /></label>
+          <label class="qe-field"><span>Time</span><input name="timeText" maxlength="120" placeholder="For example: 10am to 7pm, or All day" /></label>
+          <label class="qe-field qe-span"><span>4. One-line summary</span><input name="summary" maxlength="300" placeholder="Shown in lists and on the homepage" /></label>
+          <label class="qe-field qe-span"><span>More details (optional)</span><textarea name="body" rows="4" maxlength="5000" placeholder="Leave a blank line between paragraphs"></textarea></label>
+          <div class="qe-field qe-span"><span>Photo or flyer (optional)</span><div class="qe-photo" data-photo="image"></div></div>
+          <label class="qe-field"><span>Where</span><input name="location" maxlength="120" placeholder="Main store" /></label>
+          <label class="qe-field"><span>YouTube or Vimeo link (optional)</span><input name="videoUrl" type="url" placeholder="https://" /></label>
+          <label class="qe-check qe-span"><input type="checkbox" name="pinned" /> Feature it as the big card on the homepage</label>
+        </div>
+        <div class="qe-actions"><button class="btn btn-red" type="submit">Save</button><button class="btn btn-outline" type="button" data-cancel>Cancel</button></div>
+      </form>
+      <ul class="qe-list" data-events></ul>
+      <button type="button" class="qe-link" data-show-old hidden></button>
+    </section>
+
+    <!-- RIBBON -->
+    <section class="qe-card" id="ribbon" hidden data-section>
+      <header><h2>📣 Top ribbon</h2><span class="now-pill" data-ribbon-status></span></header>
+      <p class="muted">The red bar across the top of every page. Good for "Closed today", a big sale, or the Christmas Market.</p>
+      <form data-ribbon-form>
+        <label class="qe-check"><input type="checkbox" name="enabled" /> <strong>Show the ribbon on the site</strong></label>
+        <div class="qe-grid">
+          <label class="qe-field"><span>Small label</span><input name="label" maxlength="40" placeholder="For example: Now open" /></label>
+          <label class="qe-field qe-span"><span>Message</span><input name="message" maxlength="300" placeholder="One short sentence" /></label>
+          <label class="qe-field"><span>Link text (optional)</span><input name="linkText" maxlength="40" placeholder="Details" /></label>
+          <label class="qe-field"><span>Link goes to (optional)</span><input name="linkUrl" maxlength="500" placeholder="/news" /></label>
+        </div>
+        <p class="qe-preview" data-ribbon-preview></p>
+        <div class="qe-actions"><button class="btn btn-red" type="submit">Save ribbon</button></div>
+      </form>
+    </section>
+
+    <!-- TAG SALE -->
+    <section class="qe-card" id="tags" hidden data-section>
+      <header><h2>🏷️ Color tag sale</h2><span class="now-pill" data-tag-status></span></header>
+      <p class="muted">One row per week. Only the current week shows on the site.</p>
+      <form data-tag-form>
+        <label class="qe-check"><input type="checkbox" name="enabled" /> <strong>Show "This week's tag sale" on the site</strong></label>
+        <div class="qe-weeks" data-weeks></div>
+        <button type="button" class="qe-link" data-show-past-weeks hidden></button>
+        <div class="qe-actions"><button type="button" class="btn btn-outline" data-add-week>+ Add the next week</button><button class="btn btn-red" type="submit">Save tag sale</button></div>
+      </form>
+    </section>
+
+    <!-- VIDEO -->
+    <section class="qe-card" id="video" hidden data-section>
+      <header><h2>🎬 Homepage video</h2><span class="now-pill" data-video-status></span></header>
+      <p class="muted">A video band on the homepage. Upload the video to YouTube first, then paste the link here.</p>
+      <form data-video-form>
+        <label class="qe-check"><input type="checkbox" name="show" /> <strong>Show the video on the homepage</strong></label>
+        <p class="qe-note" data-upload-note hidden></p>
+        <div class="qe-grid">
+          <label class="qe-field qe-span"><span>YouTube or Vimeo link</span><input name="youtube" type="url" placeholder="https://www.youtube.com/watch?v=…" /></label>
+          <label class="qe-field qe-span"><span>Headline</span><input name="title" maxlength="120" /></label>
+          <label class="qe-field qe-span"><span>A sentence or two (optional)</span><textarea name="text" rows="2" maxlength="600"></textarea></label>
+          <div class="qe-field qe-span"><span>Cover photo (optional)</span><div class="qe-photo" data-photo="cover"></div></div>
+          <label class="qe-field"><span>Button text (optional)</span><input name="buttonText" maxlength="40" /></label>
+          <label class="qe-field"><span>Button link (optional)</span><input name="buttonLink" maxlength="500" placeholder="/news" /></label>
+        </div>
+        <div class="qe-actions"><button class="btn btn-red" type="submit">Save video</button></div>
+      </form>
+    </section>
+
+    <!-- HOURS -->
+    <section class="qe-card" id="hours" hidden data-section>
+      <header><h2>🕘 Hours and contact</h2></header>
+      <form data-hours-form>
+        <div class="qe-two">
+          <div><p class="label">Shop hours</p><div data-rows="shopHours"></div><button type="button" class="qe-link" data-add-row="shopHours">+ Add a line</button></div>
+          <div><p class="label">Donation drop-off hours</p><div data-rows="donateHours"></div><button type="button" class="qe-link" data-add-row="donateHours">+ Add a line</button></div>
+        </div>
+        <p class="label" style="margin-top:24px">"Open now" badge</p>
+        <div class="qe-days" data-days></div>
+        <div class="qe-grid">
+          <label class="qe-field"><span>Opens at</span><select name="openHour" data-hour></select></label>
+          <label class="qe-field"><span>Closes at</span><select name="closeHour" data-hour></select></label>
+          <label class="qe-field"><span>Phone</span><input name="phone" maxlength="40" /></label>
+          <label class="qe-field"><span>Email</span><input name="email" type="email" maxlength="120" /></label>
+        </div>
+        <div class="qe-actions"><button class="btn btn-red" type="submit">Save hours</button></div>
+      </form>
+    </section>
+
+    <p class="muted qe-small" style="text-align:center;margin:40px 0 60px">For bigger changes (page text, photos, partners), ask Jonathan.</p>
+  </main>
+
+  <div class="qe-toast" data-toast hidden></div>
+
+  <script>
+    type Any = any;
+    const $ = <T extends Element = HTMLElement>(s: string, el: ParentNode = document) => el.querySelector(s) as T;
+    const $$ = <T extends Element = HTMLElement>(s: string, el: ParentNode = document) => [...el.querySelectorAll(s)] as T[];
+    const esc = (s: unknown) => String(s ?? '').replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]!));
+    const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    const nice = (d?: string) => (d ? `${MONTHS[+d.slice(5, 7) - 1]} ${+d.slice(8, 10)}` : '');
+    const range = (a?: string, b?: string | null) => (b && b !== a ? `${nice(a)} to ${nice(b)}` : nice(a));
+    const today = new Date().toLocaleDateString('en-CA', { timeZone: 'America/Chicago' });
+    const addDays = (d: string, n: number) => new Date(Date.parse(d + 'T12:00:00Z') + n * 86400000).toISOString().slice(0, 10);
+    const daysBetween = (a: string, b: string) => Math.round((Date.parse(a + 'T00:00:00Z') - Date.parse(b + 'T00:00:00Z')) / 86400000);
+    const TAGS: Record<string, string> = { blue: '#3e5f9e', green: '#3f8f4f', red: '#a33749', yellow: '#f2c94c', orange: '#c45d3b', purple: '#6b4c9a', pink: '#e58fb2', white: '#ffffff' };
+    let state: Any = {};
+
+    async function api(action: string, payload: Any = {}) {
+      const res = await fetch('/api/edit', { method: 'POST', headers: { 'content-type': 'application/json', 'x-ht-edit': '1' }, body: JSON.stringify({ action, ...payload }), credentials: 'same-origin' });
+      const j = await res.json().catch(() => ({ ok: false, error: 'Something went wrong. Please try again.' }));
+      if (res.status === 401 && action !== 'login') showLogin();
+      return j;
+    }
+    function toast(msg: string, bad = false) {
+      const t = $('[data-toast]');
+      t.textContent = msg; t.className = 'qe-toast' + (bad ? ' bad' : ''); t.hidden = false;
+      clearTimeout((t as Any)._t); (t as Any)._t = setTimeout(() => (t.hidden = true), bad ? 7000 : 4500);
+    }
+    async function busy(btn: HTMLButtonElement | null, fn: () => Promise<void>) {
+      if (btn) { btn.disabled = true; (btn as Any)._l = btn.textContent; btn.textContent = 'Saving…'; }
+      try { await fn(); } finally { if (btn) { btn.disabled = false; btn.textContent = (btn as Any)._l; } }
+    }
+    const saved = (j: Any) => { if (j.ok) { toast('Saved! It will be live on the site in about a minute.'); load(); } else toast(j.error || 'Could not save.', true); return j.ok; };
+
+    // ---------------------------------------------------------------- login
+    function showLogin() { $('[data-login]').hidden = false; $('[data-app]').hidden = true; $('[data-when-in]').hidden = true; }
+    async function showApp() { $('[data-login]').hidden = true; $('[data-app]').hidden = false; $('[data-when-in]').hidden = false; await load(); }
+    $('[data-login-form]').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const f = e.currentTarget as HTMLFormElement, err = $('[data-login-error]');
+      err.hidden = true;
+      await busy($('button[type=submit]', f) as HTMLButtonElement, async () => {
+        const j = await api('login', { password: (f.elements.namedItem('password') as HTMLInputElement).value });
+        if (j.ok) { f.reset(); showApp(); } else { err.textContent = j.error; err.hidden = false; }
+      });
+    });
+    $('[data-logout]').addEventListener('click', async () => { await api('logout'); showLogin(); });
+
+    // ---------------------------------------------------------------- photos
+    function resize(file: File): Promise<string> {
+      return new Promise((ok, bad) => {
+        const im = new Image();
+        im.onload = () => {
+          const max = 1800, s = Math.min(1, max / Math.max(im.width, im.height));
+          const c = document.createElement('canvas'); c.width = Math.round(im.width * s); c.height = Math.round(im.height * s);
+          c.getContext('2d')!.drawImage(im, 0, 0, c.width, c.height);
+          ok(c.toDataURL('image/jpeg', 0.85)); URL.revokeObjectURL(im.src);
+        };
+        im.onerror = () => bad(new Error('That file is not a photo we can read.'));
+        im.src = URL.createObjectURL(file);
+      });
+    }
+    function photoField(box: HTMLElement, value: string | null) {
+      (box as Any).value = value || null;
+      const draw = () => {
+        const v = (box as Any).value;
+        box.innerHTML = v
+          ? `<img src="${esc(v)}" alt="" /><div><label class="btn btn-outline qe-sm">Replace<input type="file" accept="image/*" hidden /></label> <button type="button" class="qe-link" data-remove>Remove</button></div>`
+          : `<label class="qe-drop">📷 Choose a photo<input type="file" accept="image/*" hidden /></label>`;
+        const input = $('input[type=file]', box) as HTMLInputElement;
+        input.onchange = async () => {
+          const file = input.files?.[0]; if (!file) return;
+          box.classList.add('loading');
+          try {
+            const data = await resize(file);
+            const j = await api('upload', { name: file.name, data });
+            if (j.ok) { (box as Any).value = j.path; (box as Any).preview = data; draw(); const im = $('img', box) as HTMLImageElement; if (im) im.src = data; }
+            else toast(j.error, true);
+          } catch (e: Any) { toast(e.message, true); }
+          box.classList.remove('loading');
+        };
+        const rm = $('[data-remove]', box); if (rm) rm.onclick = () => { (box as Any).value = null; draw(); };
+      };
+      draw();
+    }
+
+    // ---------------------------------------------------------------- events
+    const kindOf = (e: Any) => (e.badge === 'Closed' ? 'closed' : e.type || 'event');
+    const kindLabel: Record<string, string> = { sale: 'Sale', event: 'Event', closed: 'Store closed', news: 'News' };
+    function statusOf(start: string, end: string) {
+      if (start <= today && today <= end) return [start === end ? 'Today' : 'Happening now', 'on'];
+      if (start > today) return [daysBetween(start, today) === 1 ? 'Tomorrow' : 'Coming up', 'soon'];
+      if (daysBetween(today, end) <= 2) return ['Just ended', 'ended'];
+      return ['Ended', 'off'];
+    }
+    let editing: string | null = null;
+    function renderEvents() {
+      const ul = $('[data-events]'); let old = 0;
+      ul.innerHTML = (state.events || []).map((e: Any) => {
+        const start = e.startDate || '', end = e.endDate || start;
+        const [s, cls] = statusOf(start, end);
+        const isOld = cls === 'off'; if (isOld) old++;
+        return `<li class="${isOld ? 'old' : ''}" ${isOld ? 'hidden' : ''}>
+          <span class="now-pill ${cls}">${s}</span>
+          <div class="qe-main"><strong>${esc(e.title)}</strong><span class="muted">${kindLabel[kindOf(e)]} · ${range(start, e.endDate)}${e.pinned ? ' · ⭐ Featured' : ''}</span></div>
+          <button type="button" class="qe-edit" data-edit="${esc(e.slug)}">Edit</button>
+          <button type="button" class="qe-del" data-del="${esc(e.slug)}" aria-label="Delete ${esc(e.title)}">Delete</button></li>`;
+      }).join('') || '<li><span class="muted">No events yet. Tap "+ Add new" to post one.</span></li>';
+      const more = $('[data-show-old]');
+      more.hidden = !old; more.textContent = `Show ${old} older event${old === 1 ? '' : 's'}`;
+      more.onclick = () => { $$('[data-events] li.old').forEach((li) => (li.hidden = false)); more.hidden = true; };
+      $$('[data-edit]').forEach((b) => (b.onclick = () => openEvent(b.dataset.edit!)));
+      $$('[data-del]').forEach((b) => (b.onclick = async () => {
+        const ev = state.events.find((x: Any) => x.slug === b.dataset.del);
+        if (!confirm(`Delete "${ev?.title}"? This removes it from the website.`)) return;
+        await busy(b as HTMLButtonElement, async () => { const j = await api('deleteEvent', { slug: b.dataset.del }); if (j.ok) { toast('Deleted. The site updates in about a minute.'); load(); } else toast(j.error, true); });
+      }));
+    }
+    function openEvent(slug: string | null) {
+      editing = slug;
+      const f = $('[data-event-form]') as HTMLFormElement, e: Any = slug ? state.events.find((x: Any) => x.slug === slug) : {};
+      f.reset();
+      $('[data-event-heading]').textContent = slug ? `Editing: ${e.title}` : 'New event or sale';
+      (f.elements.namedItem('title') as Any).value = e.title || '';
+      (f.elements.namedItem('kind') as HTMLSelectElement).value = slug ? kindOf(e) : 'sale';
+      (f.elements.namedItem('startDate') as HTMLInputElement).value = e.startDate || today;
+      (f.elements.namedItem('endDate') as HTMLInputElement).value = e.endDate || '';
+      for (const k of ['timeText', 'summary', 'body', 'location', 'videoUrl']) (f.elements.namedItem(k) as HTMLInputElement).value = e[k] || '';
+      (f.elements.namedItem('pinned') as HTMLInputElement).checked = !!e.pinned;
+      photoField($('[data-photo="image"]', f), e.image || null);
+      f.hidden = false; f.scrollIntoView({ behavior: 'smooth', block: 'start' }); (f.elements.namedItem('title') as Any).focus?.();
+    }
+    $('[data-new-event]').addEventListener('click', () => openEvent(null));
+    $('[data-event-form] [data-cancel]').addEventListener('click', () => { ($('[data-event-form]') as HTMLElement).hidden = true; });
+    $('[data-event-form]').addEventListener('submit', async (ev) => {
+      ev.preventDefault();
+      const f = ev.currentTarget as HTMLFormElement, fd = new FormData(f);
+      const data: Any = Object.fromEntries(fd.entries());
+      data.pinned = (f.elements.namedItem('pinned') as HTMLInputElement).checked;
+      data.image = ($('[data-photo="image"]', f) as Any).value;
+      if (data.endDate && data.endDate < data.startDate) return toast('The last day is before the first day. Please check the dates.', true);
+      await busy($('button[type=submit]', f) as HTMLButtonElement, async () => { if (saved(await api('saveEvent', { slug: editing, data }))) f.hidden = true; });
+    });
+
+    // ---------------------------------------------------------------- ribbon
+    function ribbonPreview() {
+      const f = $('[data-ribbon-form]') as HTMLFormElement;
+      const on = (f.elements.namedItem('enabled') as HTMLInputElement).checked;
+      const p = $('[data-ribbon-preview]');
+      p.innerHTML = on ? `<strong>${esc((f.elements.namedItem('label') as Any).value)}</strong> ${esc((f.elements.namedItem('message') as Any).value)} <u>${esc((f.elements.namedItem('linkText') as Any).value)}</u>` : 'The ribbon is turned off.';
+      p.classList.toggle('off', !on);
+      const s = $('[data-ribbon-status]'); s.textContent = state.announcement?.enabled ? 'Showing now' : 'Hidden'; s.className = 'now-pill ' + (state.announcement?.enabled ? 'on' : 'off');
+    }
+    function renderRibbon() {
+      const f = $('[data-ribbon-form]') as HTMLFormElement, a = state.announcement || {};
+      (f.elements.namedItem('enabled') as HTMLInputElement).checked = !!a.enabled;
+      for (const k of ['label', 'message', 'linkText', 'linkUrl']) (f.elements.namedItem(k) as HTMLInputElement).value = a[k] || '';
+      ribbonPreview();
+    }
+    $('[data-ribbon-form]').addEventListener('input', ribbonPreview);
+    $('[data-ribbon-form]').addEventListener('submit', async (e) => {
+      e.preventDefault(); const f = e.currentTarget as HTMLFormElement;
+      const data: Any = Object.fromEntries(new FormData(f).entries()); data.enabled = (f.elements.namedItem('enabled') as HTMLInputElement).checked;
+      await busy($('button[type=submit]', f) as HTMLButtonElement, async () => { saved(await api('saveAnnouncement', { data })); });
+    });
+
+    // ---------------------------------------------------------------- tag sale
+    let weeks: Any[] = [];
+    function renderWeeks(showPast = false) {
+      const box = $('[data-weeks]'); let past = 0;
+      box.innerHTML = weeks.map((w, i) => {
+        const isPast = w.end && w.end < today, isNow = w.start <= today && today <= w.end;
+        if (isPast) past++;
+        return `<div class="qe-week ${isNow ? 'now' : ''}" ${isPast && !showPast ? 'hidden' : ''} data-i="${i}">
+          <span class="now-pill ${isNow ? 'on' : isPast ? 'off' : 'soon'}">${isNow ? 'This week' : isPast ? 'Past' : 'Coming up'}</span>
+          <label class="qe-field"><span>From</span><input type="date" data-k="start" value="${esc(w.start)}" /></label>
+          <label class="qe-field"><span>To</span><input type="date" data-k="end" value="${esc(w.end)}" /></label>
+          <label class="qe-field"><span>Tag color</span><span class="qe-color"><i style="background:${TAGS[w.color] || '#ccc'}"></i><select data-k="color">${Object.keys(TAGS).map((c) => `<option value="${c}" ${c === w.color ? 'selected' : ''}>${c[0].toUpperCase() + c.slice(1)}</option>`).join('')}</select></span></label>
+          <label class="qe-field"><span>Discount</span><input data-k="discount" value="${esc(w.discount)}" placeholder="50% off" /></label>
+          <button type="button" class="qe-del" data-rm-week="${i}" aria-label="Remove week">✕</button></div>`;
+      }).join('');
+      const more = $('[data-show-past-weeks]'); more.hidden = !past || showPast; more.textContent = `Show ${past} past week${past === 1 ? '' : 's'}`; more.onclick = () => renderWeeks(true);
+      const cur = weeks.find((w) => w.start <= today && today <= w.end);
+      const s = $('[data-tag-status]');
+      if (!state.tagSale?.enabled) { s.textContent = 'Hidden'; s.className = 'now-pill off'; }
+      else if (cur) { s.textContent = `This week: ${cur.color} ${cur.discount}`; s.className = 'now-pill on'; }
+      else { s.textContent = 'No color set for this week'; s.className = 'now-pill warn'; }
+      $$('[data-weeks] [data-k]').forEach((inp) => (inp.oninput = () => {
+        const row = inp.closest('[data-i]') as HTMLElement; const w = weeks[+row.dataset.i!];
+        w[(inp as HTMLElement).dataset.k!] = (inp as HTMLInputElement).value;
+        if ((inp as HTMLElement).dataset.k === 'color') ($('i', row) as HTMLElement).style.background = TAGS[w.color];
+      }));
+      $$('[data-rm-week]').forEach((b) => (b.onclick = () => { weeks.splice(+b.dataset.rmWeek!, 1); renderWeeks(showPast); }));
+    }
+    $('[data-add-week]').addEventListener('click', () => {
+      const last = weeks[weeks.length - 1];
+      let start = last?.end ? addDays(last.end, 1) : today;
+      if (start < today && !weeks.some((w) => w.start <= today && today <= w.end)) {
+        // start this week on the most recent Sunday
+        const d = new Date(Date.parse(today + 'T12:00:00Z')); start = addDays(today, -d.getUTCDay());
+      }
+      weeks.push({ start, end: addDays(start, 6), color: last?.color || 'blue', discount: last?.discount || '50% off' });
+      renderWeeks(); toast('Week added. Pick the color, then tap "Save tag sale".');
+    });
+    $('[data-tag-form]').addEventListener('submit', async (e) => {
+      e.preventDefault(); const f = e.currentTarget as HTMLFormElement;
+      if (weeks.some((w) => !w.start || !w.end || w.end < w.start)) return toast('Please check the dates: each week needs a "From" and a "To".', true);
+      await busy($('button[type=submit]', f) as HTMLButtonElement, async () => { saved(await api('saveTagSale', { data: { enabled: (f.elements.namedItem('enabled') as HTMLInputElement).checked, weeks } })); });
+    });
+
+    // ---------------------------------------------------------------- video
+    function renderVideo() {
+      const f = $('[data-video-form]') as HTMLFormElement, v = state.homeVideo || {};
+      (f.elements.namedItem('show') as HTMLInputElement).checked = !!v.show;
+      for (const k of ['youtube', 'title', 'text', 'buttonText', 'buttonLink']) (f.elements.namedItem(k) as HTMLInputElement).value = v[k] || '';
+      photoField($('[data-photo="cover"]', f), v.cover || null);
+      const note = $('[data-upload-note]');
+      note.hidden = !(v.video && !v.youtube);
+      note.innerHTML = `Right now it plays an uploaded video file. Paste a YouTube link to replace it, or <button type="button" class="qe-link" data-rm-upload>remove the uploaded video</button>.`;
+      const rm = $('[data-rm-upload]'); if (rm) rm.onclick = () => { (f as Any)._removeUpload = true; note.textContent = 'The uploaded video will be removed when you save.'; };
+      const live = v.show && (v.video || v.youtube);
+      const s = $('[data-video-status]'); s.textContent = live ? 'Showing now' : 'Hidden'; s.className = 'now-pill ' + (live ? 'on' : 'off');
+    }
+    $('[data-video-form]').addEventListener('submit', async (e) => {
+      e.preventDefault(); const f = e.currentTarget as HTMLFormElement;
+      const data: Any = Object.fromEntries(new FormData(f).entries());
+      data.show = (f.elements.namedItem('show') as HTMLInputElement).checked; data.cover = ($('[data-photo="cover"]', f) as Any).value; data.removeUpload = !!(f as Any)._removeUpload;
+      if (data.show && !data.youtube && (!state.homeVideo?.video || data.removeUpload)) return toast('To show the video, paste a YouTube or Vimeo link first.', true);
+      await busy($('button[type=submit]', f) as HTMLButtonElement, async () => { if (saved(await api('saveVideo', { data }))) (f as Any)._removeUpload = false; });
+    });
+
+    // ---------------------------------------------------------------- hours
+    const hourLabel = (h: number) => (h === 0 || h === 24 ? 'Midnight' : h === 12 ? 'Noon' : h < 12 ? `${h}am` : `${h - 12}pm`);
+    $$('[data-hour]').forEach((s) => (s.innerHTML = Array.from({ length: 19 }, (_, i) => i + 5).map((h) => `<option value="${h}">${hourLabel(h)}</option>`).join('')));
+    const DAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+    function rowHtml(r: Any = {}) { return `<div class="qe-row"><input data-days-in value="${esc(r.days)}" placeholder="Mon to Sat" /><input data-hours-in value="${esc(r.hours)}" placeholder="10am to 7pm" /><button type="button" class="qe-del" data-rm-row aria-label="Remove line">✕</button></div>`; }
+    function wireRows() { $$('[data-rm-row]').forEach((b) => (b.onclick = () => b.parentElement!.remove())); }
+    function renderHours() {
+      const f = $('[data-hours-form]') as HTMLFormElement, s = state.settings || {};
+      for (const k of ['shopHours', 'donateHours']) $(`[data-rows="${k}"]`).innerHTML = (s[k] || []).map(rowHtml).join('');
+      $('[data-days]').innerHTML = DAYS.map((d) => `<label class="qe-day"><input type="checkbox" value="${d}" ${(s.openDays || []).includes(d) ? 'checked' : ''} /> ${d}</label>`).join('');
+      (f.elements.namedItem('openHour') as HTMLSelectElement).value = String(s.openHour ?? 10);
+      (f.elements.namedItem('closeHour') as HTMLSelectElement).value = String(s.closeHour ?? 19);
+      (f.elements.namedItem('phone') as HTMLInputElement).value = s.phone || ''; (f.elements.namedItem('email') as HTMLInputElement).value = s.email || '';
+      wireRows();
+    }
+    $$('[data-add-row]').forEach((b) => (b.onclick = () => { $(`[data-rows="${b.dataset.addRow}"]`).insertAdjacentHTML('beforeend', rowHtml()); wireRows(); }));
+    $('[data-hours-form]').addEventListener('submit', async (e) => {
+      e.preventDefault(); const f = e.currentTarget as HTMLFormElement;
+      const read = (k: string) => $$(`[data-rows="${k}"] .qe-row`).map((r) => ({ days: ($('[data-days-in]', r) as HTMLInputElement).value, hours: ($('[data-hours-in]', r) as HTMLInputElement).value }));
+      const data = { shopHours: read('shopHours'), donateHours: read('donateHours'), openDays: $$<HTMLInputElement>('[data-days] input:checked').map((i) => i.value), openHour: +(f.elements.namedItem('openHour') as HTMLSelectElement).value, closeHour: +(f.elements.namedItem('closeHour') as HTMLSelectElement).value, phone: (f.elements.namedItem('phone') as HTMLInputElement).value, email: (f.elements.namedItem('email') as HTMLInputElement).value };
+      if (data.closeHour <= data.openHour) return toast('Closing time must be after opening time.', true);
+      await busy($('button[type=submit]', f) as HTMLButtonElement, async () => { saved(await api('saveHours', { data })); });
+    });
+
+    // ---------------------------------------------------------------- load
+    async function load() {
+      const j = await api('load');
+      if (!j.ok) { if (j.error && !/log in/i.test(j.error)) { $('[data-loading]').textContent = j.error; } return; }
+      state = j;
+      weeks = (j.tagSale?.weeks || []).map((w: Any) => ({ ...w }));
+      (($('[data-tag-form]') as HTMLFormElement).elements.namedItem('enabled') as HTMLInputElement).checked = !!j.tagSale?.enabled;
+      renderEvents(); renderRibbon(); renderWeeks(); renderVideo(); renderHours();
+      $('[data-loading]').hidden = true; $$('[data-section]').forEach((s) => (s.hidden = false));
+    }
+
+    (async () => {
+      const j = await api('check');
+      if (j.ok) showApp(); else if (j.error) { showLogin(); const err = $('[data-login-error]'); err.textContent = j.error; err.hidden = false; } else showLogin();
+    })();
+  </script>
+
+  <style is:global>
+    body.qe { background: var(--cream); }
+    .qe-wrap { width: min(980px, calc(100% - 32px)); margin: 0 auto; }
+    .qe-top { background: #fffdf9; border-bottom: 1px solid var(--sand); position: sticky; top: 0; z-index: 10; }
+    .qe-top-in { display: flex; align-items: center; justify-content: space-between; min-height: 68px; gap: 16px; }
+    .qe-brand { display: flex; align-items: center; gap: 12px; text-decoration: none; color: var(--ink); font-family: var(--serif); font-size: 20px; }
+    .qe-brand em { font-style: normal; font-family: var(--mono); font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--red); margin-left: 8px; }
+    .qe-top-links { display: flex; gap: 18px; align-items: center; font-weight: 600; font-size: 15px; }
+    .qe-top-links[hidden] { display: none; }
+    .qe-top-links a { color: var(--ink); }
+    .qe-top-links button, .qe-link { background: none; border: 0; padding: 4px 0; color: var(--red); font: inherit; font-weight: 700; cursor: pointer; text-decoration: underline; text-underline-offset: 3px; }
+    .qe-login { max-width: 440px; margin: 72px auto; }
+    .qe-login h1, .qe-intro h1 { font-family: var(--serif); font-weight: 400; font-size: clamp(28px, 4vw, 40px); margin: 0 0 8px; }
+    .qe-intro { margin: 40px 0 8px; }
+    .qe-jump { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 18px; }
+    .qe-jump a { padding: 10px 16px; border-radius: 999px; background: #fffdf9; color: var(--ink); text-decoration: none; font-weight: 600; font-size: 15px; box-shadow: 0 1px 0 rgba(35,31,27,.08); }
+    .qe-jump a:hover { background: var(--ink); color: #fff; }
+    .qe-loading { margin: 40px 0; color: var(--muted); }
+    .qe-card { margin-top: 24px; padding: 28px; background: #fffdf9; border-radius: 22px; box-shadow: 0 1px 0 rgba(35,31,27,.06), 0 14px 36px rgba(35,31,27,.06); scroll-margin-top: 90px; }
+    .qe-card > header { display: flex; align-items: center; justify-content: space-between; gap: 14px; flex-wrap: wrap; }
+    .qe-card h2 { margin: 0; font-family: var(--serif); font-weight: 400; font-size: 26px; }
+    .qe-card > p.muted { margin: 8px 0 18px; }
+    .qe-sub { margin: 18px 0 24px; padding: 22px; border-radius: 18px; background: var(--cream); box-shadow: inset 0 0 0 2px var(--toffee, #cdb68c); }
+    .qe-sub h3 { margin: 0 0 16px; font-family: var(--serif); font-weight: 400; font-size: 21px; }
+    .qe-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px 18px; margin-top: 16px; }
+    .qe-span { grid-column: 1 / -1; }
+    .qe-field { display: flex; flex-direction: column; gap: 6px; font-weight: 600; font-size: 14.5px; }
+    .qe-field > span { color: var(--ink-2, #3e3534); }
+    .qe input:not([type=checkbox]):not([type=file]), .qe select, .qe textarea { width: 100%; min-height: 48px; padding: 10px 14px; border-radius: 12px; border: 2px solid var(--sand); background: #fff; font: inherit; font-weight: 400; font-size: 16px; color: var(--ink); }
+    .qe textarea { min-height: 90px; resize: vertical; }
+    .qe input:focus, .qe select:focus, .qe textarea:focus { outline: none; border-color: var(--red); }
+    .qe-check { display: flex; align-items: center; gap: 12px; padding: 14px 16px; border-radius: 14px; background: var(--cream); cursor: pointer; font-size: 16px; }
+    .qe-check input { width: 22px; height: 22px; accent-color: var(--red); }
+    .qe-actions { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 22px; }
+    .qe-wide { width: 100%; margin-top: 18px; }
+    .qe-sm { min-height: 40px; padding: 0 16px; font-size: 14px; }
+    .qe-small { font-size: 14px; }
+    .qe-error { margin: 12px 0 0; padding: 10px 14px; border-radius: 12px; background: #fde3e3; color: #8a1f2b; font-weight: 600; }
+    .qe-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+    .qe-list li { display: flex; align-items: center; gap: 14px; padding: 12px 14px; border-radius: 14px; background: var(--cream); }
+    .qe-list li[hidden] { display: none; }
+    .qe-list li.old { opacity: .65; }
+    .qe-main { flex: 1; display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+    .qe-edit { min-height: 40px; padding: 0 18px; border-radius: 999px; border: 0; background: var(--ink); color: #fff; font: inherit; font-weight: 700; font-size: 14px; cursor: pointer; }
+    .qe-edit:hover { background: var(--red); }
+    .qe-del { min-height: 40px; padding: 0 12px; border-radius: 999px; border: 0; background: transparent; color: var(--muted); font: inherit; font-size: 14px; cursor: pointer; }
+    .qe-del:hover { color: #8a1f2b; background: #fde3e3; }
+    .qe-preview { margin: 18px 0 0; padding: 12px 16px; border-radius: 12px; background: var(--red); color: #fff; }
+    .qe-preview.off { background: var(--sand); color: var(--muted); }
+    .qe-week { display: grid; grid-template-columns: 110px repeat(4, minmax(0, 1fr)) 40px; gap: 12px; align-items: end; padding: 14px; border-radius: 14px; background: var(--cream); margin-top: 10px; }
+    .qe-week[hidden] { display: none; }
+    .qe-week.now { box-shadow: inset 0 0 0 2px #3f8f4f; }
+    .qe-week > .now-pill { align-self: center; justify-self: start; }
+    .qe-color { display: flex; align-items: center; gap: 8px; min-width: 0; }
+    .qe-week > *, .qe-week input, .qe-week select, .qe-row input { min-width: 0; }
+    .qe-color i { width: 24px; height: 24px; border-radius: 50%; flex: none; box-shadow: inset 0 0 0 2px rgba(0,0,0,.12); }
+    .qe-photo { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+    .qe-photo img { width: 180px; height: 110px; object-fit: cover; border-radius: 12px; background: var(--sand); }
+    .qe-photo.loading { opacity: .5; pointer-events: none; }
+    .qe-drop { display: inline-flex; align-items: center; justify-content: center; min-height: 64px; padding: 0 24px; border-radius: 14px; border: 2px dashed var(--toffee, #cdb68c); background: #fff; cursor: pointer; font-weight: 600; }
+    .qe-drop:hover { border-color: var(--red); }
+    .qe-note { margin: 14px 0 0; padding: 12px 16px; border-radius: 12px; background: #fff4c7; color: #6b5300; }
+    .qe-two { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+    .qe-row { display: grid; grid-template-columns: 1fr 1fr 40px; gap: 8px; margin-top: 8px; }
+    .qe-days { display: flex; flex-wrap: wrap; gap: 8px; }
+    .qe-day { display: inline-flex; align-items: center; gap: 6px; padding: 8px 12px; border-radius: 999px; background: var(--cream); font-weight: 600; cursor: pointer; }
+    .qe-day input { accent-color: var(--red); width: 18px; height: 18px; }
+    .qe-toast { position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%); z-index: 50; max-width: calc(100% - 32px); padding: 14px 22px; border-radius: 14px; background: #205a33; color: #fff; font-weight: 600; box-shadow: 0 14px 40px rgba(0,0,0,.25); }
+    .qe-toast.bad { background: #8a1f2b; }
+    .now-pill { display: inline-block; padding: 3px 10px; border-radius: 999px; font-family: var(--mono); font-size: 11.5px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; white-space: nowrap; background: var(--sand); color: var(--muted); }
+    .now-pill.on { background: #e4f2e8; color: #205a33; }
+    .now-pill.soon { background: #fff4c7; color: #6b5300; }
+    .now-pill.warn { background: #fde3e3; color: #8a1f2b; }
+    @media (max-width: 720px) {
+      .qe-card { padding: 20px 16px; }
+      .qe-grid, .qe-two { grid-template-columns: 1fr; }
+      .qe-week { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .qe-week > .qe-del { grid-column: 1 / -1; justify-self: end; }
+      .qe-brand em { display: none; }
+      .qe-week > .now-pill { grid-column: 1 / -1; }
+      .qe-list li { flex-wrap: wrap; }
+      .qe-brand span { font-size: 17px; }
+      .qe-top-links a { display: none; }
+    }
+  </style>
+</body>
+</html>
