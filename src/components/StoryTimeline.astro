@@ -1,6 +1,6 @@
 ---
 // "How a thrift store became a second chance": the founding story as an illustrated path.
-// A dotted road winds down the page, one hand-drawn stop per chapter, ending at the compass badge.
+// A dotted road winds down the page, one hand-drawn stop per chapter, ending at the store's logo.
 import { reader } from '../lib/content';
 const a = await reader.singletons.about.read();
 const chapters = a?.chapters ?? [];
@@ -110,7 +110,7 @@ const inRecovery = Math.round((team * share) / 100);
         </li>
       ))}
       <li class="stl-end reveal" aria-hidden="true">
-        <img src="/images/brand/compass-badge-toffee.png" alt="" width="1400" height="993" loading="lazy" />
+        <img src="/images/brand/wordmark-red.png" alt="Hidden Treasures Thrift Store" width="284" height="56" loading="lazy" />
       </li>
     </ol>
   </div>
@@ -163,7 +163,7 @@ const inRecovery = Math.round((team * share) / 100);
   .stl-key i { display: inline-block; width: 10px; height: 10px; border-radius: 50%; background: var(--sand); margin: 0 4px 0 10px; vertical-align: middle; }
   .stl-key i.on { background: var(--red); margin-left: 0; }
   .stl-end { display: flex; justify-content: center; padding-top: 30px; }
-  .stl-end img { width: 200px; height: auto; opacity: .6; transform: rotate(-4deg); }
+  .stl-end img { width: 240px; height: auto; padding: 16px 22px; background: var(--paper, #fbf7f0); }
 
   /* Drawing style: brown ink lines, toffee fills, brick red accents. Lines draw themselves in. */
   .stl-art .ln path, .stl-art .ln rect, .stl-art .ln circle, .stl-art .ln ellipse, .stl-art .ray path { fill: none; stroke: var(--ink); stroke-width: 3.2; stroke-linecap: round; stroke-linejoin: round; }
@@ -191,6 +191,6 @@ const inRecovery = Math.round((team * share) / 100);
     .stl-art, .stl-stop.flip .stl-art { justify-self: start; width: min(100%, 300px); padding: 14px; border-radius: 22px; }
     .stl-stop.flip .stl-text, .stl-stop:not(.flip) .stl-text { justify-self: start; text-align: left; }
     .stl-end { justify-content: flex-start; padding-left: 46px; }
-    .stl-end img { width: 150px; }
+    .stl-end img { width: 190px; padding: 12px 0; }
   }
 </style>
