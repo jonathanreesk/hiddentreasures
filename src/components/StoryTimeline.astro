@@ -1,0 +1,196 @@
+---
+// "How a thrift store became a second chance": the founding story as an illustrated path.
+// A dotted road winds down the page, one hand-drawn stop per chapter, ending at the store's logo.
+import { reader } from '../lib/content';
+const a = await reader.singletons.about.read();
+const chapters = a?.chapters ?? [];
+const team = a?.teamCount ?? 32;
+const share = a?.recoveryShare ?? 75;
+const inRecovery = Math.round((team * share) / 100);
+---
+{chapters.length > 0 && (
+<section class="section story-tl" aria-labelledby="story-tl-h">
+  <div class="wrap">
+    <div class="stl-head reveal">
+      <p class="eyebrow">How it started</p>
+      <h2 class="h2" id="story-tl-h">{a?.storyTitle}</h2>
+      {a?.storyIntro && <p class="lead">{a.storyIntro}</p>}
+    </div>
+
+    <ol class="stl" data-stl>
+      <span class="stl-road" aria-hidden="true"><span class="stl-road-fill" data-stl-fill></span></span>
+      {chapters.map((c, i) => (
+        <li class={`stl-stop ${i % 2 ? 'flip' : ''}`}>
+          <span class="stl-pin" aria-hidden="true"></span>
+          <div class="stl-art reveal" aria-hidden="true">
+            {c.art === 'door' && (
+              <svg viewBox="0 0 220 180">
+                <g class="ln">
+                  <path d="M60 160V30h80v130" />
+                  <path d="M60 160h110" />
+                  <path class="fill-toffee" d="M60 30l38 14v126l-38-10z" />
+                  <circle cx="90" cy="102" r="3.5" class="dot" />
+                </g>
+                <g class="ray">
+                  <path d="M104 52l44-18M106 88l52-4M104 124l48 16" />
+                </g>
+              </svg>
+            )}
+            {c.art === 'seed' && (
+              <svg viewBox="0 0 220 180">
+                <g class="ln">
+                  <path class="fill-toffee" d="M48 128c14 20 108 20 124 0-10 30-114 30-124 0z" />
+                  <path d="M40 126c18 4 42 4 70 2s52-6 70-2" />
+                  <path class="red" d="M110 124V70" />
+                  <path class="red leaf" d="M110 92c-24-2-36-16-34-34 22 0 34 14 34 34z" />
+                  <path class="red leaf" d="M110 78c4-22 22-32 40-28-2 22-20 30-40 28z" />
+                  <ellipse cx="110" cy="128" rx="7" ry="5" class="dot" />
+                </g>
+              </svg>
+            )}
+            {c.art === 'store' && (
+              <svg viewBox="0 0 220 180">
+                <g class="ln">
+                  <path d="M40 160V84h140v76" />
+                  <path d="M30 84l16-26h128l16 26z" class="fill-toffee" />
+                  <path d="M62 58l-6 26M90 58l-4 26M118 58v26M146 58l4 26M174 58l6 26" />
+                  <path d="M58 160v-50h36v50" />
+                  <rect x="110" y="104" width="52" height="30" rx="3" />
+                  <path d="M20 160h180" />
+                </g>
+                <g class="ln red">
+                  <path class="pin" d="M110 46c-14 0-22-10-22-20a22 22 0 0144 0c0 10-8 20-22 20zm0 0l0 6" />
+                  <circle cx="110" cy="24" r="6" />
+                </g>
+              </svg>
+            )}
+            {c.art === 'people' && (
+              <svg viewBox="0 0 220 180" class="people" data-people>
+                {Array.from({ length: team }).map((_, k) => {
+                  const col = k % 8, row = Math.floor(k / 8);
+                  const x = 28 + col * 23, y = 30 + row * 36;
+                  return (
+                    <g class={k < inRecovery ? 'p on' : 'p'} style={`--d:${k * 35}ms`}>
+                      <circle cx={x} cy={y} r="6" />
+                      <path d={`M${x - 9} ${y + 22}c0-9 4-13 9-13s9 4 9 13z`} />
+                    </g>
+                  );
+                })}
+              </svg>
+            )}
+            {c.art === 'circle' && (
+              <svg viewBox="0 0 220 180">
+                <g class="ln">
+                  <path d="M134.4 37.2A60 60 0 0 1 169.7 98.3 M145.3 140.5A60 60 0 0 1 74.7 140.5 M50.3 98.3A60 60 0 0 1 85.6 37.2" />
+                  <path d="M176.6 89.9L169.7 98.3L164.6 88.7 M78.5 150.7L74.7 140.5L85.5 141.0 M74.9 35.4L85.6 37.2L79.8 46.3" />
+                </g>
+                <g class="ln" transform="translate(95.0 15.0)">
+                  <path class="fill-toffee" d="M3 12h24l3 22H0z" />
+                  <path d="M9 12c0-9 12-9 12 0" />
+                </g>
+                <g class="ln red" transform="translate(146.0 110.0)">
+                  <path d="M0 12L12 0h20v24H12z" class="fill-red" />
+                  <circle cx="11" cy="12" r="3" />
+                </g>
+                <g class="ln red" transform="translate(42.0 108.0)">
+                  <path class="fill-red" d="M16 30C4 21 0 15 0 9a8 8 0 0116-2 8 8 0 0116 2c0 6-4 12-16 21z" />
+                </g>
+                <g class="ln"><path d="M110 78v28M98 88h24" /></g>
+              </svg>
+            )}
+          </div>
+          <div class="stl-text reveal">
+            <p class="stl-marker">{c.marker}</p>
+            <h3 class="h3">{c.title}</h3>
+            <p>{c.text}</p>
+            {c.art === 'people' && (
+              <p class="stl-stat"><strong>{share}%</strong> of our team is in recovery <span class="stl-key"><i class="on"></i> in recovery <i></i> not in recovery</span></p>
+            )}
+          </div>
+        </li>
+      ))}
+      <li class="stl-end reveal" aria-hidden="true">
+        <img src="/images/brand/wordmark-red.png" alt="Hidden Treasures Thrift Store" width="284" height="56" loading="lazy" />
+      </li>
+    </ol>
+  </div>
+</section>
+)}
+
+<script>
+  // The road fills in as you scroll down the story
+  const ol = document.querySelector<HTMLElement>('[data-stl]');
+  const fill = document.querySelector<HTMLElement>('[data-stl-fill]');
+  if (ol && fill) {
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const tick = () => {
+      const r = ol.getBoundingClientRect();
+      const p = reduce ? 1 : Math.min(1, Math.max(0, (window.innerHeight * 0.6 - r.top) / r.height));
+      fill.style.transform = `scaleY(${p})`;
+      ol.querySelectorAll<HTMLElement>('.stl-stop').forEach((li) => {
+        const lr = li.getBoundingClientRect();
+        li.classList.toggle('passed', reduce || lr.top < window.innerHeight * 0.6);
+      });
+    };
+    addEventListener('scroll', tick, { passive: true }); addEventListener('resize', tick); tick();
+  }
+</script>
+
+<style>
+  .story-tl { background: var(--paper, #fbf7f0); overflow: hidden; }
+  .stl-head { max-width: 720px; margin: 0 auto 56px; text-align: center; }
+  .stl-head .lead { margin: 16px auto 0; }
+  .stl { list-style: none; margin: 0 auto; padding: 0; position: relative; max-width: 1040px; }
+  .stl-road { position: absolute; left: 50%; top: 10px; bottom: 120px; width: 4px; margin-left: -2px; background: repeating-linear-gradient(to bottom, var(--sand) 0 10px, transparent 10px 20px); border-radius: 2px; }
+  .stl-road-fill { position: absolute; inset: 0; background: repeating-linear-gradient(to bottom, var(--red) 0 10px, transparent 10px 20px); transform-origin: top; transform: scaleY(0); transition: transform .15s linear; }
+  .stl-stop { position: relative; display: grid; grid-template-columns: 1fr 1fr; gap: 72px; align-items: center; padding: 34px 0; }
+  .stl-stop.flip .stl-art { order: 2; }
+  .stl-pin { position: absolute; left: 50%; top: 50%; width: 22px; height: 22px; margin: -11px 0 0 -11px; border-radius: 50%; background: #fff; box-shadow: inset 0 0 0 4px var(--sand); transition: box-shadow .4s ease, transform .4s ease; z-index: 1; }
+  .stl-stop.passed .stl-pin { box-shadow: inset 0 0 0 4px var(--red), 0 0 0 6px rgba(163, 55, 73, .12); transform: scale(1.1); }
+  .stl-art { justify-self: end; width: min(100%, 360px); aspect-ratio: 220 / 180; padding: 18px; border-radius: 28px; background: #fffdf9; box-shadow: 0 1px 0 rgba(35,31,27,.06), 0 18px 40px rgba(35,31,27,.08); }
+  .stl-stop.flip .stl-art { justify-self: start; }
+  .stl-art svg { width: 100%; height: 100%; display: block; overflow: visible; }
+  .stl-text { max-width: 400px; }
+  .stl-stop:not(.flip) .stl-text { justify-self: start; }
+  .stl-stop.flip .stl-text { justify-self: end; text-align: right; }
+  .stl-marker { margin: 0 0 6px; font-family: var(--serif); font-size: clamp(34px, 4vw, 48px); line-height: 1; color: var(--red); }
+  .stl-text .h3 { margin: 0 0 10px; }
+  .stl-text p { margin: 0; }
+  .stl-text p:not(.stl-marker):not(.stl-stat) { color: var(--ink-2, #3e3534); font-size: 17.5px; line-height: 1.6; }
+  .stl-stat { margin-top: 16px !important; font-size: 16px; }
+  .stl-stat strong { font-family: var(--serif); font-weight: 400; font-size: 30px; color: var(--red); margin-right: 4px; }
+  .stl-key { display: block; margin-top: 6px; font-size: 13.5px; color: var(--muted); }
+  .stl-key i { display: inline-block; width: 10px; height: 10px; border-radius: 50%; background: var(--sand); margin: 0 4px 0 10px; vertical-align: middle; }
+  .stl-key i.on { background: var(--red); margin-left: 0; }
+  .stl-end { display: flex; justify-content: center; padding-top: 30px; }
+  .stl-end img { width: 240px; height: auto; padding: 16px 22px; background: var(--paper, #fbf7f0); }
+
+  /* Drawing style: brown ink lines, toffee fills, brick red accents. Lines draw themselves in. */
+  .stl-art .ln path, .stl-art .ln rect, .stl-art .ln circle, .stl-art .ln ellipse, .stl-art .ray path { fill: none; stroke: var(--ink); stroke-width: 3.2; stroke-linecap: round; stroke-linejoin: round; }
+  .stl-art .ln .red, .stl-art .ln.red path, .stl-art .ln.red circle { stroke: var(--red); }
+  .stl-art .fill-toffee { fill: #e9dcc0 !important; }
+  .stl-art .fill-red { fill: rgba(163, 55, 73, .14) !important; }
+  .stl-art .dot { fill: var(--ink) !important; }
+  .stl-art .ray path { stroke: #d9a441; stroke-dasharray: 4 9; }
+  .stl-art .unused-cap { font-family: var(--sans); font-size: 11px; font-weight: 700; letter-spacing: .06em; fill: var(--muted); text-transform: uppercase; }
+  .stl-art .ln path, .stl-art .ln rect { stroke-dasharray: 600; stroke-dashoffset: 600; transition: stroke-dashoffset 1.6s ease .1s; }
+  .stl-art.in .ln path, .stl-art.in .ln rect { stroke-dashoffset: 0; }
+  .people .p circle, .people .p path { fill: var(--sand); transition: fill .5s ease var(--d); }
+  .stl-art.in .people .p.on circle, .stl-art.in .people .p.on path { fill: var(--red); }
+  @media (prefers-reduced-motion: reduce) {
+    .stl-art .ln path, .stl-art .ln rect { stroke-dashoffset: 0; transition: none; }
+    .people .p circle, .people .p path { transition: none; }
+  }
+
+  @media (max-width: 760px) {
+    .stl-head { text-align: left; margin-bottom: 32px; }
+    .stl-road { left: 14px; }
+    .stl-stop, .stl-stop.flip { grid-template-columns: 1fr; gap: 18px; padding: 22px 0 22px 46px; }
+    .stl-pin { left: 14px; top: 34px; }
+    .stl-stop.flip .stl-art { order: 0; }
+    .stl-art, .stl-stop.flip .stl-art { justify-self: start; width: min(100%, 300px); padding: 14px; border-radius: 22px; }
+    .stl-stop.flip .stl-text, .stl-stop:not(.flip) .stl-text { justify-self: start; text-align: left; }
+    .stl-end { justify-content: flex-start; padding-left: 46px; }
+    .stl-end img { width: 190px; padding: 12px 0; }
+  }
+</style>
