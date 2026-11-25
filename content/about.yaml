@@ -1,5 +1,5 @@
 headline: Thrift store. Mission. Community.
-intro: Hidden Treasures has served Minneapolis and the surrounding communities since 2008. We're a ministry of Masterworks of Minneapolis, which was founded in 1991.
+intro: For more than 19 years, Hidden Treasures has served St. Anthony, Minneapolis and the surrounding communities. We're a ministry of MasterWorks of Minneapolis, founded in 1990.
 story: 'Hidden Treasures exists to offer second chances. Through fair wages, job training and the Christian faith, we help people with barriers to employment become economically self-sufficient.
 
 
@@ -16,3 +16,28 @@ convictions:
 - Work can be part of healing
 - Jesus Christ changes lives
 partnersNote: 'We partner with other ministries, in Minnesota and around the world, that work in recovery, education, mentoring and prayer.'
+storyTitle: How a thrift store became a second chance.
+storyIntro: Every bag that comes through our back door is part of a story that started long before the store did.
+chapters:
+- marker: '1990'
+  art: door
+  title: The Gospel, put to work
+  text: Tim Glader started MasterWorks of Minneapolis to share the Good News of Jesus in a way people could hold onto. For men and women shut out of work by addiction or a prison record, that meant a real job.
+- marker: A gift
+  art: seed
+  title: Seed money for a store
+  text: Years later, a donor came to the MasterWorks board with an offer. They would provide the seed money to start a thrift store.
+- marker: A home
+  art: store
+  title: The Shops at St. Anthony
+  text: Our first general manager, Kurt Swanson, searched for a long time before he found the right spot. We moved into The Shops at St. Anthony and have been there ever since.
+- marker: Today
+  art: people
+  title: More than 32 people at work
+  text: Three out of four of our team members are in drug and alcohol recovery. Here they build job skills and life skills for the next step on their career path, and in life.
+- marker: Every day
+  art: circle
+  title: A ministry that keeps itself going
+  text: Neighbors donate, our team sorts and sells, and the store sustains itself by the grace of Jesus Christ. That lets us stand with other ministries, like Jericho Road.
+teamCount: 32
+recoveryShare: 75

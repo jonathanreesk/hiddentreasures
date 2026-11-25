@@ -4,12 +4,15 @@ import PageHero from '../components/PageHero.astro';
 import Form from '../components/Form.astro';
 import Stories from '../components/Stories.astro';
 import Watermark from '../components/Watermark.astro';
+import StoryTimeline from '../components/StoryTimeline.astro';
 
 import { reader, paragraphs, img } from '../lib/content';
 const a = await reader.singletons.about.read();
 ---
 <Layout title="Our story" description="Hidden Treasures is a nonprofit Christian thrift store run by Masterworks of Minneapolis, holding the employment door open for people in recovery and re-entry.">
   <PageHero eyebrow="Our story" title={a?.headline ?? 'Our story'} lead={a?.intro} image={img(a?.image) || undefined} />
+
+  <StoryTimeline />
 
   {a?.mission && (
     <section class="section-tight has-wm" style="background:var(--red);color:#fff">

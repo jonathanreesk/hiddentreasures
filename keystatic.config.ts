@@ -428,6 +428,25 @@ export default config({
         headline: fields.text({ label: 'Headline' }),
         intro: fields.text({ label: 'Intro', multiline: true }),
         mission: fields.text({ label: 'Mission statement' }),
+        storyTitle: fields.text({ label: 'Timeline headline' }),
+        storyIntro: fields.text({ label: 'Timeline intro', multiline: true }),
+        chapters: fields.array(
+          fields.object({
+            marker: fields.text({ label: 'Year or label', description: 'For example: 1990, A gift, Today' }),
+            art: fields.select({ label: 'Drawing', options: [
+              { label: 'An open door', value: 'door' },
+              { label: 'A seed sprouting', value: 'seed' },
+              { label: 'The storefront', value: 'store' },
+              { label: 'Our team (people grid)', value: 'people' },
+              { label: 'The donate, sell, give circle', value: 'circle' },
+            ], defaultValue: 'door' }),
+            title: fields.text({ label: 'Title' }),
+            text: fields.text({ label: 'Text', multiline: true }),
+          }),
+          { label: 'Timeline chapters', itemLabel: (p) => `${p.fields.marker.value}: ${p.fields.title.value}` }
+        ),
+        teamCount: fields.integer({ label: 'Number of team members', defaultValue: 32 }),
+        recoveryShare: fields.integer({ label: 'Percent of the team in recovery', defaultValue: 75 }),
         story: fields.text({ label: 'Our story', multiline: true, description: 'Leave a blank line between paragraphs' }),
         convictions: fields.array(fields.text({ label: 'Conviction' }), { label: 'Core convictions', itemLabel: (p) => p.value }),
         faith: fields.text({ label: 'Our faith', multiline: true }),
